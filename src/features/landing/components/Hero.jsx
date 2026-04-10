@@ -17,7 +17,7 @@ export default function Hero() {
                 </p>
 
                 <button
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate("/login")}
                     className="mt-8 bg-emerald-900 text-white px-8 py-3 rounded-2xl hover:bg-black"
                 >
                     Solicitar cotización

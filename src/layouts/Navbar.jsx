@@ -19,7 +19,7 @@ export default function Navbar() {
             </nav>
 
             <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/login")}
                 className="bg-emerald-900 text-white px-6 py-2 rounded-xl hover:bg-black transition"
             >
                 Iniciar sesión
