@@ -25,7 +25,7 @@ export default function LoginPage() {
                 {/* IMAGE */}
                 <div className={imageWrapperClass}>
                     <img
-                        src="/ImgLogin.jpg"
+                        src="/images/Login/ImgLogin.webp"
                         alt="login"
                         className="absolute inset-0 w-full h-full object-cover"
                     />

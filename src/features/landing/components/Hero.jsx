@@ -25,7 +25,7 @@ export default function Hero() {
             </div>
 
             <div className="h-[420px]">
-                <img src="/office.png" className="w-full h-full object-contain" />
+                <img src="/images/landing/ImgLanding.webp" className="w-full h-full object-contain" />
             </div>
 
         </section>
