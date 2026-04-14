@@ -33,10 +33,8 @@ const Sidebar = ({ open, onClose }) => {
         reader.readAsDataURL(file)
     }
 
-    // ✅ activo incluso con subrutas
     const isActive = (path) => location.pathname.startsWith(path)
 
-    // 🔥 MENU (puedes luego filtrarlo por rol)
     const menuItems = [
         {
             label: "Nuevo vendedor",
@@ -106,7 +104,6 @@ const Sidebar = ({ open, onClose }) => {
                     </p>
                 </div>
 
-                {/* MENU */}
                 <div className="mt-10 flex flex-col gap-2">
 
                     {menuItems.map((item) => {
@@ -149,7 +146,6 @@ const Sidebar = ({ open, onClose }) => {
                 </div>
             </div>
 
-            {/* LOGOUT */}
             <Button onClick={logout} className={buttonPrimaryClass}>
                 Cerrar sesión
             </Button>
