@@ -4,18 +4,16 @@ import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
 import { FaUserPlus, FaUserCircle } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
+import useAuthStore from "@/context/useAuthStore"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate()
     const location = useLocation()
     const fileInputRef = useRef(null)
 
-    const user = JSON.parse(localStorage.getItem("user")) || {}
-
-    const logout = () => {
-        localStorage.removeItem("user")
-        navigate("/login")
-    }
+    // 🔥 ZUSTAND (usuario real del login)
+    const user = useAuthStore((state) => state.user)
+    const logout = useAuthStore((state) => state.logout)
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]
@@ -23,15 +21,36 @@ const Sidebar = ({ open, onClose }) => {
 
         const reader = new FileReader()
         reader.onloadend = () => {
-            const updatedUser = { ...user, avatar: reader.result }
-            localStorage.setItem("user", JSON.stringify(updatedUser))
-            window.location.reload()
+            // opcional: actualizar solo UI (NO backend)
+            const updatedUser = {
+                ...user,
+                avatar: reader.result
+            }
+
+            useAuthStore.setState({ user: updatedUser })
         }
 
         reader.readAsDataURL(file)
     }
 
-    const isActive = (path) => location.pathname === path
+    // ✅ activo incluso con subrutas
+    const isActive = (path) => location.pathname.startsWith(path)
+
+    // 🔥 MENU (puedes luego filtrarlo por rol)
+    const menuItems = [
+        {
+            label: "Nuevo vendedor",
+            path: "/dashboard/vendedores",
+            icon: FaUserPlus,
+            color: "emerald"
+        },
+        {
+            label: "Nuevo cliente",
+            path: "/dashboard/clientes",
+            icon: FaUserPlus,
+            color: "indigo"
+        }
+    ]
 
     return (
         <aside className={`
@@ -46,7 +65,7 @@ const Sidebar = ({ open, onClose }) => {
             md:translate-x-0
         `}>
 
-            {/* cerrar mobile */}
+            {/* CLOSE */}
             <span
                 className="absolute top-4 right-4 md:hidden cursor-pointer text-emerald-900"
                 onClick={onClose}
@@ -54,10 +73,9 @@ const Sidebar = ({ open, onClose }) => {
                 <HiX size={20} />
             </span>
 
-            {/* TOP */}
             <div>
 
-                {/* USER */}
+                {/* USER SECTION */}
                 <div className="flex flex-col items-center gap-3">
 
                     <div
@@ -65,7 +83,10 @@ const Sidebar = ({ open, onClose }) => {
                         onClick={() => fileInputRef.current.click()}
                     >
                         {user?.avatar ? (
-                            <img src={user.avatar} className="w-full h-full object-cover" />
+                            <img
+                                src={user.avatar}
+                                className="w-full h-full object-cover"
+                            />
                         ) : (
                             <FaUserCircle className="w-full h-full text-emerald-900" />
                         )}
@@ -90,80 +111,48 @@ const Sidebar = ({ open, onClose }) => {
                 {/* MENU */}
                 <div className="mt-10 flex flex-col gap-2">
 
-                    {/* ITEM 1 */}
-                    <div
-                        onClick={() => navigate("/dashboard/vendedores")}
-                        className={`relative flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200
-                            ${
-                                isActive("/dashboard/vendedores")
-                                    ? "text-emerald-900 font-semibold"
-                                    : "text-gray-500 hover:text-emerald-900 hover:bg-white/10"
-                            }
-                        `}
-                    >
-                        {/* ICONO */}
-                        <FaUserPlus
-                            className={`transition-colors duration-200
-                                ${
-                                    isActive("/dashboard/vendedores")
-                                        ? "text-emerald-900"
-                                        : "text-gray-400"
-                                }
-                            `}
-                        />
+                    {menuItems.map((item) => {
+                        const Icon = item.icon
+                        const active = isActive(item.path)
 
-                        Nuevo vendedor
+                        return (
+                            <div
+                                key={item.path}
+                                onClick={() => navigate(item.path)}
+                                className={`relative flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200
+                                    ${
+                                        active
+                                            ? "text-emerald-900 font-semibold"
+                                            : "text-gray-500 hover:text-emerald-900 hover:bg-white/10"
+                                    }
+                                `}
+                            >
+                                <Icon
+                                    className={`transition-colors duration-200
+                                        ${active ? "text-emerald-900" : "text-gray-400"}
+                                    `}
+                                />
 
-                        {/* BARRA LATERAL */}
-                        <span
-                            className={`absolute right-0 top-0 h-full w-1 rounded-l-full transition-all duration-300
-                                ${
-                                    isActive("/dashboard/vendedores")
-                                        ? "bg-emerald-900 opacity-100"
-                                        : "opacity-0"
-                                }
-                            `}
-                        />
-                    </div>
+                                {item.label}
 
-                    {/* ITEM 2 */}
-                    <div
-                        onClick={() => navigate("/dashboard/clientes")}
-                        className={`relative flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200
-                            ${
-                                isActive("/dashboard/clientes")
-                                    ? "text-emerald-900 font-semibold"
-                                    : "text-gray-500 hover:text-emerald-900 hover:bg-white/10"
-                            }
-                        `}
-                    >
-                        <FaUserPlus
-                            className={`transition-colors duration-200
-                                ${
-                                    isActive("/dashboard/clientes")
-                                        ? "text-emerald-900"
-                                        : "text-gray-400"
-                                }
-                            `}
-                        />
-
-                        Nuevo cliente
-
-                        <span
-                            className={`absolute right-0 top-0 h-full w-1 rounded-l-full transition-all duration-300
-                                ${
-                                    isActive("/dashboard/clientes")
-                                        ? "bg-indigo-600 opacity-100"
-                                        : "opacity-0"
-                                }
-                            `}
-                        />
-                    </div>
+                                {/* INDICADOR LATERAL */}
+                                <span
+                                    className={`absolute right-0 top-0 h-full w-1 rounded-l-full transition-all duration-300
+                                        ${
+                                            active
+                                                ? `bg-${item.color}-600 opacity-100`
+                                                : "opacity-0"
+                                        }
+                                    `}
+                                />
+                            </div>
+                        )
+                    })}
 
                 </div>
             </div>
 
-            {/* BOTTOM */}
+            {/* LOGOUT */}
             <Button onClick={logout} className={buttonPrimaryClass}>
                 Cerrar sesión
             </Button>
