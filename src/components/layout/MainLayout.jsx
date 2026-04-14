@@ -1,40 +1,29 @@
 import { useState } from "react"
 import Sidebar from "./Sidebar"
+import Navbar from "./Navbar"
 
 export default function MainLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white flex">
 
-            {/* SIDEBAR */}
             <Sidebar
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
             />
 
-            {/* MAIN CONTENT */}
-            <div className="md:ml-64 flex flex-col min-h-screen">
+            <div className="flex-1 flex flex-col min-h-screen ml-0 xl:ml-64">
 
-                {/* TOP BAR (placeholder navbar) */}
-                <div className="h-14 flex items-center justify-between px-6 
-                                bg-white/70 backdrop-blur-md border-b border-gray-200">
-                    <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="text-emerald-900 font-semibold md:hidden"
-                    >
-                        ☰
-                    </button>
+                <Navbar
+                    title="Dashboard"
+                    onOpenSidenav={() => setSidebarOpen(true)}
+                />
 
-                    <h1 className="text-emerald-900 font-bold">
-                        Dashboard
-                    </h1>
-                </div>
-
-                {/* CONTENT */}
                 <main className="flex-1 p-6 bg-gray-50">
                     {children}
                 </main>
+
             </div>
         </div>
     )
