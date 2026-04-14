@@ -7,7 +7,7 @@ import Register from "./features/auth/pages/RegisterPage"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 
-import Dashboard from "./features/dashboard/pages/Dashboard"
+import Dashboard from "./features/dashboard/pages/DashboardPage"
 
 function App() {
   return (
