@@ -35,7 +35,7 @@ export default function LoginPage() {
 
                 toast.success("Bienvenido")
 
-                navigate("/menu")
+                navigate("/dashboard")
             }
         } catch (error) {
             console.error("Error:", error)
