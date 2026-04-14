@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom"
 import useAuthStore from "@/context/useAuthStore"
 import { loginRequest } from "../services/authService"
+import { toast } from "react-toastify"
 
 export default function LoginPage() {
 
@@ -19,14 +20,11 @@ export default function LoginPage() {
         try {
             const res = await loginRequest(credentials)
 
-            console.log("Respuesta login:", res)
-            
             if (res?.token) {
                 const userData = res.usuario
 
                 setAuth({
                     token: res.token,
-                    rol: userData?.rol,
                     user: {
                         id: userData?.id,
                         email: userData?.email,
@@ -35,15 +33,14 @@ export default function LoginPage() {
                     }
                 })
 
+                toast.success("Bienvenido")
+
                 navigate("/menu")
             }
         } catch (error) {
-    console.error("ERROR COMPLETO:", error)
-    console.error("response:", error.response)
-    console.error("data:", error.response?.data)
-    console.error("message:", error.message)
-
-    throw error.response?.data ?? { message: error.message }        }
+            console.error("Error:", error)
+            toast.error(error.message || "Error en login")
+        }
     }
 
     return (
