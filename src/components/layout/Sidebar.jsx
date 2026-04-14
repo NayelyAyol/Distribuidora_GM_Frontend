@@ -54,18 +54,17 @@ const Sidebar = ({ open, onClose }) => {
 
     return (
         <aside className={`
-            fixed top-0 left-0
-            h-screen w-64
-            z-50
-            bg-white/10 backdrop-blur-2xl
-            border-r border-white/20
-            p-6 flex flex-col justify-between
-            transform transition-transform duration-300
-            ${open ? "translate-x-0" : "-translate-x-full"}
-            md:translate-x-0
-        `}>
+        fixed top-0 left-0
+        h-screen
+        w-[300px]
+        z-50
+        bg-white
+        p-6 flex flex-col justify-between
+        transform transition-transform duration-300
+        ${open ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0
+`}>
 
-            {/* CLOSE */}
             <span
                 className="absolute top-4 right-4 md:hidden cursor-pointer text-emerald-900"
                 onClick={onClose}
@@ -75,7 +74,6 @@ const Sidebar = ({ open, onClose }) => {
 
             <div>
 
-                {/* USER SECTION */}
                 <div className="flex flex-col items-center gap-3">
 
                     <div
@@ -135,7 +133,6 @@ const Sidebar = ({ open, onClose }) => {
 
                                 {item.label}
 
-                                {/* INDICADOR LATERAL */}
                                 <span
                                     className={`absolute right-0 top-0 h-full w-1 rounded-l-full transition-all duration-300
                                         ${
