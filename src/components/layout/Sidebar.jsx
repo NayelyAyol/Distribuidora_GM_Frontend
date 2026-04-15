@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
-import { FaUserPlus, FaUserCircle } from "react-icons/fa"
+import { FaUserPlus, FaUserCircle, FaUsers } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
 import useAuthStore from "@/context/useAuthStore"
 
@@ -39,7 +39,7 @@ const Sidebar = ({ open, onClose }) => {
             label: "Mi perfil",
             path: "/dashboard/perfil",
             icon: FaUserCircle,
-            color: "blue"
+            color: "emerald"
         },{
             label: "Nuevo vendedor",
             path: "/dashboard/vendedores",
@@ -47,10 +47,10 @@ const Sidebar = ({ open, onClose }) => {
             color: "emerald"
         },
         {
-            label: "Nuevo cliente",
+            label: "Gestionar clientes",
             path: "/dashboard/clientes",
-            icon: FaUserPlus,
-            color: "indigo"
+            icon: FaUsers,
+            color: "emerald"
         },
         
     ]

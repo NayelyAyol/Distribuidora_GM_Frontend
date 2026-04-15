@@ -22,7 +22,7 @@ export default function Navbar({ onOpenSidenav }) {
         "/dashboard": "Dashboard",
         "/dashboard/vendedores": "Vendedores",
         "/dashboard/productos": "Productos",
-        "/dashboard/clientes": "Clientes",
+        "/dashboard/clientes": " Gestión de Clientes",
         "/dashboard/perfil": "Mi perfil"
     }
 

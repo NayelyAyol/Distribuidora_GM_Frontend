@@ -12,6 +12,7 @@ import MainLayout from "./components/layout/MainLayout"
 import Dashboard from "./features/dashboard/pages/DashboardPage"
 import VendedorPage from "./features/admin/vendedores/pages/VendedorPage"
 import ProfilePage from "./features/admin/profile/pages/ProfilePage"
+import ClientesPage from "./features/admin/clientes/pages/ClientesPage"
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           {/* ADMIN */}
           <Route path="/dashboard/vendedores" element={<VendedorPage />} />
           <Route path="/dashboard/perfil" element={<ProfilePage />} />
+          <Route path="/dashboard/clientes" element={<ClientesPage />} />
         </Route>
 
       </Routes>
