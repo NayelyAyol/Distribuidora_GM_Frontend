@@ -2,7 +2,7 @@
 export const inputClass =
     "w-full py-4 px-6 rounded-2xl bg-white/70 border border-gray-300 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-lg placeholder-emerald-900/60";
 
-    export const labelClass = "font-bold text-lg text-emerald-950 ml-1";
+    export const labelClass = "font-bold text-sm text-emerald-950 ml-1";
 
 // BUTTONS
 export const buttonPrimaryClass =
