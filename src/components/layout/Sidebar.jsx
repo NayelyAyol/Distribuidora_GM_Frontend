@@ -11,7 +11,6 @@ const Sidebar = ({ open, onClose }) => {
     const location = useLocation()
     const fileInputRef = useRef(null)
 
-    // 🔥 ZUSTAND (usuario real del login)
     const user = useAuthStore((state) => state.user)
     const logout = useAuthStore((state) => state.logout)
 
@@ -37,6 +36,11 @@ const Sidebar = ({ open, onClose }) => {
 
     const menuItems = [
         {
+            label: "Mi perfil",
+            path: "/dashboard/perfil",
+            icon: FaUserCircle,
+            color: "blue"
+        },{
             label: "Nuevo vendedor",
             path: "/dashboard/vendedores",
             icon: FaUserPlus,
@@ -47,7 +51,8 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/clientes",
             icon: FaUserPlus,
             color: "indigo"
-        }
+        },
+        
     ]
 
     return (

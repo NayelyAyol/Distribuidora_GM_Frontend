@@ -6,15 +6,12 @@ import Login from "./features/auth/pages/LoginPage"
 import Register from "./features/auth/pages/RegisterPage"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
-
-// Layout dashboard
 import MainLayout from "./components/layout/MainLayout"
 
 // Pages
 import Dashboard from "./features/dashboard/pages/DashboardPage"
-
-// Admin
 import VendedorPage from "./features/admin/vendedores/pages/VendedorPage"
+import ProfilePage from "./features/admin/profile/pages/ProfilePage"
 
 function App() {
   return (
@@ -22,32 +19,28 @@ function App() {
       <ToastContainer />
 
       <Routes>
-        {/* PUBLIC ROUTES */}
+
+        {/* PUBLIC */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* PRIVATE */}
         <Route
-          path="/dashboard"
           element={
             <ProtectedRoute>
-              <MainLayout>
-                <Dashboard />
-              </MainLayout>
+              <MainLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          {/* DASHBOARD */}
+          <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route
-          path="/dashboard/vendedores"
-          element={
-            <ProtectedRoute>
-              <MainLayout>
-                <VendedorPage />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
+          {/* ADMIN */}
+          <Route path="/dashboard/vendedores" element={<VendedorPage />} />
+          <Route path="/dashboard/perfil" element={<ProfilePage />} />
+        </Route>
+
       </Routes>
     </>
   )

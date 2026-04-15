@@ -23,6 +23,7 @@ export default function Navbar({ onOpenSidenav }) {
         "/dashboard/vendedores": "Vendedores",
         "/dashboard/productos": "Productos",
         "/dashboard/clientes": "Clientes",
+        "/dashboard/perfil": "Mi perfil"
     }
 
     const title = routeTitles[location.pathname] || "Dashboard"

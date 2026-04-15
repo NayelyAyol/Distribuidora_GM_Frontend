@@ -1,12 +1,13 @@
 import { useState } from "react"
+import { Outlet } from "react-router-dom"
 import Sidebar from "./Sidebar"
 import Navbar from "./Navbar"
 
-export default function MainLayout({ children }) {
+export default function MainLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     return (
-        <div className="min-h-screen flex bg-emerald-50/60">
+        <div className="min-h-screen bg-emerald-50/60 flex">
 
             {sidebarOpen && (
                 <div
@@ -28,7 +29,7 @@ export default function MainLayout({ children }) {
                 />
 
                 <main className="flex-1 p-4 md:p-6 lg:p-8">
-                    {children}
+                    <Outlet />
                 </main>
 
             </div>
