@@ -1,20 +1,31 @@
 import { useState } from "react"
+import { useLocation } from "react-router-dom"
 import { FiAlignJustify, FiSearch } from "react-icons/fi"
 import { RiMoonFill, RiSunFill } from "react-icons/ri"
 import { IoMdNotificationsOutline } from "react-icons/io"
 import { FiBox } from "react-icons/fi"
 import { Input } from "@/components/ui/Input"
 import { inputClass } from "@/utils/styles"
-
 import Dropdown from "@/components/ui/Dropdown"
 
-export default function Navbar({ onOpenSidenav, title = "Dashboard" }) {
+
+export default function Navbar({ onOpenSidenav }) {
     const [darkmode, setDarkmode] = useState(false)
+    const location = useLocation()
 
     const toggleDarkMode = () => {
         document.body.classList.toggle("dark")
         setDarkmode(!darkmode)
     }
+
+    const routeTitles = {
+        "/dashboard": "Dashboard",
+        "/dashboard/vendedores": "Vendedores",
+        "/dashboard/productos": "Productos",
+        "/dashboard/clientes": "Clientes",
+    }
+
+    const title = routeTitles[location.pathname] || "Dashboard"
 
     return (
         <nav className="w-full px-4 md:px-6 pt-4 bg-emerald-50/60 border-gray-200/50">
@@ -31,24 +42,9 @@ export default function Navbar({ onOpenSidenav, title = "Dashboard" }) {
                     </h1>
                 </div>
 
-                <div className="
-  flex items-center justify-between gap-3
 
-  bg-white
-  dark:bg-navy-800
-
-  border border-gray-100 dark:border-white/10
-
-  rounded-[40px]
-
-  px-3 py-2
-
-  w-full md:w-auto
-
-  shadow-lg shadow-gray-200/40 dark:shadow-black/30
-
-  backdrop-blur-xl
-">
+                <div className="flex items-center justify-between gap-3 bg-white dark:bg-navy-800 border border-gray-100 dark:border-white/10 rounded-[40px]
+                px-3 py-2 w-full md:w-auto shadow-lg shadow-gray-200/40 dark:shadow-black/30 backdrop-blur-xl">
                     <div className="
                         flex items-center
                         bg-white
@@ -103,7 +99,7 @@ export default function Navbar({ onOpenSidenav, title = "Dashboard" }) {
 
                         <button onClick={toggleDarkMode}>
                             {darkmode ? (
-                                <RiSunFill className="text-xl text-emerald-50" />
+                                <RiSunFill className="text-xl text-gray-600" />
                             ) : (
                                 <RiMoonFill className="text-xl text-gray-600" />
                             )}
