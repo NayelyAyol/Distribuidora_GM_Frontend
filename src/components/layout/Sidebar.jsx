@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
-import { FaUserPlus, FaUserCircle, FaUsers } from "react-icons/fa"
+import { FaUserPlus, FaUserCircle, FaUsers, FaShoppingBag } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
 import useAuthStore from "@/context/useAuthStore"
 
@@ -52,7 +52,12 @@ const Sidebar = ({ open, onClose }) => {
             icon: FaUsers,
             color: "emerald"
         },
-        
+        {
+            label: "Gestionar categorías",
+            path: "/dashboard/categorias",
+            icon: FaShoppingBag,
+            color: "emerald"
+        }
     ]
 
     return (

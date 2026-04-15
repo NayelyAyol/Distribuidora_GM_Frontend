@@ -13,6 +13,7 @@ import Dashboard from "./features/dashboard/pages/DashboardPage"
 import VendedorPage from "./features/admin/vendedores/pages/VendedorPage"
 import ProfilePage from "./features/admin/profile/pages/ProfilePage"
 import ClientesPage from "./features/admin/clientes/pages/ClientesPage"
+import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/dashboard/vendedores" element={<VendedorPage />} />
           <Route path="/dashboard/perfil" element={<ProfilePage />} />
           <Route path="/dashboard/clientes" element={<ClientesPage />} />
+          <Route path="/dashboard/categorias" element={<CategoriasPage />} />
         </Route>
 
       </Routes>
