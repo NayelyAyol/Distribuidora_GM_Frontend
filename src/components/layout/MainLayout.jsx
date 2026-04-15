@@ -6,7 +6,7 @@ export default function MainLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     return (
-        <div className="min-h-screen bg-gray-50 flex">
+        <div className="min-h-screen flex bg-emerald-50/60">
 
             {sidebarOpen && (
                 <div

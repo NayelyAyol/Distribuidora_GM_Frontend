@@ -17,7 +17,7 @@ export default function Navbar({ onOpenSidenav, title = "Dashboard" }) {
     }
 
     return (
-        <nav className="w-full px-4 md:px-6 pt-4 bg-emerald-50/60 backdrop-blur-sm border-b border-gray-200/50">
+        <nav className="w-full px-4 md:px-6 pt-4 bg-emerald-50/60 border-gray-200/50">
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 

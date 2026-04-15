@@ -7,7 +7,14 @@ import Register from "./features/auth/pages/RegisterPage"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 
+// Layout dashboard
+import MainLayout from "./components/layout/MainLayout"
+
+// Pages
 import Dashboard from "./features/dashboard/pages/DashboardPage"
+
+// Admin
+import VendedorPage from "./features/admin/vendedores/pages/VendedorPage"
 
 function App() {
   return (
@@ -15,6 +22,7 @@ function App() {
       <ToastContainer />
 
       <Routes>
+        {/* PUBLIC ROUTES */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -23,7 +31,20 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/vendedores"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <VendedorPage />
+              </MainLayout>
             </ProtectedRoute>
           }
         />
