@@ -60,7 +60,7 @@ export default function VendedoresTable({ data }) {
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
-                                <th key={header.id} className="text-left py-2 text-gray-500">
+                                <th key={header.id} className="text-center py-2 text-black">
                                     {flexRender(
                                         header.column.columnDef.header,
                                         header.getContext()
@@ -75,7 +75,7 @@ export default function VendedoresTable({ data }) {
                     {table.getRowModel().rows.map(row => (
                         <tr key={row.id} className="border-t">
                             {row.getVisibleCells().map(cell => (
-                                <td key={cell.id} className="py-3">
+                                <td key={cell.id} className="py-3 text-sm text-gray-700 text-center">
                                     {flexRender(
                                         cell.column.columnDef.cell,
                                         cell.getContext()
