@@ -41,31 +41,30 @@ export default function ProfileCard({ user }) {
             </div>
 
             {/* INFO */}
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="flex flex-col gap-4 text-sm w-full">
 
                 <div className="bg-emerald-50/60 p-3 rounded-xl">
                     <p className="text-gray-500">Correo</p>
-                    <p className="font-semibold">
+                    <p className="font-semibold break-all">
                         {user?.email || "N/A"}
                     </p>
                 </div>
 
                 <div className="bg-emerald-50/60 p-3 rounded-xl">
                     <p className="text-gray-500">Celular</p>
-                    <p className="font-semibold">
-                        {user?.celular || "N/A"}
+                    <p className="font-semibold break-all">
+                        {user?.telefono || "N/A"}
                     </p>
                 </div>
 
-                <div className="bg-emerald-50/60 p-3 rounded-xl col-span-2">
+                <div className="bg-emerald-50/60 p-3 rounded-xl">
                     <p className="text-gray-500">Dirección</p>
-                    <p className="font-semibold">
+                    <p className="font-semibold break-all">
                         {user?.direccion || "N/A"}
                     </p>
                 </div>
 
             </div>
-
         </div>
     )
 }

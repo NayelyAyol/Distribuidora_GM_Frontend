@@ -39,8 +39,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
 
           {/* ADMIN */}
-          <Route path="/dashboard/vendedores" element={<VendedorPage />} />
           <Route path="/dashboard/perfil" element={<ProfilePage />} />
+          <Route path="/dashboard/vendedores" element={<VendedorPage />} />
           <Route path="/dashboard/clientes" element={<ClientesPage />} />
           <Route path="/dashboard/categorias" element={<CategoriasPage />} />
         </Route>

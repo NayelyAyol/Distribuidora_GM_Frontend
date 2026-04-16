@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -8,16 +8,31 @@ import {
     labelClass,
     buttonPrimaryClass
 } from "@/utils/styles"
+import { updateProfile } from "../services/profileService"
+import { toast } from "react-toastify"
 
-export default function ProfileForm() {
+export default function ProfileForm({ user }) {
+
 
     const [form, setForm] = useState({
         nombre: "",
         apellido: "",
         email: "",
         direccion: "",
-        celular: ""
+        telefono: ""
     })
+
+    useEffect(() => {
+    if (user) {
+        setForm({
+            nombre: user.nombre || "",
+            apellido: user.apellido || "",
+            email: user.email || "",
+            direccion: user.direccion || "",
+            telefono: user.telefono || ""
+        })
+    }
+}, [user])
 
     const handleChange = (e) => {
         setForm({
@@ -26,17 +41,28 @@ export default function ProfileForm() {
         })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        // 👇 solo validación HTML por ahora
         if (!e.target.checkValidity()) {
             e.target.reportValidity()
             return
         }
 
-        // 🚧 lógica vendrá después
-        console.log("Formulario listo:", form)
+        const loadingToast = toast.loading("Actualizando perfil...")
+        try{
+            await updateProfile(form)
+
+            toast.dismiss(loadingToast)
+            toast.success("Perfil actualizado")
+
+        }catch(error){
+            toast.dismiss(loadingToast)
+
+            const msg = error.response?.data?.message || "Error al actualizar perfil"
+            toast.error(msg)
+            console.error("Error al actualizar perfil:", error)
+        }
     }
 
     return (
@@ -52,7 +78,7 @@ export default function ProfileForm() {
             >
 
                 <div>
-                    <Label className={labelClass}>Nombre</Label>
+                    <Label className={`${labelClass} mb-3`}>Nombre</Label>
                     <Input
                         name="nombre"
                         required
@@ -63,7 +89,7 @@ export default function ProfileForm() {
                 </div>
 
                 <div>
-                    <Label className={labelClass}>Apellido</Label>
+                    <Label className={`${labelClass} mb-3`}>Apellido</Label>
                     <Input
                         name="apellido"
                         required
@@ -74,7 +100,7 @@ export default function ProfileForm() {
                 </div>
 
                 <div className="md:col-span-2">
-                    <Label className={labelClass}>Email</Label>
+                    <Label className={`${labelClass} mb-3`}>Email</Label>
                     <Input
                         type="email"
                         name="email"
@@ -86,7 +112,7 @@ export default function ProfileForm() {
                 </div>
 
                 <div className="md:col-span-2">
-                    <Label className={labelClass}>Dirección</Label>
+                    <Label className={`${labelClass} mb-3`}>Dirección</Label>
                     <Input
                         name="direccion"
                         required
@@ -97,18 +123,19 @@ export default function ProfileForm() {
                 </div>
 
                 <div className="md:col-span-2">
-                    <Label className={labelClass}>Celular</Label>
+                    <Label className={`${labelClass} mb-3`}>Telefono</Label>
                     <Input
-                        name="celular"
+                        name="telefono"
                         required
                         onChange={handleChange}
-                        value={form.celular}
+                        value={form.telefono}
                         className={inputClass}
                     />
                 </div>
 
                 <div className="md:col-span-2">
-                    <Button className={buttonPrimaryClass}>
+                    <Button className={buttonPrimaryClass}
+                    type="submit">
                         Guardar cambios
                     </Button>
                 </div>
