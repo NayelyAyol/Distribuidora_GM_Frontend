@@ -16,3 +16,26 @@ export const registrarVendedor = async (data) => {
         };
     }
 };
+
+export const listarVendedores = async () => {
+    try {
+        const res = await api.get("/admin/listar-vendedores");
+        return res.data;
+    } catch (error) {
+        console.error("Error listando vendedores:", error);
+
+        throw {
+            message: error.response?.data?.msg || "Error al obtener vendedores",
+        };
+    }
+};
+
+export const activarVendedor = async (id) => {
+    const res = await api.put(`/admin/activar-vendedor/${id}`)
+    return res.data
+}
+
+export const desactivarVendedor = async (id) => {
+    const res = await api.put(`/admin/desactivar-vendedor/${id}`)
+    return res.data
+}
