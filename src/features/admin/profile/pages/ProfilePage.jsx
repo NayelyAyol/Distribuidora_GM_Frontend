@@ -7,10 +7,10 @@ import { useEffect, useState } from "react"
 export default function ProfilePage() {
     const [user, setUser] = useState(null)
 
-    useEffect(() => {
-    const load = async () => {
+    const fetchProfile = async () => {
         try {
             const data = await getProfile()
+
             const userData = {
                 nombre: data.perfil?.nombre,
                 apellido: data.perfil?.apellido,
@@ -19,14 +19,16 @@ export default function ProfilePage() {
                 telefono: data.perfil?.telefono,
                 rol: data.usuario?.rol
             }
+
             setUser(userData)
         } catch (error) {
             console.error("Error al cargar perfil:", error)
         }
     }
 
-    load()
-}, [])
+    useEffect(() => {
+        fetchProfile()
+    }, [])
 
     return (
         <div className="p-6 bg-emerald-50/60 min-h-screen">
@@ -44,7 +46,8 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="lg:col-span-2 space-y-6">
-                    <ProfileForm user={user} />
+                    <ProfileForm user={user}
+                    onRefresh={fetchProfile} />
                     <PasswordCard />
                 </div>
 

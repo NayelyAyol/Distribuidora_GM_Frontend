@@ -11,7 +11,7 @@ import {
 import { updateProfile } from "../services/profileService"
 import { toast } from "react-toastify"
 
-export default function ProfileForm({ user }) {
+export default function ProfileForm({ user, onRefresh }) {
 
 
     const [form, setForm] = useState({
@@ -23,16 +23,16 @@ export default function ProfileForm({ user }) {
     })
 
     useEffect(() => {
-    if (user) {
-        setForm({
-            nombre: user.nombre || "",
-            apellido: user.apellido || "",
-            email: user.email || "",
-            direccion: user.direccion || "",
-            telefono: user.telefono || ""
-        })
-    }
-}, [user])
+        if (user) {
+            setForm({
+                nombre: user.nombre || "",
+                apellido: user.apellido || "",
+                email: user.email || "",
+                direccion: user.direccion || "",
+                telefono: user.telefono || ""
+            })
+        }
+    }, [user])
 
     const handleChange = (e) => {
         setForm({
@@ -50,13 +50,18 @@ export default function ProfileForm({ user }) {
         }
 
         const loadingToast = toast.loading("Actualizando perfil...")
-        try{
+
+        try {
             await updateProfile(form)
 
             toast.dismiss(loadingToast)
             toast.success("Perfil actualizado")
 
-        }catch(error){
+            if (onRefresh) {
+                await onRefresh()
+            }
+
+        } catch (error) {
             toast.dismiss(loadingToast)
 
             const msg = error.response?.data?.message || "Error al actualizar perfil"
@@ -135,7 +140,7 @@ export default function ProfileForm({ user }) {
 
                 <div className="md:col-span-2">
                     <Button className={buttonPrimaryClass}
-                    type="submit">
+                        type="submit">
                         Guardar cambios
                     </Button>
                 </div>

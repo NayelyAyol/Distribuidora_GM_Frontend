@@ -8,7 +8,7 @@ export const getProfile = async () => {
 
 // Actualizar perfil
 export const updateProfile = async (data) => {
-    const res = await api.put("/auth/actualizar-perfil", data)
+    const res = await api.put("/auth/perfil", data)
     return res.data
 }
 
