@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
-import { FaUserPlus, FaUserCircle, FaUsers, FaShoppingBag } from "react-icons/fa"
+import { FaUserPlus, FaUserCircle, FaUsers, FaShoppingBag, FaChartBar } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
 import useAuthStore from "@/context/useAuthStore"
 
@@ -20,7 +20,6 @@ const Sidebar = ({ open, onClose }) => {
 
         const reader = new FileReader()
         reader.onloadend = () => {
-            // opcional: actualizar solo UI (NO backend)
             const updatedUser = {
                 ...user,
                 avatar: reader.result
@@ -32,15 +31,17 @@ const Sidebar = ({ open, onClose }) => {
         reader.readAsDataURL(file)
     }
 
-    const isActive = (path) => location.pathname.startsWith(path)
-
+    const isActive = (path) =>
+        location.pathname === path ||
+        (path !== "/dashboard" && location.pathname.startsWith(path))
     const menuItems = [
         {
             label: "Mi perfil",
             path: "/dashboard/perfil",
             icon: FaUserCircle,
             color: "emerald"
-        },{
+        },
+        {
             label: "Nuevo vendedor",
             path: "/dashboard/vendedores",
             icon: FaUserPlus,
@@ -57,7 +58,13 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
             color: "emerald"
-        }
+        },
+        {
+            label: "Dashboard",
+            path: "/dashboard",
+            icon: FaChartBar,
+            color: "emerald"
+        },
     ]
 
     return (
@@ -125,10 +132,9 @@ const Sidebar = ({ open, onClose }) => {
                                 key={item.path}
                                 onClick={() => navigate(item.path)}
                                 className={`relative flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200
-                                    ${
-                                        active
-                                            ? "text-emerald-900 font-semibold"
-                                            : "text-gray-500 hover:text-emerald-900 hover:bg-white/10"
+                                    ${active
+                                        ? "text-emerald-900 font-semibold"
+                                        : "text-gray-500 hover:text-emerald-900 hover:bg-white/10"
                                     }
                                 `}
                             >
@@ -142,10 +148,9 @@ const Sidebar = ({ open, onClose }) => {
 
                                 <span
                                     className={`absolute right-0 top-0 h-full w-1 rounded-l-full transition-all duration-300
-                                        ${
-                                            active
-                                                ? `bg-${item.color}-600 opacity-100`
-                                                : "opacity-0"
+                                        ${active
+                                            ? `bg-emerald-600 opacity-100`
+                                            : "opacity-0"
                                         }
                                     `}
                                 />
