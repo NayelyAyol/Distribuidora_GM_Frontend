@@ -42,19 +42,19 @@ const Sidebar = ({ open, onClose }) => {
             color: "emerald"
         },
         {
-            label: "Nuevo vendedor",
+            label: "Vendedores",
             path: "/dashboard/vendedores",
             icon: FaUserPlus,
             color: "emerald"
         },
         {
-            label: "Gestionar clientes",
+            label: "Clientes",
             path: "/dashboard/clientes",
             icon: FaUsers,
             color: "emerald"
         },
         {
-            label: "Gestionar categorías",
+            label: "Categorías",
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
             color: "emerald"
