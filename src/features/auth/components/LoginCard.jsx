@@ -6,7 +6,6 @@ import LoginForm from "./LoginForm"
 
 import {
     titleClass,
-    backButtonClass,
     footerLabelClass,
     linkButtonClass,
 } from "@/utils/styles"
@@ -16,14 +15,12 @@ export default function LoginCard({ onLogin }) {
 
     return (
         <Card className="w-full max-w-lg border-0 border-transparent bg-transparent shadow-none p-0 outline-none ring-0">
-
             <button
-                onClick={() => navigate("/")}
-                className={backButtonClass}
+                onClick={() => navigate("/login")}
+                className="absolute top-6 left-6 text-sm text-gray-600 hover:text-emerald-600 transition"
             >
                 ← Volver
             </button>
-
             <CardHeader className="flex justify-center p-0 pb-10">
                 <CardTitle className={titleClass}>
                     Inicia Sesión
