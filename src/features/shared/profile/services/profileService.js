@@ -14,6 +14,6 @@ export const updateProfile = async (data) => {
 
 // Cambiar contraseña
 export const changePassword = async (data) => {
-    const res = await api.put("/auth/password", data)
+    const res = await api.put("/auth/actualizar-password", data)
     return res.data
 }
