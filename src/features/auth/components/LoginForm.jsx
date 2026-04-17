@@ -13,14 +13,28 @@ import {
 } from "@/utils/styles"
 
 export default function LoginForm({ onSubmit }) {
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
+    const [error, setError] = useState("")
+
     const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        onSubmit({ email, password })
+
+        setError("")
+
+        try {
+            await onSubmit({ email, password })
+        } catch (err) {
+            const msg =
+                err?.message ||
+                "Usuario o contraseña incorrectos"
+
+            setError(msg)
+        }
     }
 
     return (
@@ -36,7 +50,10 @@ export default function LoginForm({ onSubmit }) {
                     type="email"
                     placeholder="m@gmail.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                        setEmail(e.target.value)
+                        setError("")
+                    }}
                     required
                     className={inputClass}
                 />
@@ -44,6 +61,7 @@ export default function LoginForm({ onSubmit }) {
 
             {/* PASSWORD */}
             <div className="space-y-3">
+
                 <div className="flex justify-between items-baseline">
                     <Label className={labelClass}>
                         Contraseña
@@ -64,7 +82,10 @@ export default function LoginForm({ onSubmit }) {
                         type={showPassword ? "text" : "password"}
                         placeholder="********"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            setPassword(e.target.value)
+                            setError("")
+                        }}
                         required
                         className={inputClass}
                     />
@@ -79,12 +100,16 @@ export default function LoginForm({ onSubmit }) {
                 </div>
             </div>
 
-            {/* BUTTON LOGIN */}
+            {error && (
+                <p className="text-red-500 text-sm text-center font-medium">
+                    {error}
+                </p>
+            )}
+
             <Button type="submit" className={buttonPrimaryClass}>
                 Iniciar Sesión
             </Button>
 
-            {/* GOOGLE */}
             <Button variant="outline" className={`${buttonOutlineClass} py-5`}>
                 <img src="/icons8-logo-de-google.svg" className="mr-3 h-5 w-5" />
                 Iniciar sesión con Google
