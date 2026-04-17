@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify"
 import Landing from "./pages/Landing"
 import Login from "./features/auth/pages/LoginPage"
 import Register from "./features/auth/pages/RegisterPage"
+import ForgotPassword from "./features/auth/pages/ForgotPassword"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 import MainLayout from "./components/layout/MainLayout"
@@ -14,6 +15,7 @@ import VendedorPage from "./features/admin/vendedores/pages/VendedorPage"
 import ProfilePage from "./features/admin/profile/pages/ProfilePage"
 import ClientesPage from "./features/admin/clientes/pages/ClientesPage"
 import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
+
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/recuperar-contraseña" element={<ForgotPassword />} />
 
         {/* PRIVATE */}
         <Route
