@@ -6,12 +6,35 @@ import {
     imageWrapperClass,
 } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
+import { recoverPassword } from "../services/authService"
+import { toast } from "react-toastify"
 
 export default function ForgotPassword() {
     const navigate = useNavigate()
 
     const handleRecover = async (data) => {
-        console.log(data)
+        const loading = toast.loading("Enviando correo...")
+
+        try {
+            await recoverPassword(data.email)
+
+            toast.dismiss(loading)
+            toast.success("Correo enviado correctamente 📩")
+
+            setTimeout(() => {
+                navigate("/login")
+            }, 2000)
+
+        } catch (error) {
+            toast.dismiss(loading)
+
+            const msg =
+                error?.message ||
+                error?.response?.data?.msg ||
+                "Error al enviar correo"
+
+            toast.error(msg)
+        }
     }
 
     return (
@@ -20,21 +43,13 @@ export default function ForgotPassword() {
 
                 {/* Formulario */}
                 <div className={formContainerClass}>
-
-                    <button
-                        onClick={() => navigate("/login")}
-                        className="absolute top-6 left-6 text-sm text-gray-600 hover:text-emerald-600 transition"
-                    >
-                        ← Volver
-                    </button>
-
                     <ForgotPasswordForm onSubmit={handleRecover} />
                 </div>
 
                 {/* Imagen */}
                 <div className={imageWrapperClass}>
                     <img
-                        src="/images/Login/olvidarContraseña.webp"
+                        src="/images/Login/ImgLogin.webp"
                         alt="recover"
                         className="absolute inset-0 w-full h-full object-cover"
                     />

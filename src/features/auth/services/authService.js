@@ -12,3 +12,19 @@ export const loginRequest = async (credentials) => {
         }
     }
 }
+
+export const recoverPassword = async (email) => {
+    try {
+        const res = await api.post("/auth/recuperar-password", { email })
+        return res.data
+    } catch (error) {
+        console.error(
+            "Recover password error:",
+            error.response?.data || error.message
+        )
+
+        throw {
+            message: error.response?.data?.msg || "Error al enviar recuperación"
+        }
+    }
+}
