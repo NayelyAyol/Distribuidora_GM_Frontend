@@ -16,9 +16,10 @@ export default function useVendedorForm(onSuccess) {
         confirmPassword: ""
     })
 
+    const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const [loading, setLoading] = useState(false)
+
 
     const onlyLetters = (value) =>
         /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/.test(value)
@@ -40,13 +41,17 @@ export default function useVendedorForm(onSuccess) {
     const calculateAge = (birthDate) => {
         const today = new Date()
         const birth = new Date(birthDate)
+
         let age = today.getFullYear() - birth.getFullYear()
         const m = today.getMonth() - birth.getMonth()
+
         if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
             age--
         }
+
         return age
     }
+
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -67,6 +72,7 @@ export default function useVendedorForm(onSuccess) {
             [name]: value
         }))
     }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -114,7 +120,7 @@ export default function useVendedorForm(onSuccess) {
         try {
             setLoading(true)
 
-            const payload = { ...form }
+            const { confirmPassword, ...payload } = form
 
             await registrarVendedor(payload)
 
@@ -122,6 +128,7 @@ export default function useVendedorForm(onSuccess) {
 
             if (onSuccess) onSuccess()
 
+            // reset
             setForm({
                 nombre: "",
                 apellido: "",
@@ -135,7 +142,7 @@ export default function useVendedorForm(onSuccess) {
             })
 
         } catch (error) {
-            toast.error(error?.message || "Error")
+            toast.error(error?.message || "Error al registrar vendedor")
         } finally {
             setLoading(false)
         }

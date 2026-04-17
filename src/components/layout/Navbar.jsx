@@ -21,8 +21,8 @@ export default function Navbar({ onOpenSidenav }) {
     const routeTitles = {
         "/dashboard": "Dashboard",
         "/dashboard/vendedores": "Vendedores",
-        "/dashboard/categorias": "Gestión de Categorías",
-        "/dashboard/clientes": " Gestión de Clientes",
+        "/dashboard/categorias": "Categorías",
+        "/dashboard/usuarios": "Usuarios",
         "/dashboard/perfil": "Mi perfil"
     }
 

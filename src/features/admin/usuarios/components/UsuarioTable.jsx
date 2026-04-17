@@ -7,20 +7,24 @@ import {
 } from "@tanstack/react-table"
 
 import StatusBadge from "@/features/shared/components/StatusBadge"
-import { activarCliente, desactivarCliente } from "../services/clienteService"
 import { toast } from "react-toastify"
 
 const columnHelper = createColumnHelper()
 
-export default function ClientesTable({ data, onRefresh }) {
+export default function UsuarioTable({
+    data,
+    onRefresh,
+    onToggleEstado,
+    extraColumns = []
+}) {
 
     const columns = [
-        columnHelper.accessor(row => row.perfilId?.nombre, {
+        columnHelper.accessor(row => row.perfilId?.nombre || "-", {
             id: "nombre",
             header: "Nombre"
         }),
 
-        columnHelper.accessor(row => row.perfilId?.apellido, {
+        columnHelper.accessor(row => row.perfilId?.apellido || "-", {
             id: "apellido",
             header: "Apellido"
         }),
@@ -32,21 +36,13 @@ export default function ClientesTable({ data, onRefresh }) {
         columnHelper.accessor("estado", {
             header: "Estado",
             cell: ({ row }) => {
-                const cliente = row.original
+                const usuario = row.original
 
                 const handleToggle = async (nuevoEstado) => {
                     try {
-                        if (nuevoEstado) {
-                            await activarCliente(cliente._id)
-                            toast.success("Cliente activado")
-                        } else {
-                            await desactivarCliente(cliente._id)
-                            toast.success("Cliente desactivado")
-                        }
-
+                        await onToggleEstado(usuario, nuevoEstado)
                         if (onRefresh) onRefresh()
-
-                    } catch (error) {
+                    } catch {
                         toast.error("Error al actualizar estado")
                     }
                 }
@@ -54,13 +50,15 @@ export default function ClientesTable({ data, onRefresh }) {
                 return (
                     <div className="flex justify-center">
                         <StatusBadge
-                            estado={cliente.estado}
+                            estado={usuario.estado}
                             onToggle={handleToggle}
                         />
                     </div>
                 )
             }
-        })
+        }),
+
+        ...extraColumns
     ]
 
     const table = useReactTable({
@@ -70,16 +68,20 @@ export default function ClientesTable({ data, onRefresh }) {
     })
 
     return (
-        <Card extra="w-full p-6 overflow-x-auto">
+        <Card className="w-full p-6 overflow-x-auto">
 
             <div className="w-full flex justify-center">
                 <table className="w-[95%]">
 
+                    {/* HEADER */}
                     <thead>
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => (
-                                    <th key={header.id} className="text-center py-2 text-black text-sm bg-emerald-700/10">
+                                    <th
+                                        key={header.id}
+                                        className="text-center py-2 text-black text-sm bg-emerald-700/10"
+                                    >
                                         {flexRender(
                                             header.column.columnDef.header,
                                             header.getContext()
@@ -90,18 +92,28 @@ export default function ClientesTable({ data, onRefresh }) {
                         ))}
                     </thead>
 
+                    {/* BODY */}
                     <tbody>
                         {table.getRowModel().rows.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} className="text-center py-6 text-gray-400">
-                                    No hay clientes disponibles
+                                <td
+                                    colSpan={columns.length}
+                                    className="text-center py-6 text-gray-400"
+                                >
+                                    No hay usuarios disponibles
                                 </td>
                             </tr>
                         ) : (
                             table.getRowModel().rows.map(row => (
-                                <tr key={row.id} className="border-t hover:bg-gray-50/50 transition">
+                                <tr
+                                    key={row.id}
+                                    className="border-t hover:bg-gray-50/50 transition"
+                                >
                                     {row.getVisibleCells().map(cell => (
-                                        <td key={cell.id} className="py-3 text-sm text-gray-700 text-center">
+                                        <td
+                                            key={cell.id}
+                                            className="py-3 text-sm text-gray-700 text-center"
+                                        >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()

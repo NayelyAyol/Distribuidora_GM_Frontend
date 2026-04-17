@@ -11,9 +11,9 @@ import MainLayout from "./components/layout/MainLayout"
 
 // Pages
 import Dashboard from "./features/dashboard/pages/DashboardPage"
-import VendedorPage from "./features/admin/vendedores/pages/VendedorPage"
+import VendedorPage from "./features/admin/usuarios/pages/VendedorPage"
 import ProfilePage from "./features/admin/profile/pages/ProfilePage"
-import ClientesPage from "./features/admin/clientes/pages/ClientesPage"
+import UsuariosPage from "./features/admin/usuarios/pages/UsuariosPage"
 import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
 
 
@@ -44,7 +44,7 @@ function App() {
           {/* ADMIN */}
           <Route path="/dashboard/perfil" element={<ProfilePage />} />
           <Route path="/dashboard/vendedores" element={<VendedorPage />} />
-          <Route path="/dashboard/clientes" element={<ClientesPage />} />
+          <Route path="/dashboard/usuarios" element={<UsuariosPage />} />
           <Route path="/dashboard/categorias" element={<CategoriasPage />} />
         </Route>
 

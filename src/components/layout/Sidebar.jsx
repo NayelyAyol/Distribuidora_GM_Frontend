@@ -48,8 +48,8 @@ const Sidebar = ({ open, onClose }) => {
             color: "emerald"
         },
         {
-            label: "Clientes",
-            path: "/dashboard/clientes",
+            label: "Usuarios",
+            path: "/dashboard/usuarios",
             icon: FaUsers,
             color: "emerald"
         },
