@@ -5,6 +5,7 @@ import Landing from "./pages/Landing"
 import Login from "./features/auth/pages/LoginPage"
 import Register from "./features/auth/pages/RegisterPage"
 import ForgotPassword from "./features/auth/pages/ForgotPassword"
+import  Confirm  from "./features/auth/pages/Confirm"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 import MainLayout from "./components/layout/MainLayout"
@@ -27,6 +28,7 @@ function App() {
         {/* PUBLIC */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/confirm" element={<Confirm />} />
         <Route path="/register" element={<Register />} />
         <Route path="/recuperar-contraseña" element={<ForgotPassword />} />
 
