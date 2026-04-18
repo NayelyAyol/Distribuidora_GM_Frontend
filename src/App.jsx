@@ -15,7 +15,7 @@ import VendedorPage from "./features/admin/usuarios/pages/VendedorPage"
 import ProfilePage from "./features/admin/profile/pages/ProfilePage"
 import UsuariosPage from "./features/admin/usuarios/pages/UsuariosPage"
 import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
-
+import NotFound from "./features/notfound/NotFound"
 
 function App() {
   return (
@@ -48,6 +48,8 @@ function App() {
           <Route path="/dashboard/categorias" element={<CategoriasPage />} />
         </Route>
 
+        {/* NOT FOUND */}
+          <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )
