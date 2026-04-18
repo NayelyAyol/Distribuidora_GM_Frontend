@@ -1,26 +1,49 @@
 import CategoriaForm from "../components/CategoriaForm"
-import CategoriasTable from "../components/CategoriaTable"
+import CategoriasGrid from "../components/CategoriasGrid"
 
 export default function CategoriaPage() {
 
+    const data = [
+        {
+            id: 1,
+            nombre: "Electrónica",
+            descripcion: "Dispositivos electrónicos",
+            imagen: "/images/notFound/notFound.webp"
+        },
+        {
+            id: 2,
+            nombre: "Ropa",
+            descripcion: "Moda y accesorios",
+            imagen: "/images/notFound/notFound.webp"
+        },
+        {
+            id: 3,
+            nombre: "Ropa",
+            descripcion: "Moda y accesorios",
+            imagen: "/images/notFound/notFound.webp"
+        },
+        {
+            id: 4,
+            nombre: "Ropa",
+            descripcion: "Moda y accesorios",
+            imagen: "/images/notFound/notFound.webp"
+        }
+    ]
+
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 p-4 h-screen">
+
+            <p className="text-gray-500 text-sm">
+                En este módulo puedes administrar las categorías de productos
+            </p>
 
             <div>
-                <p className="text-gray-500 text-sm">
-                    Este módulo te permite administrar las categorías de productos del sistema
-                </p>
+                <CategoriaForm />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="flex-1 min-h-[300px] overflow-y-auto bg-white/60 rounded-2xl p-4 shadow-inner">
 
-                <div className="lg:col-span-1">
-                    <CategoriaForm />
-                </div>
-
-                <div className="lg:col-span-2">
-                    <CategoriasTable data={[]} />
-                </div>
+                <CategoriasGrid data={data} />
 
             </div>
 
