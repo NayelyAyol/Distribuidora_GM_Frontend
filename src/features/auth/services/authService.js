@@ -28,3 +28,19 @@ export const recoverPassword = async (email) => {
         }
     }
 }
+
+export const confirmAccountRequest = async (token) => {
+    try {
+        const res = await api.get(`/auth/confirmar/${token}`)
+        return res.data
+    } catch (error) {
+        console.error(
+            "Confirm error:",
+            error.response?.data || error.message
+        )
+
+        throw {
+            message: error.response?.data?.msg || "Error al confirmar cuenta"
+        }
+    }
+}
