@@ -5,6 +5,7 @@ import { buttonPrimaryClass } from "@/utils/styles"
 import { FaUserPlus, FaUserCircle, FaUsers, FaShoppingBag, FaChartBar } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
 import useAuthStore from "@/context/useAuthStore"
+import { MdLightbulbOutline } from "react-icons/md"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate()
@@ -57,6 +58,12 @@ const Sidebar = ({ open, onClose }) => {
             label: "Categorías",
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
+            color: "emerald"
+        },
+        {
+            label: "Recomendaciones",
+            path: "/dashboard/recomendaciones",
+            icon: MdLightbulbOutline,
             color: "emerald"
         },
         {

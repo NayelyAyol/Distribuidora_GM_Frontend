@@ -16,6 +16,7 @@ import VendedorPage from "./features/admin/usuarios/pages/VendedorPage"
 import ProfilePage from "./features/admin/profile/pages/ProfilePage"
 import UsuariosPage from "./features/admin/usuarios/pages/UsuariosPage"
 import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
+import FeedbackPage from "./features/feedback/pages/FeedbackPage"
 import NotFound from "./features/notfound/NotFound"
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           <Route path="/dashboard/vendedores" element={<VendedorPage />} />
           <Route path="/dashboard/usuarios" element={<UsuariosPage />} />
           <Route path="/dashboard/categorias" element={<CategoriasPage />} />
+          <Route path="/dashboard/recomendaciones" element={<FeedbackPage />} />
         </Route>
 
         {/* NOT FOUND */}
