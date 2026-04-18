@@ -4,7 +4,7 @@ import { FiAlignJustify, FiSearch } from "react-icons/fi"
 import { RiMoonFill, RiSunFill } from "react-icons/ri"
 import { IoMdNotificationsOutline } from "react-icons/io"
 import { FiBox } from "react-icons/fi"
-import { Input } from "@/components/ui/Input"
+import { Input } from "@/components/ui/input"
 import { inputClass } from "@/utils/styles"
 import Dropdown from "@/components/ui/Dropdown"
 
