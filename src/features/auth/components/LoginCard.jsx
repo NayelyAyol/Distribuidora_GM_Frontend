@@ -16,7 +16,7 @@ export default function LoginCard({ onLogin }) {
     return (
         <Card className="w-full max-w-lg border-0 border-transparent bg-transparent shadow-none p-0 outline-none ring-0">
             <button
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/")}
                 className="absolute top-6 left-6 text-sm text-gray-600 hover:text-emerald-600 transition"
             >
                 ← Volver
