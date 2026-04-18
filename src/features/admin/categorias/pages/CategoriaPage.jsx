@@ -8,7 +8,7 @@ export default function CategoriaPage() {
 
             <div>
                 <p className="text-gray-500 text-sm">
-                    Administra las categorías de productos del sistema
+                    Este módulo te permite administrar las categorías de productos del sistema
                 </p>
             </div>
 
