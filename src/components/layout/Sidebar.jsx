@@ -120,7 +120,9 @@ const Sidebar = ({ open, onClose }) => {
                     />
 
                     <p className="text-emerald-950 font-bold">
-                        {user?.name || "Usuario"}
+                        {user?.nombre
+                            ? `${user.nombre.charAt(0).toUpperCase() + user.nombre.slice(1)} ${user.apellido || ""}`
+                            : "Usuario"}
                     </p>
 
                     <p className="text-xs text-emerald-900/70">

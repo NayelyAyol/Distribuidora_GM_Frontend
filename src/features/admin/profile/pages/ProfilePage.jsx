@@ -3,9 +3,12 @@ import ProfileForm from "../../../shared/profile/components/ProfileForm"
 import PasswordCard from "../../../shared/profile/components/PasswordCard"
 import { getProfile } from "../../../shared/profile/services/profileService"
 import { useEffect, useState } from "react"
+import useAuthStore from "@/context/useAuthStore"
 
 export default function ProfilePage() {
     const [user, setUser] = useState(null)
+
+    const setUserGlobal = useAuthStore((state) => state.setUser)
 
     const fetchProfile = async () => {
         try {
@@ -21,6 +24,12 @@ export default function ProfilePage() {
             }
 
             setUser(userData)
+            setUserGlobal({
+                ...useAuthStore.getState().user, 
+                nombre: data.perfil?.nombre,
+                apellido: data.perfil?.apellido,
+                rol: data.usuario?.rol
+            })
         } catch (error) {
             console.error("Error al cargar perfil:", error)
         }
@@ -47,7 +56,7 @@ export default function ProfilePage() {
 
                 <div className="lg:col-span-2 space-y-6">
                     <ProfileForm user={user}
-                    onRefresh={fetchProfile} />
+                        onRefresh={fetchProfile} />
                     <PasswordCard />
                 </div>
 
