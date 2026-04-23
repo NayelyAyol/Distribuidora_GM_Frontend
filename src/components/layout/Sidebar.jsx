@@ -67,6 +67,12 @@ const Sidebar = ({ open, onClose }) => {
             color: "emerald"
         },
         {
+            label: "Notificaciones",
+            path: "/dashboard/notificaciones",
+            icon: MdLightbulbOutline,
+            color: "emerald"
+        },
+        {
             label: "Dashboard",
             path: "/dashboard",
             icon: FaChartBar,

@@ -21,7 +21,8 @@ export default function Navbar({ onOpenSidenav }) {
         "/dashboard/categorias": "Categorías",
         "/dashboard/usuarios": "Usuarios",
         "/dashboard/perfil": "Mi perfil",
-        "/dashboard/recomendaciones": "Recomendaciones"
+        "/dashboard/recomendaciones": "Recomendaciones",
+        "/dashboard/notificaciones": "Notificaciones"
     }
 
     const title = routeTitles[location.pathname] || "Dashboard"
