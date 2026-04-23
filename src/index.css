@@ -4,3 +4,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: rgba(4, 131, 95, 0.1);
+    border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
