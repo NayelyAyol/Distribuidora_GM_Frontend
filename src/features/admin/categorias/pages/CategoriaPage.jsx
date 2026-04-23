@@ -31,7 +31,7 @@ export default function CategoriaPage() {
     ]
 
     return (
-        <div className="flex flex-col gap-6 p-6 h-screen">
+        <div className="flex flex-col gap-6 p-6">
 
             <p className="text-gray-500">
                 En este módulo puedes administrar las categorías de productos
@@ -41,7 +41,7 @@ export default function CategoriaPage() {
                 <CategoriaForm />
             </div>
 
-            <div className="flex-1 min-h-[300px] overflow-y-auto bg-white/60 rounded-2xl p-4 shadow-inner">
+            <div className="flex-1 max-h-[60vh] overflow-y-auto bg-white/60 rounded-2xl p-4 shadow-inner">
 
                 <CategoriasGrid data={data} />
 
