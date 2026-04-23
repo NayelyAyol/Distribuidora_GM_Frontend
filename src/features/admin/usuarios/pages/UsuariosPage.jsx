@@ -28,10 +28,8 @@ export default function UsuariosPage() {
     const [vendedores, setVendedores] = useState([])
     const [clientes, setClientes] = useState([])
     const [loading, setLoading] = useState(true)
+    const [tab, setTab] = useState("vendedores")
 
-    // =========================
-    // FETCH VENDEDORES
-    // =========================
     const fetchVendedores = async () => {
         try {
             const data = await listarVendedores()
@@ -41,9 +39,6 @@ export default function UsuariosPage() {
         }
     }
 
-    // =========================
-    // FETCH CLIENTES
-    // =========================
     const fetchClientes = async () => {
         try {
             const data = await listarClientes()
@@ -53,9 +48,6 @@ export default function UsuariosPage() {
         }
     }
 
-    // =========================
-    // LOAD INICIAL
-    // =========================
     useEffect(() => {
         const loadData = async () => {
             setLoading(true)
@@ -70,9 +62,6 @@ export default function UsuariosPage() {
         return <p className="p-6">Cargando usuarios...</p>
     }
 
-    // =========================
-    // COLUMNAS EXTRA VENDEDORES
-    // =========================
     const vendedorExtraColumns = [
         columnHelper.display({
             id: "acciones",
@@ -92,57 +81,67 @@ export default function UsuariosPage() {
     ]
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-6">
 
-            <div className="bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20">
-                
-                <h2 className="text-xl font-bold mb-4">
-                    Vendedores
-                </h2>
+            <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
 
-                <UsuarioTable
-                    data={vendedores}
-                    onRefresh={fetchVendedores}
-                    extraColumns={vendedorExtraColumns}
-                    onToggleEstado={async (vendedor, estado) => {
-                        try {
-                            if (estado) {
-                                await activarVendedor(vendedor._id)
-                                toast.success("Vendedor activado")
-                            } else {
-                                await desactivarVendedor(vendedor._id)
-                                toast.success("Vendedor desactivado")
+                <div className="flex border-b bg-white">
+                    <button
+                        onClick={() => setTab("vendedores")}
+                        className={`px-6 py-3 text-sm font-medium transition ${tab === "vendedores"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                    >
+                        Vendedores
+                    </button>
+
+                    <button
+                        onClick={() => setTab("clientes")}
+                        className={`px-6 py-3 text-sm font-medium transition ${tab === "clientes"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                    >
+                        Clientes
+                    </button>
+                </div>
+
+                <div className="p-6">
+
+                    <h2 className="text-xl font-bold mb-4">
+                        {tab === "vendedores" ? "Vendedores" : "Clientes"}
+                    </h2>
+
+                    <UsuarioTable
+                        data={tab === "vendedores" ? vendedores : clientes}
+                        onRefresh={tab === "vendedores" ? fetchVendedores : fetchClientes}
+                        extraColumns={tab === "vendedores" ? vendedorExtraColumns : []}
+                        onToggleEstado={async (usuario, estado) => {
+                            try {
+                                const esVendedor = tab === "vendedores"
+
+                                if (esVendedor) {
+                                    estado
+                                        ? await activarVendedor(usuario._id)
+                                        : await desactivarVendedor(usuario._id)
+                                } else {
+                                    estado
+                                        ? await activarCliente(usuario._id)
+                                        : await desactivarCliente(usuario._id)
+                                }
+
+                                toast.success(
+                                    `${esVendedor ? "Vendedor" : "Cliente"} ${estado ? "activado" : "desactivado"
+                                    }`
+                                )
+                            } catch {
+                                toast.error("Error al actualizar estado")
                             }
-                        } catch {
-                            toast.error("Error al actualizar estado")
-                        }
-                    }}
-                />
-            </div>
+                        }}
+                    />
 
-            <div className="bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20">
-
-                <h2 className="text-xl font-bold mb-4">
-                    Clientes
-                </h2>
-
-                <UsuarioTable
-                    data={clientes}
-                    onRefresh={fetchClientes}
-                    onToggleEstado={async (cliente, estado) => {
-                        try {
-                            if (estado) {
-                                await activarCliente(cliente._id)
-                                toast.success("Cliente activado")
-                            } else {
-                                await desactivarCliente(cliente._id)
-                                toast.success("Cliente desactivado")
-                            }
-                        } catch {
-                            toast.error("Error al actualizar estado")
-                        }
-                    }}
-                />
+                </div>
             </div>
 
         </div>
