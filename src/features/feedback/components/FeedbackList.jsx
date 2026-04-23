@@ -4,7 +4,8 @@ export default function FeedbackList({ role }) {
 
     const data = [
         { id: 1, text: "Agregar modo oscuro", user: "Cliente 1" },
-        { id: 2, text: "Mejorar rendimiento", user: "Cliente 2" }
+        { id: 2, text: "Mejorar rendimiento", user: "Cliente 2" },
+        { id: 3, text: "Cambio de colores", user: "Cliente 3" }
     ]
 
     return (

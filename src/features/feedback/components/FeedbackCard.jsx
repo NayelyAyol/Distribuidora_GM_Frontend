@@ -1,6 +1,6 @@
 export default function FeedbackCard({ item, role }) {
     return (
-        <div className="p-5 rounded-2xl border border-gray-100 shadow-sm bg-white hover:shadow-md transition">
+        <div className="p-5 rounded-2xl border border-gray-100 shadow-sm bg-emerald-700/5 hover:shadow-md transition">
 
             <p className="text-gray-800 text-base">
                 {item.text}

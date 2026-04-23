@@ -12,12 +12,13 @@ export default function FeedbackPage({ role = "cliente" }) {
                     En este módulo puedes conocer las ideas de los usuarios para mejorar el sistema
                 </p>
             </div>
-
+{/*
             <Card className="p-6 rounded-2xl shadow-md">
                 <FeedbackForm />
             </Card>
+*/}
 
-            <Card className="p-6 rounded-2xl shadow-md">
+            <Card className="p-6 rounded-2xl shadow-md bg-white">
                 <FeedbackList role={role} />
             </Card>
 
