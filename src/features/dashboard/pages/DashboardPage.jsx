@@ -9,16 +9,14 @@ import { IoDocuments } from "react-icons/io5"
 export default function DashboardPage() {
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 p-6">
 
-            {/* HEADER */}
             <div>
-                <p className="text-gray-500 text-sm">
-                    Estadísticas generales del sistema
+                <p className="text-gray-500">
+                    En este módulo puede visualizar las estadísticas generales del sistema
                 </p>
             </div>
 
-            {/* 🔹 WIDGETS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-5">
 
                 <Widget
@@ -59,7 +57,6 @@ export default function DashboardPage() {
 
             </div>
 
-            {/* 🔹 CHARTS */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
                 <TotalSpentCard />
