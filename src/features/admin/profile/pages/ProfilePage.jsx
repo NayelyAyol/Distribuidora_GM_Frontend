@@ -42,11 +42,12 @@ export default function ProfilePage() {
     return (
         <div className="p-6 bg-emerald-50/60 min-h-screen">
 
-            <div className="mb-6">
-                <p className="text-gray-500">
-                    Gestiona tu información personal y seguridad
+            <div>
+                <p className="text-gray-500 mb-6">
+                    En este módulo puedes gestionar tu información personal y de seguridad
                 </p>
             </div>
+
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
