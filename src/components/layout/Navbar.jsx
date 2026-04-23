@@ -27,7 +27,7 @@ export default function Navbar({ onOpenSidenav }) {
     const title = routeTitles[location.pathname] || "Dashboard"
 
     return (
-        <nav className="w-full pt-4 bg-emerald-50/60">
+        <nav className="w-full pt-4 bg-emerald-50/60 relative z-50">
             <div className="px-4 md:px-6 lg:px-10">
 
                 <div className="flex items-center justify-between flex-nowrap gap-6">
@@ -49,7 +49,7 @@ export default function Navbar({ onOpenSidenav }) {
 
                         <div className="flex items-center gap-2 sm:gap-3 bg-white dark:bg-navy-800 border border-gray-100 dark:border-white/10
                         rounded-[40px] px-3 py-2 shadow-lg shadow-gray-200/40 dark:shadow-black/30 backdrop-blur-xl
-                        flex-nowrap shrink min-w-0">
+                        flex-nowrap shrink min-w-0 relative z-50">
 
                             <FiAlignJustify
                                 className="text-xl text-gray-600 cursor-pointer block xl:hidden"
