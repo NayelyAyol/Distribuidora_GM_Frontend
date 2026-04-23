@@ -7,7 +7,7 @@ export default function MainLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     return (
-        <div className="min-h-screen bg-emerald-50/60 flex">
+        <div className="min-h-screen bg-emerald-50/60 flex overflow-x-hidden">
 
             {sidebarOpen && (
                 <div
@@ -21,14 +21,13 @@ export default function MainLayout() {
                 onClose={() => setSidebarOpen(false)}
             />
 
-            <div className="flex-1 flex flex-col min-h-screen xl:ml-[300px]">
+            <div className="flex-1 flex flex-col min-h-screen min-w-0 xl:ml-[300px]">
 
                 <Navbar
-                    title="Dashboard"
                     onOpenSidenav={() => setSidebarOpen(true)}
                 />
 
-                <main className="flex-1 p-4 md:p-6 lg:p-8">
+                <main className="flex-1 p-4 md:p-6 lg:p-8 w-full min-w-0 overflow-x-hidden">
                     <Outlet />
                 </main>
 
