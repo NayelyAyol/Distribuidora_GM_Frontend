@@ -68,19 +68,18 @@ export default function UsuarioTable({
     })
 
     return (
-        <Card className="w-full p-6 overflow-x-auto">
+        <Card className="w-full p-6">
 
-            <div className="w-full flex justify-center">
-                <table className="w-[95%]">
+            <div className="w-full flex overflow-x-auto">
+                <table className="min-w-[600px] w-full">
 
-                    {/* HEADER */}
                     <thead>
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => (
                                     <th
                                         key={header.id}
-                                        className="text-center py-2 text-black text-sm bg-emerald-700/10"
+                                        className="text-center py-2 text-black text-sm bg-emerald-700/10 whitespace-nowrap"
                                     >
                                         {flexRender(
                                             header.column.columnDef.header,
@@ -112,7 +111,7 @@ export default function UsuarioTable({
                                     {row.getVisibleCells().map(cell => (
                                         <td
                                             key={cell.id}
-                                            className="py-3 text-sm text-gray-700 text-center"
+                                            className="py-3 text-sm text-gray-700 text-center whitespace-nowrap"
                                         >
                                             {flexRender(
                                                 cell.column.columnDef.cell,

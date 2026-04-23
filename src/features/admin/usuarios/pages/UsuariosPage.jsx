@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import { FiSearch } from "react-icons/fi"
+import { Input } from "@/components/ui/input"
+import { inputClass } from "@/utils/styles"
 
 import UsuarioTable from "../components/UsuarioTable"
 
@@ -81,7 +84,13 @@ export default function UsuariosPage() {
     ]
 
     return (
-        <div className="space-y-6">
+        <div className="p-6 space-y-6">
+
+            <div>
+                <p className="text-gray-500">
+                    En este módulo puedes gestionar los usuarios del sistema
+                </p>
+            </div>
 
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
 
@@ -107,12 +116,36 @@ export default function UsuariosPage() {
                     </button>
                 </div>
 
-                <div className="p-6">
+                <div className="p-6 space-y-4">
 
-                    <h2 className="text-xl font-bold mb-4">
-                        {tab === "vendedores" ? "Vendedores" : "Clientes"}
-                    </h2>
+                    {/* HEADER + SEARCH */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
+                        <h2 className="text-xl font-bold">
+                            {tab === "vendedores" ? "Vendedores" : "Clientes"}
+                        </h2>
+
+                        <div className="
+            flex items-center
+            bg-white
+            rounded-full
+            px-3 py-2
+            w-full md:w-[260px]
+            min-w-0
+            border border-gray-100
+            shadow-sm
+        ">
+                            <FiSearch className="text-gray-500 mr-2 flex-shrink-0" />
+                            <Input
+                                type="text"
+                                placeholder="Buscar..."
+                                className={`${inputClass} bg-transparent border-0 focus:ring-0`}
+                            />
+                        </div>
+
+                    </div>
+
+                <div classname="w-full overflow-x-auto">
                     <UsuarioTable
                         data={tab === "vendedores" ? vendedores : clientes}
                         onRefresh={tab === "vendedores" ? fetchVendedores : fetchClientes}
@@ -140,10 +173,9 @@ export default function UsuariosPage() {
                             }
                         }}
                     />
-
+                    </div>
                 </div>
             </div>
-
         </div>
     )
 }
