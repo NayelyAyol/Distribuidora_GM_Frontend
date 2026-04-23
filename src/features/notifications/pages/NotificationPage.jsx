@@ -20,7 +20,7 @@ export default function NotificationPage() {
 
             <div>
                 <p className="text-gray-500">
-                    Este módulo te permite gestionar las notificaciones dentro del sistema
+                    En este módulo puedes gestionar las notificaciones dentro del sistema
                 </p>
             </div>
 
