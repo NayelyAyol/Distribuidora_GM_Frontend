@@ -2,7 +2,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { registrarVendedor } from "../services/vendedorService"
 
-export default function useVendedorForm(onSuccess) {
+export default function useVendedorForm(onSuccess, tipo = "VENDEDOR") {
 
     const [form, setForm] = useState({
         nombre: "",
@@ -121,6 +121,8 @@ export default function useVendedorForm(onSuccess) {
             setLoading(true)
 
             const { confirmPassword, ...payload } = form
+
+            payload.rol=tipo
 
             await registrarVendedor(payload)
 

@@ -42,7 +42,7 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/perfil",
             icon: FaUserCircle,
             color: "emerald",
-            roles:["ADMINISTRADOR", "VENDEDOR"]
+            roles: ["ADMINISTRADOR", "VENDEDOR"]
         },
         {
             label: "Vendedores",
@@ -50,6 +50,13 @@ const Sidebar = ({ open, onClose }) => {
             icon: FaUserPlus,
             color: "emerald",
             roles: ["ADMINISTRADOR"]
+        },
+        {
+            label: "Clientes",
+            path: "/dashboard/clientes",
+            icon: FaUsers,
+            color: "emerald",
+            roles: ["VENDEDOR"]
         },
         {
             label: "Usuarios",
@@ -70,7 +77,7 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/recomendaciones",
             icon: MdLightbulbOutline,
             color: "emerald",
-            roles:["ADMINISTRADOR", "VENDEDOR"]
+            roles: ["ADMINISTRADOR", "VENDEDOR"]
 
         },
         {
@@ -78,7 +85,7 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/notificaciones",
             icon: MdNotifications,
             color: "emerald",
-            roles:["ADMINISTRADOR", "VENDEDOR"]
+            roles: ["ADMINISTRADOR", "VENDEDOR"]
 
         },
         {
@@ -86,7 +93,7 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard",
             icon: FaChartBar,
             color: "emerald",
-            roles:["ADMINISTRADOR", "VENDEDOR"]
+            roles: ["ADMINISTRADOR", "VENDEDOR"]
         },
     ]
 

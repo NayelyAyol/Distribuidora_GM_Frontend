@@ -11,7 +11,7 @@ import {
 
 import useVendedorForm from "../hooks/useVendedorForm"
 
-export default function VendedorForm({ onSuccess }) {
+export default function VendedorForm({ onSuccess, tipo = "VENDEDOR" }) {
 
     const {
         form,
@@ -106,7 +106,7 @@ export default function VendedorForm({ onSuccess }) {
 
             <div className="md:col-span-2">
                 <Button type="submit" disabled={loading} className={buttonPrimaryClass}>
-                    {loading ? "Creando..." : "Crear Vendedor"}
+                    {loading ? "Creando..." : `Crear ${tipo === "VENDEDOR" ? "Vendedor" : "Cliente"}`}
                 </Button>
             </div>
 

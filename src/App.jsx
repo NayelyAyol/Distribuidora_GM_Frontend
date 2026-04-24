@@ -19,6 +19,7 @@ import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
 import FeedbackPage from "./features/feedback/pages/FeedbackPage"
 import NotificationPage from "./features/notifications/pages/NotificationPage"
 
+
 import NotFound from "./features/notfound/NotFound"
 
 function App() {
@@ -67,10 +68,19 @@ function App() {
           />
 
           <Route
+            path="/dashboard/clientes"
+            element={
+              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+                <VendedorPage tipo="CLIENTE" />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/dashboard/vendedores"
             element={
               <ProtectedRoute roles={["ADMINISTRADOR"]}>
-                <VendedorPage />
+                <VendedorPage tipo="VENDEDOR" />
               </ProtectedRoute>
             }
           />
