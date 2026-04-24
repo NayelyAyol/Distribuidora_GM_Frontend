@@ -35,50 +35,64 @@ const Sidebar = ({ open, onClose }) => {
     const isActive = (path) =>
         location.pathname === path ||
         (path !== "/dashboard" && location.pathname.startsWith(path))
+
     const menuItems = [
         {
             label: "Mi perfil",
             path: "/dashboard/perfil",
             icon: FaUserCircle,
-            color: "emerald"
+            color: "emerald",
+            roles:["ADMINISTRADOR", "VENDEDOR"]
         },
         {
             label: "Vendedores",
             path: "/dashboard/vendedores",
             icon: FaUserPlus,
-            color: "emerald"
+            color: "emerald",
+            roles: ["ADMINISTRADOR"]
         },
         {
             label: "Usuarios",
             path: "/dashboard/usuarios",
             icon: FaUsers,
-            color: "emerald"
+            color: "emerald",
+            roles: ["ADMINISTRADOR"]
         },
         {
             label: "Categorías",
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
-            color: "emerald"
+            color: "emerald",
+            roles: ["ADMINISTRADOR"]
         },
         {
             label: "Recomendaciones",
             path: "/dashboard/recomendaciones",
             icon: MdLightbulbOutline,
-            color: "emerald"
+            color: "emerald",
+            roles:["ADMINISTRADOR", "VENDEDOR"]
+
         },
         {
             label: "Notificaciones",
             path: "/dashboard/notificaciones",
             icon: MdNotifications,
-            color: "emerald"
+            color: "emerald",
+            roles:["ADMINISTRADOR", "VENDEDOR"]
+
         },
         {
             label: "Dashboard",
             path: "/dashboard",
             icon: FaChartBar,
-            color: "emerald"
+            color: "emerald",
+            roles:["ADMINISTRADOR", "VENDEDOR"]
         },
     ]
+
+    const filteredItems = menuItems.filter(item =>
+        item.roles.includes(user?.role)
+    )
 
     return (
         <aside className={`
@@ -130,7 +144,7 @@ const Sidebar = ({ open, onClose }) => {
 
             <div className="mt-10 flex flex-col gap-2 flex-1 overflow-y-auto custom-scroll pr-2">
 
-                {menuItems.map((item) => {
+                {filteredItems.map((item) => {
                     const Icon = item.icon
                     const active = isActive(item.path)
 

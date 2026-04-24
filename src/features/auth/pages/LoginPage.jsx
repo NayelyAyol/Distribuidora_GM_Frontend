@@ -22,13 +22,14 @@ export default function LoginPage() {
 
             if (res?.token) {
                 const userData = res.usuario
+                const role = userData?.rol?.toUpperCase()
 
                 setAuth({
                     token: res.token,
                     user: {
                         id: userData?.id,
                         email: userData?.email,
-                        role: userData?.rol,
+                        role,
                         name: userData?.nombre
                     }
                 })
@@ -43,7 +44,7 @@ export default function LoginPage() {
         }
     }
 
-    return (
+    return (    
         <div className={pageClass}>
             <div className={containerClass}>
 

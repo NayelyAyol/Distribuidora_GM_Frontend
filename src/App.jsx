@@ -5,7 +5,7 @@ import Landing from "./pages/Landing"
 import Login from "./features/auth/pages/LoginPage"
 import Register from "./features/auth/pages/RegisterPage"
 import ForgotPassword from "./features/auth/pages/ForgotPassword"
-import  Confirm  from "./features/auth/pages/Confirm"
+import Confirm from "./features/auth/pages/Confirm"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 import MainLayout from "./components/layout/MainLayout"
@@ -28,35 +28,73 @@ function App() {
 
       <Routes>
 
-        {/* PUBLIC */}
+        {/* PUBLICAS */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/register" element={<Register />} />
         <Route path="/recuperar-contraseña" element={<ForgotPassword />} />
 
-        {/* PRIVATE */}
+        {/* PRIVADAS */}
         <Route
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
               <MainLayout />
             </ProtectedRoute>
           }
         >
-          {/* DASHBOARD */}
+
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* ADMIN */}
           <Route path="/dashboard/perfil" element={<ProfilePage />} />
-          <Route path="/dashboard/vendedores" element={<VendedorPage />} />
-          <Route path="/dashboard/usuarios" element={<UsuariosPage />} />
-          <Route path="/dashboard/categorias" element={<CategoriasPage />} />
-          <Route path="/dashboard/recomendaciones" element={<FeedbackPage />} />
-          <Route path="/dashboard/notificaciones" element={<NotificationPage/>}/>
-        </Route>
 
+          <Route
+            path="/dashboard/usuarios"
+            element={
+              <ProtectedRoute roles={["ADMINISTRADOR"]}>
+                <UsuariosPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/categorias"
+            element={
+              <ProtectedRoute roles={["ADMINISTRADOR"]}>
+                <CategoriasPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/vendedores"
+            element={
+              <ProtectedRoute roles={["ADMINISTRADOR"]}>
+                <VendedorPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/recomendaciones"
+            element={
+              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+                <FeedbackPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/notificaciones"
+            element={
+              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+                <NotificationPage />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
         {/* NOT FOUND */}
-          <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )
