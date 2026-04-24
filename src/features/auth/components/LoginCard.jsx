@@ -21,7 +21,7 @@ export default function LoginCard({ onLogin }) {
             >
                 ← Volver
             </button>
-            <CardHeader className="flex justify-center p-0 pb-10">
+            <CardHeader className="flex justify-center p-0 pb-6">
                 <CardTitle className={titleClass}>
                     Inicia Sesión
                 </CardTitle>

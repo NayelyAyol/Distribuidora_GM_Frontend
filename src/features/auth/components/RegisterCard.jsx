@@ -9,7 +9,7 @@ const RegisterCard = () => {
     return (
         <div className="w-full max-w-2xl mx-auto bg-white/10 backdrop-blur-2xl border border-white/20 md:border-r-0 p-10 md:p-16 rounded-3xl flex flex-col justify-center min-h-[600px] md:min-h-[750px] shadow-2xl">
 
-            <h2 className="text-5xl md:text-6xl font-black text-emerald-950 tracking-tighter mb-8 text-center">
+            <h2 className="text-5xl md:text-6xl font-black text-emerald-900 tracking-tighter mb-8 text-center">
                 Crear Cuenta
             </h2>
             
