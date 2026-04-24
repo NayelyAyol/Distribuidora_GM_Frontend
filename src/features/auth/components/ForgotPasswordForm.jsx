@@ -12,13 +12,18 @@ import { useNavigate } from "react-router-dom"
 export default function ForgotPasswordForm({ onSubmit }) {
     const navigate = useNavigate()
 
-    const { register, handleSubmit, formState: { errors } } = useForm()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm()
 
     return (
         <div className="w-full max-w-lg">
-
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
                 <button
+                    type="button"
                     onClick={() => navigate("/login")}
                     className="absolute top-6 left-6 text-sm text-gray-600 hover:text-emerald-600 transition"
                 >
@@ -44,10 +49,14 @@ export default function ForgotPasswordForm({ onSubmit }) {
                     <Input
                         type="email"
                         placeholder="ejemplo@email.com"
-                        {...register("email", {
-                            required: "El correo es obligatorio"
-                        })}
                         className={inputClass}
+                        {...register("email", {
+                            required: "El correo es obligatorio",
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: "Ingresa un correo válido"
+                            }
+                        })}
                     />
 
                     {errors.email && (

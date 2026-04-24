@@ -6,6 +6,7 @@ import Login from "./features/auth/pages/LoginPage"
 import Register from "./features/auth/pages/RegisterPage"
 import ForgotPassword from "./features/auth/pages/ForgotPassword"
 import Confirm from "./features/auth/pages/Confirm"
+import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 import MainLayout from "./components/layout/MainLayout"
@@ -35,6 +36,7 @@ function App() {
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/register" element={<Register />} />
         <Route path="/recuperar-contraseña" element={<ForgotPassword />} />
+        <Route path="/resetear-contraseña" element = {<ResetPasswordPage/>}/>
 
         {/* PRIVADAS */}
         <Route
