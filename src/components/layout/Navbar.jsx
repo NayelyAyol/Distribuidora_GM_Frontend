@@ -22,7 +22,8 @@ export default function Navbar({ onOpenSidenav }) {
         "/dashboard/usuarios": "Usuarios",
         "/dashboard/perfil": "Mi perfil",
         "/dashboard/recomendaciones": "Recomendaciones",
-        "/dashboard/notificaciones": "Notificaciones"
+        "/dashboard/notificaciones": "Notificaciones",
+        "/dashboard/clientes": "Clientes"
     }
 
     const title = routeTitles[location.pathname] || "Dashboard"
