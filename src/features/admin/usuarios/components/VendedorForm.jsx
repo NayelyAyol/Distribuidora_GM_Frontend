@@ -106,7 +106,7 @@ export default function VendedorForm({ onSuccess, tipo = "VENDEDOR" }) {
 
             <div className="md:col-span-2">
                 <Button type="submit" disabled={loading} className={buttonPrimaryClass}>
-                    {loading ? "Creando..." : `Crear ${tipo === "VENDEDOR" ? "Vendedor" : "Cliente"}`}
+                    {loading ? "Creando..." : `Crear`}
                 </Button>
             </div>
 
