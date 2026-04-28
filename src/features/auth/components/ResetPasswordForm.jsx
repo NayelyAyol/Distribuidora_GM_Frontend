@@ -2,15 +2,74 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { labelClass, inputClass, buttonPrimaryClass } from "@/utils/styles"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
 import { useState } from "react"
+import { changePassword } from "../services/authService"
+import { toast } from "react-toastify"
 
 export default function ResetPasswordUI() {
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+
+    const token = searchParams.get("token")
 
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+
+    const [loading, setLoading] = useState(false)
+
+    const validatePassword = (password) => {
+        return (
+            /[a-z]/.test(password) &&
+            /[A-Z]/.test(password) &&
+            /\d/.test(password) &&
+            /[^A-Za-z0-9]/.test(password) &&
+            password.length >= 8 &&
+            password.length <= 16
+        )
+    }
+
+    const handlePassword = async () => {
+        try {
+            if (!password || !confirmPassword) {
+                toast.error("Todos los campos son obligatorios")
+                return
+            }
+
+            if (password.length < 8) {
+                toast.error("La contraseña debe tener mínimo 8 caracteres")
+                return
+            }
+
+            if (password !== confirmPassword) {
+                toast.error("Las contraseñas no coinciden")
+                return
+            }
+
+            if (!validatePassword(password)) {
+                toast.error("Debe tener 8-16 caracteres, mayúscula, minúscula, número y símbolo")
+                return
+            }
+
+            setLoading(true)
+
+            const res = await changePassword(token, password, confirmPassword)
+
+            if (res?.msg) {
+                toast.success(res.msg)
+                navigate("/login")
+            }
+
+        } catch (error) {
+            toast.error(error?.message || "Error al cambiar la contraseña")
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <div className="w-full max-w-lg mx-auto">
@@ -42,6 +101,9 @@ export default function ResetPasswordUI() {
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••"
                         className={`${inputClass} pr-10`}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                     />
 
                     <button
@@ -62,6 +124,9 @@ export default function ResetPasswordUI() {
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="••••••••"
                         className={`${inputClass} pr-10`}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
                     />
 
                     <button
@@ -75,9 +140,11 @@ export default function ResetPasswordUI() {
 
                 <Button
                     type="button"
+                    onClick={handlePassword}
+                    disabled={loading}
                     className={`${buttonPrimaryClass} w-full py-5`}
                 >
-                    Cambiar contraseña
+                    {loading ? "Actualizando..." : "Cambiar contraseña"}
                 </Button>
 
             </form>

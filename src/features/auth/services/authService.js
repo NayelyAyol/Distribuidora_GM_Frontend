@@ -29,13 +29,34 @@ export const recoverPassword = async (email) => {
     }
 }
 
+
+export const changePassword = async (token, password, confirmarPassword) =>{
+    try{
+        const res = await api.post(`/auth/cambiar-password-token/${token}`,{
+            password,
+            confirmarPassword
+
+        })
+        return res.data
+    }catch(error){
+        console.error(
+            "Error:",
+            error.response?.data?.msg || error.message
+        )
+        throw{
+            message: error.response?.data?.msg || "Error al cambiar la contraseña"
+        }
+    }
+
+}
+
 export const confirmAccountRequest = async (token) => {
     try {
         const res = await api.get(`/auth/confirmar/${token}`)
         return res.data
     } catch (error) {
         console.error(
-            "Confirm error:",
+            "Error:",
             error.response?.data || error.message
         )
 

@@ -19,7 +19,7 @@ export default function ForgotPassword() {
             await recoverPassword(data.email)
 
             toast.dismiss(loading)
-            toast.success("Correo enviado correctamente 📩")
+            toast.success("Correo enviado correctamente")
 
             setTimeout(() => {
                 navigate("/login")
@@ -41,12 +41,10 @@ export default function ForgotPassword() {
         <div className={pageClass}>
             <div className={containerClass}>
 
-                {/* Formulario */}
                 <div className={formContainerClass}>
                     <ForgotPasswordForm onSubmit={handleRecover} />
                 </div>
 
-                {/* Imagen */}
                 <div className={imageWrapperClass}>
                     <img
                         src="/images/Login/ImgLogin.webp"
