@@ -14,6 +14,9 @@ export default function VendedoresPage({ tipo = "VENDEDOR" }) {
             </div>
 
             <div className="bg-white/60 backdrop-blur-xl p-6 rounded-2xl border border-white/20">
+                <h2 className="text-xl font-bold mb-4">
+                    Crear {isVendedor ? "Vendedor" : "Cliente"}
+                </h2>
 
                 <VendedorForm tipo={tipo}/>
             </div>
