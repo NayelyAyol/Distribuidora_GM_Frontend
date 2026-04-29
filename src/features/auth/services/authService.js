@@ -32,7 +32,7 @@ export const recoverPassword = async (email) => {
 
 export const changePassword = async (token, password, confirmarPassword) =>{
     try{
-        const res = await api.post(`/auth/cambiar-password-token/${token}`,{
+        const res = await api.post(`/auth/cambiar-contraseña-token/${token}`,{
             password,
             confirmarPassword
 
