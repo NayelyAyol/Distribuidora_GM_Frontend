@@ -88,7 +88,7 @@ function App() {
           />
 
           <Route
-            path="/dashboard/recomendaciones"
+            path="/dashboard/quejas-sugerencias"
             element={
               <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
                 <FeedbackPage />
