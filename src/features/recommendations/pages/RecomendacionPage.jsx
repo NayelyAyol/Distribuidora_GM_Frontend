@@ -69,7 +69,7 @@ export default function RecomendacionesPage() {
     const extraColumns = [
         columnHelper.display({
             id: "acciones",
-            header: "Acción",
+            header: "Acciones",
             cell: ({ row }) => {
                 const rec = row.original
 
