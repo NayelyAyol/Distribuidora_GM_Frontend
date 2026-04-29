@@ -76,7 +76,7 @@ export default function CategoriaForm() {
                     </div>
 
                     <Button className={buttonPrimaryClass}>
-                        Guardar categoría
+                        Aceptar
                     </Button>
 
                 </div>

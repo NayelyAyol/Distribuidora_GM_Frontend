@@ -34,7 +34,7 @@ export default function CategoriaPage() {
         <div className="flex flex-col gap-6 p-6">
 
             <p className="text-gray-500">
-                En este módulo puedes administrar las categorías de productos
+                Este módulo te permite administrar las categorías de productos
             </p>
 
             <div>
