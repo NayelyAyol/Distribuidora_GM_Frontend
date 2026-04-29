@@ -8,6 +8,9 @@ export default function FeedbackForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        if (!text.trim()) return
+
         console.log(text)
         setText("")
     }
