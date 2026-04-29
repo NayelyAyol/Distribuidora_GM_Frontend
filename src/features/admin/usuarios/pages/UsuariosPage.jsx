@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { FiSearch, FiTrash } from "react-icons/fi"
+import { FiSearch, FiTrash2 } from "react-icons/fi"
 import { Input } from "@/components/ui/input"
 import { inputClass } from "@/utils/styles"
 import { Card } from "@/components/ui/card"
@@ -81,21 +81,21 @@ export default function UsuariosPage() {
     const vendedorExtraColumns = [
         columnHelper.display({
             id: "acciones",
-            header: "Acción",
+            header: "Acciones",
             cell: ({ row }) => {
                 const vendedor = row.original
 
                 return (
                     <div className="flex justify-center gap-3">
                         <button className="text-emerald-800 hover:text-emerald-900 flex items-center gap-1">
-                            Editar <FiEdit />
+                            <FiEdit />
                         </button>
 
                         <button
                             onClick={() => setSelectedUser(vendedor)}
                             className="text-red-600 hover:text-red-800 flex items-center gap-1"
                         >
-                            Eliminar <FiTrash/>
+                            <FiTrash2/>
                         </button>
                     </div>
                 )
