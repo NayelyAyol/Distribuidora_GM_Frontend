@@ -6,6 +6,7 @@ import { IoMdNotificationsOutline } from "react-icons/io"
 import { FiBox } from "react-icons/fi"
 import Dropdown from "@/components/ui/Dropdown"
 import useAuthStore from "@/context/useAuthStore"
+import { useEffect } from "react"
 
 export default function Navbar({ onOpenSidenav }) {
     const [darkmode, setDarkmode] = useState(false)
@@ -16,8 +17,12 @@ export default function Navbar({ onOpenSidenav }) {
 
 
     const toggleDarkMode = () => {
-        document.body.classList.toggle("dark")
-        setDarkmode(!darkmode)
+        document.documentElement.classList.toggle("dark")
+
+        const isDark = document.documentElement.classList.contains("dark")
+        localStorage.setItem("theme", isDark ? "dark" : "light")
+
+        setDarkmode(isDark)
     }
 
     const routeTitles = {
@@ -33,6 +38,18 @@ export default function Navbar({ onOpenSidenav }) {
     }
 
     const title = routeTitles[location.pathname] || "Dashboard"
+
+    useEffect(() => {
+        const theme = localStorage.getItem("theme")
+
+        if (theme === "dark") {
+            document.documentElement.classList.add("dark")
+            setDarkmode(true)
+        } else {
+            document.documentElement.classList.remove("dark")
+            setDarkmode(false)
+        }
+    }, [])
 
     return (
         <nav className="w-full pt-4">
@@ -139,7 +156,8 @@ export default function Navbar({ onOpenSidenav }) {
                                         <button className="px-3 py-2 text-left font-bold rounded-lg text-emerald-900 hover:bg-emerald-50"
                                             onClick={() => {
                                                 logout()
-                                                navigate("/login")}}
+                                                navigate("/login")
+                                            }}
                                         >
                                             Cerrar sesión
                                         </button>
