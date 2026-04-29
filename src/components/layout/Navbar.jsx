@@ -1,14 +1,19 @@
 import { useState } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { FiAlignJustify } from "react-icons/fi"
 import { RiMoonFill, RiSunFill } from "react-icons/ri"
 import { IoMdNotificationsOutline } from "react-icons/io"
 import { FiBox } from "react-icons/fi"
 import Dropdown from "@/components/ui/Dropdown"
+import useAuthStore from "@/context/useAuthStore"
 
 export default function Navbar({ onOpenSidenav }) {
     const [darkmode, setDarkmode] = useState(false)
     const location = useLocation()
+    const navigate = useNavigate()
+    const user = useAuthStore((state) => state.user)
+    const logout = useAuthStore((state) => state.logout)
+
 
     const toggleDarkMode = () => {
         document.body.classList.toggle("dark")
@@ -67,11 +72,13 @@ export default function Navbar({ onOpenSidenav }) {
                             >
                                 <div className="bg-white p-4 rounded-2xl shadow-xl">
                                     <div className="flex justify-between mb-3">
-                                        <p className="font-bold text-sm">Notificaciones</p>
-                                        <p className="text-xs text-gray-500">Marcar todo</p>
+                                        <p className="font-bold text-sm">Alertas</p>
                                     </div>
 
-                                    <div className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl">
+                                    <div
+                                        onClick={() => navigate("/dashboard/recomendaciones")}
+                                        className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl cursor-pointer"
+                                    >
                                         <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-900 text-white">
                                             <FiBox />
                                         </div>
@@ -113,10 +120,10 @@ export default function Navbar({ onOpenSidenav }) {
 
                                         <div>
                                             <p className="text-sm font-bold text-gray-800">
-                                                👋 Bienvenido, Usuario
+                                                Bienvenido,
                                             </p>
                                             <p className="text-xs text-gray-500">
-                                                usuario@email.com
+                                                {user?.email}
                                             </p>
                                         </div>
                                     </div>
@@ -124,12 +131,17 @@ export default function Navbar({ onOpenSidenav }) {
                                     <div className="h-px bg-gray-100" />
 
                                     <div className="flex flex-col p-2 text-sm">
-                                        <button className="px-3 py-2 text-left rounded-lg hover:bg-gray-50">
-                                            👤 Perfil
+                                        <button className="px-3 py-2 text-left font-semibold rounded-lg hover:bg-emerald-50"
+                                            onClick={() => navigate("/dashboard/perfil")}>
+                                            Perfil
                                         </button>
 
-                                        <button className="px-3 py-2 text-left rounded-lg text-red-500 hover:bg-red-50">
-                                            🚪 Cerrar sesión
+                                        <button className="px-3 py-2 text-left font-bold rounded-lg text-emerald-900 hover:bg-emerald-50"
+                                            onClick={() => {
+                                                logout()
+                                                navigate("/login")}}
+                                        >
+                                            Cerrar sesión
                                         </button>
                                     </div>
 

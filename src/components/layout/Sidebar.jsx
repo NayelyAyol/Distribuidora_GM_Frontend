@@ -5,7 +5,7 @@ import { buttonPrimaryClass } from "@/utils/styles"
 import { FaUserPlus, FaUserCircle, FaUsers, FaShoppingBag, FaChartBar } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
 import useAuthStore from "@/context/useAuthStore"
-import { MdLightbulbOutline, MdNotifications, MdFeedback } from "react-icons/md"
+import { MdLightbulbOutline, MdFeedback } from "react-icons/md"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate()
