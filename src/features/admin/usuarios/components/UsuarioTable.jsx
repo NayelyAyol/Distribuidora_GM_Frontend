@@ -91,7 +91,6 @@ export default function UsuarioTable({
                         ))}
                     </thead>
 
-                    {/* BODY */}
                     <tbody>
                         {table.getRowModel().rows.length === 0 ? (
                             <tr>

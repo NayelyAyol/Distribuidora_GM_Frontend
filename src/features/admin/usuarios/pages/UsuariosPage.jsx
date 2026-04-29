@@ -88,7 +88,7 @@ export default function UsuariosPage() {
 
             <div>
                 <p className="text-gray-500">
-                    En este módulo puedes gestionar los usuarios del sistema
+                    Este módulo te permite gestionar los usuarios del sistema
                 </p>
             </div>
 
@@ -120,21 +120,16 @@ export default function UsuariosPage() {
 
                     {/* HEADER + SEARCH */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-
-                        <h2 className="text-xl font-bold">
-                            {tab === "vendedores" ? "Vendedores" : "Clientes"}
-                        </h2>
-
                         <div className="
-            flex items-center
-            bg-white
-            rounded-full
-            px-3 py-2
-            w-full md:w-[260px]
-            min-w-0
-            border border-gray-100
-            shadow-sm
-        ">
+                            flex items-center
+                            bg-white
+                            rounded-full
+                            px-3 py-2
+                            w-full md:w-[260px]
+                            min-w-0
+                            border border-gray-100
+                            shadow-sm
+                        ">
                             <FiSearch className="text-gray-500 mr-2 flex-shrink-0" />
                             <Input
                                 type="text"
