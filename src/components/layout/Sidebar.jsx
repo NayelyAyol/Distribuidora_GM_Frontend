@@ -5,7 +5,7 @@ import { buttonPrimaryClass } from "@/utils/styles"
 import { FaUserPlus, FaUserCircle, FaUsers, FaShoppingBag, FaChartBar } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
 import useAuthStore from "@/context/useAuthStore"
-import { MdLightbulbOutline, MdNotifications } from "react-icons/md"
+import { MdLightbulbOutline, MdNotifications, MdFeedback } from "react-icons/md"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate()
@@ -73,6 +73,14 @@ const Sidebar = ({ open, onClose }) => {
             roles: ["ADMINISTRADOR"]
         },
         {
+            label: "Quejas y sugerencias",
+            path: "/dashboard/quejas-sugerencias",
+            icon: MdFeedback,
+            color: "emerald",
+            roles: ["ADMINISTRADOR", "VENDEDOR"]
+
+        },
+                {
             label: "Recomendaciones",
             path: "/dashboard/recomendaciones",
             icon: MdLightbulbOutline,
