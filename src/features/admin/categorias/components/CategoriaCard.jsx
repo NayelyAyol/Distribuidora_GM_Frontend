@@ -1,6 +1,6 @@
 import { FiEdit, FiTrash } from "react-icons/fi"
 
-export default function CategoriaCard({ categoria }) {
+export default function CategoriaCard({ categoria, onDelete }) {
     return (
         <div className="bg-white rounded-xl p-4 shadow hover:shadow-lg transition">
 
@@ -25,7 +25,10 @@ export default function CategoriaCard({ categoria }) {
                     <FiEdit /> Editar
                 </button>
 
-                <button className="flex items-center gap-1 text-red-500 hover:text-red-700">
+                <button
+                    onClick={() => onDelete(categoria)}
+                    className="flex items-center gap-1 text-red-500 hover:text-red-700"
+                >
                     <FiTrash /> Eliminar
                 </button>
 
