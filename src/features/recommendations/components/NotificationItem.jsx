@@ -9,8 +9,7 @@ export default function NotificationItem({ label, id }) {
                 {label}
             </p>
 
-            <Switch id={id} color = "emerald"/>
-
+            <Switch id={id} color="emerald" />
         </div>
     )
 }

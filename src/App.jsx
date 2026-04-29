@@ -18,7 +18,7 @@ import ProfilePage from "./features/admin/profile/pages/ProfilePage"
 import UsuariosPage from "./features/admin/usuarios/pages/UsuariosPage"
 import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
 import FeedbackPage from "./features/feedback/pages/FeedbackPage"
-import NotificationPage from "./features/notifications/pages/NotificationPage"
+import NotificationPage from "./features/recommendations/pages/NotificationPage"
 import RecomendacionesPage from "./features/recommendations/pages/RecomendacionPage"
 
 import NotFound from "./features/notfound/NotFound"
@@ -105,14 +105,6 @@ function App() {
             }
           />
 
-          <Route
-            path="/dashboard/notificaciones"
-            element={
-              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
-                <NotificationPage />
-              </ProtectedRoute>
-            }
-          />
         </Route>
         {/* NOT FOUND */}
         <Route path="*" element={<NotFound />} />

@@ -3,6 +3,7 @@ import { toast } from "react-toastify"
 import { FiEye, FiTrash2 } from "react-icons/fi"
 
 import RecomendacionTable from "../components/RecomendacionTable"
+import NotificationPage from "./NotificationPage"
 import { createColumnHelper } from "@tanstack/react-table"
 
 const columnHelper = createColumnHelper()
@@ -18,16 +19,6 @@ export default function RecomendacionesPage() {
             vendedor: "Carlos Ruiz",
             fecha: "2025-04-28",
             estado: false
-        }
-    ]
-
-    const recomendacionesIA = [
-        {
-            id: 2,
-            descripcion: "Sugerir producto premium",
-            vendedor: "Sistema IA",
-            fecha: "2025-04-27",
-            estado: true
         }
     ]
 
@@ -95,19 +86,21 @@ export default function RecomendacionesPage() {
                 </div>
 
                 <div className="p-6">
-                    <RecomendacionTable
-                        data={tab === "vendedor"
-                            ? recomendacionesVendedor
-                            : recomendacionesIA
-                        }
-                        extraColumns={extraColumns}
-                        hiddenColumns={tab === "ia" ? ["vendedor"] : []} 
-                        onToggleEstado={async (rec, estado) => {
-                            toast.success(
-                                `Recomendación ${estado ? "atendida" : "no atendida"}`
-                            )
-                        }}
-                    />
+
+                    {tab === "vendedor" ? (
+                        <RecomendacionTable
+                            data={recomendacionesVendedor}
+                            extraColumns={extraColumns}
+                            onToggleEstado={async (rec, estado) => {
+                                toast.success(
+                                    `Recomendación ${estado ? "atendida" : "no atendida"}`
+                                )
+                            }}
+                        />
+                    ) : (
+                        <NotificationPage />
+                    )}
+
                 </div>
 
             </div>
