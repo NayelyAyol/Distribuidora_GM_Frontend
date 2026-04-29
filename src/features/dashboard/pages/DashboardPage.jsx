@@ -13,7 +13,7 @@ export default function DashboardPage() {
 
             <div>
                 <p className="text-gray-500">
-                    En este módulo puede visualizar las estadísticas generales del sistema
+                    Este módulo te permite visualizar las estadísticas generales del sistema
                 </p>
             </div>
 
