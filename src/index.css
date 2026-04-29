@@ -17,3 +17,8 @@
 .custom-scroll::-webkit-scrollbar-track {
     background: transparent;
 }
+
+html, body {
+    margin: 0;
+    padding: 0;
+}

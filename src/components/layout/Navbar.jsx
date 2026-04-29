@@ -30,7 +30,7 @@ export default function Navbar({ onOpenSidenav }) {
     const title = routeTitles[location.pathname] || "Dashboard"
 
     return (
-        <nav className="w-full pt-4 bg-emerald-50/60">
+        <nav className="w-full pt-4">
             <div className="px-4 md:px-6 lg:px-10">
 
                 <div className="flex items-center justify-between flex-nowrap gap-6">
