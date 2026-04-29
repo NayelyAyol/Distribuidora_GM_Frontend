@@ -21,6 +21,7 @@ export default function Navbar({ onOpenSidenav }) {
         "/dashboard/categorias": "Categorías",
         "/dashboard/usuarios": "Usuarios",
         "/dashboard/perfil": "Mi perfil",
+        "/dashboard/quejas-sugerencias": "Quejas y Sugerencias",
         "/dashboard/recomendaciones": "Recomendaciones",
         "/dashboard/notificaciones": "Notificaciones",
         "/dashboard/clientes": "Clientes"

@@ -19,7 +19,7 @@ import UsuariosPage from "./features/admin/usuarios/pages/UsuariosPage"
 import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
 import FeedbackPage from "./features/feedback/pages/FeedbackPage"
 import NotificationPage from "./features/notifications/pages/NotificationPage"
-
+import RecomendacionesPage from "./features/recommendations/pages/RecomendacionPage"
 
 import NotFound from "./features/notfound/NotFound"
 
@@ -92,6 +92,15 @@ function App() {
             element={
               <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
                 <FeedbackPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/recomendaciones"
+            element={
+              <ProtectedRoute roles={["ADMINISTRADOR"]}>
+                <RecomendacionesPage />
               </ProtectedRoute>
             }
           />

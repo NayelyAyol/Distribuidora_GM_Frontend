@@ -85,7 +85,7 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/recomendaciones",
             icon: MdLightbulbOutline,
             color: "emerald",
-            roles: ["ADMINISTRADOR", "VENDEDOR"]
+            roles: ["ADMINISTRADOR"]
 
         },
         {
