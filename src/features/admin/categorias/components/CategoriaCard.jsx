@@ -1,6 +1,12 @@
 import { FiEdit, FiTrash } from "react-icons/fi"
 
-export default function CategoriaCard({ categoria, onDelete, onEdit }) {
+export default function CategoriaCard({
+    categoria,
+    onDelete,
+    onEdit,
+    onSelect,
+    esVendedor
+}) {
     return (
         <div className="bg-white rounded-xl p-4 shadow hover:shadow-lg transition">
 
@@ -19,23 +25,33 @@ export default function CategoriaCard({ categoria, onDelete, onEdit }) {
                 </p>
             </div>
 
-            <div className="flex justify-between mt-4">
-
-                <button
-                    onClick={() => onEdit(categoria)}
-                    className="flex items-center gap-1 text-emerald-600 hover:text-emerald-800"
+            {esVendedor ? (
+                <div
+                    onClick={() => onSelect(categoria)}
+                    className="mt-4 text-emerald-700 font-medium text-sm cursor-pointer justify-self-end"
                 >
-                    <FiEdit /> Editar
-                </button>
+                    Ver productos →
+                </div>
+            ) : (
+                <div className="flex justify-between mt-4">
 
-                <button
-                    onClick={() => onDelete(categoria)}
-                    className="flex items-center gap-1 text-red-500 hover:text-red-700"
-                >
-                    <FiTrash /> Eliminar
-                </button>
+                    <button
+                        onClick={() => onEdit(categoria)}
+                        className="flex items-center gap-1 text-emerald-600 hover:text-emerald-800"
+                    >
+                        <FiEdit /> Editar
+                    </button>
 
-            </div>
+                    <button
+                        onClick={() => onDelete(categoria)}
+                        className="flex items-center gap-1 text-red-500 hover:text-red-700"
+                    >
+                        <FiTrash /> Eliminar
+                    </button>
+
+                </div>
+            )}
+
         </div>
     )
 }

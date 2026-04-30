@@ -20,6 +20,7 @@ import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
 import FeedbackPage from "./features/feedback/pages/FeedbackPage"
 import NotificationPage from "./features/recommendations/pages/NotificationPage"
 import RecomendacionesPage from "./features/recommendations/pages/RecomendacionPage"
+import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
 
 import NotFound from "./features/notfound/NotFound"
 
@@ -36,7 +37,7 @@ function App() {
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/register" element={<Register />} />
         <Route path="/recuperar-contraseña" element={<ForgotPassword />} />
-        <Route path="/resetear-contraseña" element = {<ResetPasswordPage/>}/>
+        <Route path="/resetear-contraseña" element={<ResetPasswordPage />} />
 
         {/* PRIVADAS */}
         <Route
@@ -63,8 +64,26 @@ function App() {
           <Route
             path="/dashboard/categorias"
             element={
-              <ProtectedRoute roles={["ADMINISTRADOR"]}>
+              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
                 <CategoriasPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/categorias/:categoriaId/productos"
+            element={
+              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
+                <ProductosPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/categorias/:categoriaId/productos/:productoId"
+            element={
+              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
+                <ProductosPage />
               </ProtectedRoute>
             }
           />
@@ -77,6 +96,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
 
           <Route
             path="/dashboard/vendedores"

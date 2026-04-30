@@ -70,7 +70,7 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
             color: "emerald",
-            roles: ["ADMINISTRADOR"]
+            roles: ["ADMINISTRADOR", "VENDEDOR"]
         },
         {
             label: "Quejas y sugerencias",
@@ -80,7 +80,7 @@ const Sidebar = ({ open, onClose }) => {
             roles: ["ADMINISTRADOR"]
 
         },
-                {
+        {
             label: "Recomendaciones",
             path: "/dashboard/recomendaciones",
             icon: MdLightbulbOutline,
@@ -98,7 +98,7 @@ const Sidebar = ({ open, onClose }) => {
     ]
 
     const filteredItems = menuItems.filter(item =>
-        item.roles.includes(user?.role)
+        item.roles.includes(user?.role?.toUpperCase())
     )
 
     return (

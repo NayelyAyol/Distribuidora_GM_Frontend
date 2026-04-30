@@ -25,19 +25,24 @@ export default function Navbar({ onOpenSidenav }) {
         setDarkmode(isDark)
     }
 
-    const routeTitles = {
-        "/dashboard": "Dashboard",
-        "/dashboard/vendedores": "Vendedores",
-        "/dashboard/categorias": "Categorías",
-        "/dashboard/usuarios": "Usuarios",
-        "/dashboard/perfil": "Mi perfil",
-        "/dashboard/quejas-sugerencias": "Quejas y Sugerencias",
-        "/dashboard/recomendaciones": "Recomendaciones",
-        "/dashboard/notificaciones": "Notificaciones",
-        "/dashboard/clientes": "Clientes"
+    const getTitle = () => {
+
+        if (location.pathname === "/dashboard") return "Dashboard"
+        if (location.pathname === "/dashboard/vendedores") return "Vendedores"
+        if (location.pathname === "/dashboard/categorias") return "Categorías"
+        if (location.pathname.startsWith("/dashboard/categorias/") && location.pathname.includes("/productos"))
+            return "Productos"
+        if (location.pathname === "/dashboard/usuarios") return "Usuarios"
+        if (location.pathname === "/dashboard/perfil") return "Mi perfil"
+        if (location.pathname === "/dashboard/quejas-sugerencias") return "Quejas y Sugerencias"
+        if (location.pathname === "/dashboard/recomendaciones") return "Recomendaciones"
+        if (location.pathname === "/dashboard/notificaciones") return "Notificaciones"
+        if (location.pathname === "/dashboard/clientes") return "Clientes"
+
+        return "Dashboard"
     }
 
-    const title = routeTitles[location.pathname] || "Dashboard"
+    const title = getTitle()
 
     useEffect(() => {
         const theme = localStorage.getItem("theme")

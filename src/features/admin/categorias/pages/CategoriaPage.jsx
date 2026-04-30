@@ -1,17 +1,26 @@
 import { useState } from "react"
 import { toast } from "react-toastify"
 
+import useAuthStore from "@/context/useAuthStore"
+
 import CategoriaForm from "../components/CategoriaForm"
 import CategoriasGrid from "../components/CategoriasGrid"
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
+import { useNavigate } from "react-router-dom"
+
 
 export default function CategoriaPage() {
 
+    const rol = useAuthStore((state) => state.rol)
+    const esVendedor = rol?.toUpperCase() === "VENDEDOR"
+    const navigate = useNavigate()
+
     const [categoryToEdit, setCategoryToEdit] = useState(null)
     const [categoryToDelete, setCategoryToDelete] = useState(null)
+
     const data = [
         {
             id: 1,
@@ -56,17 +65,25 @@ export default function CategoriaPage() {
         setCategoryToEdit(cat)
     }
 
+    const handleSelectCategory = (cat) => {
+        navigate(`/dashboard/categorias/${cat.id}/productos`)
+    }
+
     return (
         <div className="flex flex-col gap-6 p-6">
 
             <p className="text-gray-500">
-                Este módulo te permite administrar las categorías de productos
+                {esVendedor
+                    ? "Este módulo te permite administrar los productos de las diferentes categorías"
+                    : "Este módulo te permite administrar las categorías de productos"}
             </p>
 
-            <CategoriaForm
-                selectedCategory={categoryToEdit}
-                setSelectedCategory={setCategoryToEdit}
-            />
+            {!esVendedor && (
+                <CategoriaForm
+                    selectedCategory={categoryToEdit}
+                    setSelectedCategory={setCategoryToEdit}
+                />
+            )}
 
             <div className="flex-1 max-h-[60vh] overflow-y-auto bg-white/60 rounded-2xl p-4 shadow-inner">
 
@@ -74,6 +91,9 @@ export default function CategoriaPage() {
                     data={data}
                     onDelete={handleOpenDelete}
                     onEdit={handleEdit}
+
+                    onSelect={handleSelectCategory}
+                    esVendedor={esVendedor}
                 />
 
             </div>
