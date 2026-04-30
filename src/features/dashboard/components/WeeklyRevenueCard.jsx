@@ -26,7 +26,7 @@ export default function WeeklyRevenueCard() {
             </div>
 
             {/* CHART */}
-            <div className="w-full h-[260px]">
+            <div className="w-full h-[220px]">
                 <BarChart
                     chartData={barChartDataWeeklyRevenue}
                     chartOptions={barChartOptionsWeeklyRevenue}
