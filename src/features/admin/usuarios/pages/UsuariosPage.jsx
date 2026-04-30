@@ -81,15 +81,12 @@ export default function UsuariosPage() {
     const vendedorExtraColumns = [
         columnHelper.display({
             id: "acciones",
-            header: "Acciones",
+            header: "Acción",
             cell: ({ row }) => {
                 const vendedor = row.original
 
                 return (
                     <div className="flex justify-center gap-3">
-                        <button className="text-emerald-800 hover:text-emerald-900 flex items-center gap-1">
-                            <FiEdit />
-                        </button>
 
                         <button
                             onClick={() => {
