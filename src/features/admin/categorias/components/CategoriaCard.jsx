@@ -1,6 +1,6 @@
 import { FiEdit, FiTrash } from "react-icons/fi"
 
-export default function CategoriaCard({ categoria, onDelete }) {
+export default function CategoriaCard({ categoria, onDelete, onEdit }) {
     return (
         <div className="bg-white rounded-xl p-4 shadow hover:shadow-lg transition">
 
@@ -21,7 +21,10 @@ export default function CategoriaCard({ categoria, onDelete }) {
 
             <div className="flex justify-between mt-4">
 
-                <button className="flex items-center gap-1 text-emerald-600 hover:text-emerald-800">
+                <button
+                    onClick={() => onEdit(categoria)}
+                    className="flex items-center gap-1 text-emerald-600 hover:text-emerald-800"
+                >
                     <FiEdit /> Editar
                 </button>
 

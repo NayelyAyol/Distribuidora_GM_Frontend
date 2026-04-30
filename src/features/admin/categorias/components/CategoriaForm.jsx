@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { MdFileUpload } from "react-icons/md"
+import { buttonOutlineClass } from "@/utils/styles" 
 
 import {
     inputClass,
@@ -10,7 +11,7 @@ import {
     buttonPrimaryClass
 } from "@/utils/styles"
 
-export default function CategoriaForm() {
+export default function CategoriaForm({ selectedCategory, setSelectedCategory }) {
 
     const [form, setForm] = useState({
         nombre: "",
@@ -18,10 +19,42 @@ export default function CategoriaForm() {
         imagen: null
     })
 
+    useEffect(() => {
+        if (selectedCategory) {
+            setForm({
+                nombre: selectedCategory.nombre,
+                descripcion: selectedCategory.descripcion,
+                imagen: selectedCategory.imagen
+            })
+        } else {
+            setForm({
+                nombre: "",
+                descripcion: "",
+                imagen: null
+            })
+        }
+
+    }, [selectedCategory])
+
     const handleChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
+        })
+    }
+
+    const handleSubmit = () => {
+        if (selectedCategory) {
+            console.log("EDITANDO:", form)
+        } else {
+            console.log("CREANDO:", form)
+        }
+
+        setSelectedCategory(null)
+        setForm({
+            nombre: "",
+            descripcion: "",
+            imagen: null
         })
     }
 
@@ -52,7 +85,7 @@ export default function CategoriaForm() {
                 <div className="flex flex-col justify-center gap-4">
 
                     <h2 className="text-lg font-bold text-gray-800">
-                        Crear categoría
+                        {selectedCategory ? "Editar categoría" : "Crear categoría"}
                     </h2>
 
                     <div>
@@ -75,9 +108,21 @@ export default function CategoriaForm() {
                         />
                     </div>
 
-                    <Button className={buttonPrimaryClass}>
-                        Aceptar
+                    <Button
+                        onClick={handleSubmit}
+                        className={buttonPrimaryClass}>
+                        {selectedCategory ? "Actualizar" : "Aceptar"}
                     </Button>
+
+                    {selectedCategory && (
+                        <Button
+                            variant="ghost"
+                            className={`${buttonOutlineClass} py-5`}
+                            onClick={() => setSelectedCategory(null)}
+                        >
+                            Cancelar
+                        </Button>
+                    )}
 
                 </div>
 

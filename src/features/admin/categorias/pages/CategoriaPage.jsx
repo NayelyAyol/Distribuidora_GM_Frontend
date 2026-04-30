@@ -10,8 +10,8 @@ import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 
 export default function CategoriaPage() {
 
-    const [selectedCategory, setSelectedCategory] = useState(null)
-
+    const [categoryToEdit, setCategoryToEdit] = useState(null)
+    const [categoryToDelete, setCategoryToDelete] = useState(null)
     const data = [
         {
             id: 1,
@@ -40,16 +40,20 @@ export default function CategoriaPage() {
     ]
 
     const handleOpenDelete = (cat) => {
-        setSelectedCategory(cat)
+        setCategoryToDelete(cat)
     }
 
     const handleCloseDelete = () => {
-        setSelectedCategory(null)
+        setCategoryToDelete(null)
     }
 
     const handleConfirmDelete = () => {
-        toast.success(`Categoría ${selectedCategory.nombre} eliminada`)
-        setSelectedCategory(null)
+        toast.success(`Categoría ${categoryToDelete.nombre} eliminada`)
+        setCategoryToDelete(null)
+    }
+
+    const handleEdit = (cat) => {
+        setCategoryToEdit(cat)
     }
 
     return (
@@ -59,18 +63,22 @@ export default function CategoriaPage() {
                 Este módulo te permite administrar las categorías de productos
             </p>
 
-            <CategoriaForm />
+            <CategoriaForm
+                selectedCategory={categoryToEdit}
+                setSelectedCategory={setCategoryToEdit}
+            />
 
             <div className="flex-1 max-h-[60vh] overflow-y-auto bg-white/60 rounded-2xl p-4 shadow-inner">
 
                 <CategoriasGrid
                     data={data}
                     onDelete={handleOpenDelete}
+                    onEdit={handleEdit}
                 />
 
             </div>
 
-            {selectedCategory && (
+            {categoryToDelete && (
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
 
                     <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
@@ -82,7 +90,7 @@ export default function CategoriaPage() {
                         <p className="text-[15px] text-gray-500 mb-4">
                             ¿Está seguro que desea eliminar la categoría{" "}
                             <span className="font-semibold text-emerald-800">
-                                {selectedCategory.nombre}
+                                {categoryToDelete.nombre}
                             </span>
                             ?
                         </p>
