@@ -44,7 +44,7 @@ export default function ProfilePage() {
 
             <div>
                 <p className="text-gray-500 mb-6">
-                    En este módulo puedes gestionar tu información personal y de seguridad
+                    Este módulo te permite gestionar tu información personal y de seguridad
                 </p>
             </div>
 
