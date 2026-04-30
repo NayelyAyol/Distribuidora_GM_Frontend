@@ -92,7 +92,9 @@ export default function UsuariosPage() {
                         </button>
 
                         <button
-                            onClick={() => setSelectedUser(vendedor)}
+                            onClick={() => {
+                                setSelectedUser(vendedor)
+                            }}
                             className="text-red-600 hover:text-red-800 flex items-center gap-1"
                         >
                             <FiTrash2/>
@@ -138,9 +140,9 @@ export default function UsuariosPage() {
 
                 <div className="p-6 space-y-4">
 
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-5">
 
-                        <div className="flex items-center bg-white rounded-full px-3 py-2 w-full md:w-[260px] border border-gray-100 shadow-sm">
+                        <div className="flex items-center bg-white rounded-full px-6 py-2 w-full md:w-[260px] border border-gray-100 shadow-sm">
                             <FiSearch className="text-gray-500 mr-2 flex-shrink-0" />
                             <Input
                                 type="text"
