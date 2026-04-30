@@ -7,8 +7,8 @@ import useAuthStore from "@/context/useAuthStore"
 
 export default function ProfilePage() {
     const [user, setUser] = useState(null)
-
-    const setUserGlobal = useAuthStore((state) => state.setUser)
+    const setAuth = useAuthStore((state) => state.setAuth)
+    const token = useAuthStore((state) => state.token)
 
     const fetchProfile = async () => {
         try {
@@ -24,11 +24,15 @@ export default function ProfilePage() {
             }
 
             setUser(userData)
-            setUserGlobal({
-                ...useAuthStore.getState().user, 
-                nombre: data.perfil?.nombre,
-                apellido: data.perfil?.apellido,
-                rol: data.usuario?.rol
+            setAuth({
+                token,
+                rol: data.usuario?.rol,
+                user: {
+                    ...useAuthStore.getState().user,
+                    nombre: data.perfil?.nombre,
+                    apellido: data.perfil?.apellido,
+                    email: data.usuario?.email
+                }
             })
         } catch (error) {
             console.error("Error al cargar perfil:", error)

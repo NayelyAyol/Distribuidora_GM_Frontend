@@ -7,7 +7,7 @@ import {
     lineChartOptionsTotalSpent
 } from "../data/charts"
 
-export default function TotalSpentCard() {
+export default function TotalSpentCard({ isVendedor = false }) {
 
     return (
         <Card className="bg-white/80 backdrop-blur-xl border border-gray-200 shadow-lg rounded-2xl p-6">
@@ -27,7 +27,6 @@ export default function TotalSpentCard() {
 
             <div className="flex flex-col md:flex-row gap-4">
 
-                {/* INFO */}
                 <div className="flex flex-col justify-center">
 
                     <p className="text-3xl font-bold text-gray-800">
@@ -35,7 +34,7 @@ export default function TotalSpentCard() {
                     </p>
 
                     <p className="text-sm text-gray-500 mt-2">
-                        Total ventas
+                        {isVendedor ? "Mis ventas" : "Total ventas"}
                     </p>
 
                     <div className="flex items-center gap-1 mt-1">
@@ -47,7 +46,6 @@ export default function TotalSpentCard() {
 
                 </div>
 
-                {/* CHART */}
                 <div className="w-full h-[220px]">
                     <LineChart
                         options={lineChartOptionsTotalSpent}

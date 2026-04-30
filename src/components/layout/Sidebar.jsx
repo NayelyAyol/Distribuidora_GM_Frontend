@@ -77,7 +77,7 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/quejas-sugerencias",
             icon: MdFeedback,
             color: "emerald",
-            roles: ["ADMINISTRADOR", "VENDEDOR"]
+            roles: ["ADMINISTRADOR"]
 
         },
                 {
