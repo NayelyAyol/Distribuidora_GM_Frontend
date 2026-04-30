@@ -20,13 +20,6 @@ import {
     desactivarCliente
 } from "../services/clienteService"
 
-import {
-    createColumnHelper
-} from "@tanstack/react-table"
-
-import { FiEdit } from "react-icons/fi"
-
-const columnHelper = createColumnHelper()
 
 export default function UsuariosPage() {
 
@@ -78,29 +71,6 @@ export default function UsuariosPage() {
         setSelectedUser(null)
     }
 
-    const vendedorExtraColumns = [
-        columnHelper.display({
-            id: "acciones",
-            header: "Acción",
-            cell: ({ row }) => {
-                const vendedor = row.original
-
-                return (
-                    <div className="flex justify-center gap-3">
-
-                        <button
-                            onClick={() => {
-                                setSelectedUser(vendedor)
-                            }}
-                            className="text-red-600 hover:text-red-800 flex items-center gap-1"
-                        >
-                            <FiTrash2/>
-                        </button>
-                    </div>
-                )
-            }
-        })
-    ]
 
     return (
         <div className="p-6 space-y-6">
@@ -155,7 +125,6 @@ export default function UsuariosPage() {
                         <UsuarioTable
                             data={tab === "vendedores" ? vendedores : clientes}
                             onRefresh={tab === "vendedores" ? fetchVendedores : fetchClientes}
-                            extraColumns={tab === "vendedores" ? vendedorExtraColumns : []}
                             onToggleEstado={async (usuario, estado) => {
                                 try {
                                     const esVendedor = tab === "vendedores"
