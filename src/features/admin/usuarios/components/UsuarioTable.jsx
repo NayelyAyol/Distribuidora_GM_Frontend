@@ -19,18 +19,23 @@ export default function UsuarioTable({
 }) {
 
     const columns = [
-        columnHelper.accessor(row => row.perfilId?.nombre || "-", {
+        columnHelper.accessor(row => row.perfilId?.nombre || row.nombre || "-", {
             id: "nombre",
             header: "Nombre"
         }),
 
-        columnHelper.accessor(row => row.perfilId?.apellido || "-", {
+        columnHelper.accessor(row => row.perfilId?.apellido || row.apellido || "-", {
             id: "apellido",
             header: "Apellido"
         }),
 
         columnHelper.accessor("email", {
             header: "Email"
+        }),
+
+        columnHelper.accessor(row => row.perfilId?.cedula || row.cedula || "-", {
+            id: "cedula",
+            header: "Cédula"
         }),
 
         columnHelper.accessor("estado", {
@@ -46,6 +51,7 @@ export default function UsuarioTable({
                         toast.error("Error al actualizar estado")
                     }
                 }
+
 
                 return (
                     <div className="flex justify-center">

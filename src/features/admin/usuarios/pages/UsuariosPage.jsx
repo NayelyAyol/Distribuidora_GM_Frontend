@@ -11,13 +11,15 @@ import UsuarioTable from "../components/UsuarioTable"
 import {
     listarVendedores,
     activarVendedor,
-    desactivarVendedor
+    desactivarVendedor,
+    buscarVendedor,
 } from "../services/vendedorService"
 
 import {
     listarClientes,
     activarCliente,
-    desactivarCliente
+    desactivarCliente,
+    buscarCliente
 } from "../services/clienteService"
 
 
@@ -28,13 +30,14 @@ export default function UsuariosPage() {
     const [loading, setLoading] = useState(true)
     const [tab, setTab] = useState("vendedores")
     const [selectedUser, setSelectedUser] = useState(null)
+    const [search, setSearch] = useState("")
 
     const fetchVendedores = async () => {
         try {
             const data = await listarVendedores()
             setVendedores(data.vendedores || data)
         } catch (error) {
-            toast.error("Error al obtener vendedores")
+            toast.error(error.message)
         }
     }
 
@@ -43,24 +46,31 @@ export default function UsuariosPage() {
             const data = await listarClientes()
             setClientes(data.clientes || data)
         } catch (error) {
-            toast.error("Error al obtener clientes")
+            toast.error(error.message)
         }
     }
 
     useEffect(() => {
         const loadData = async () => {
             setLoading(true)
-            await Promise.all([fetchVendedores(), fetchClientes()])
+
+            setSearch("")
+
+            if (tab === "vendedores") {
+                await fetchVendedores()
+            } else {
+                await fetchClientes()
+            }
+
             setLoading(false)
         }
 
         loadData()
-    }, [])
+    }, [tab])
 
     if (loading) {
         return <p className="p-6">Cargando usuarios...</p>
     }
-
 
     const handleCloseDelete = () => {
         setSelectedUser(null)
@@ -69,6 +79,36 @@ export default function UsuariosPage() {
     const handleConfirmDelete = () => {
         toast.success(`Usuario ${selectedUser?.nombre || selectedUser?.email} eliminado`)
         setSelectedUser(null)
+    }
+
+    const handleBuscar = async () => {
+
+        if (!search.trim()) {
+
+            if (tab === "vendedores") {
+                await fetchVendedores()
+            } else {
+                await fetchClientes()
+            }
+            return
+        }
+
+        if (search.length !== 10) {
+            toast.warning("La cédula debe tener 10 dígitos")
+            return
+        }
+
+        try {
+            if (tab === "vendedores") {
+                const data = await buscarVendedor(search)
+                setVendedores(data.vendedores || [data])
+            } else {
+                const data = await buscarCliente(search)
+                setClientes(data.clientes || [data])
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
 
@@ -85,6 +125,7 @@ export default function UsuariosPage() {
 
                 <div className="flex border-b bg-white">
                     <button
+                        type="button"
                         onClick={() => setTab("vendedores")}
                         className={`px-6 py-3 text-sm font-medium transition ${tab === "vendedores"
                             ? "bg-emerald-100 text-emerald-800"
@@ -95,6 +136,7 @@ export default function UsuariosPage() {
                     </button>
 
                     <button
+                        type="button"
                         onClick={() => setTab("clientes")}
                         className={`px-6 py-3 text-sm font-medium transition ${tab === "clientes"
                             ? "bg-emerald-100 text-emerald-800"
@@ -109,17 +151,28 @@ export default function UsuariosPage() {
 
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-5">
 
-                        <div className="flex items-center bg-white rounded-full px-6 py-2 w-full md:w-[260px] border border-gray-100 shadow-sm">
-                            <FiSearch className="text-gray-500 mr-2 flex-shrink-0" />
+                        <div className="flex items-center bg-white rounded-full w-full md:w-[260px] border border-gray-100 shadow-sm">
+
                             <Input
                                 type="text"
                                 placeholder="Buscar..."
-                                className={`${inputClass} bg-transparent border-0 focus:ring-0`}
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value.replace(/\D/g, ""))}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleBuscar()
+                                }}
+                                className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1`}
                             />
+
+                            <button
+                                onClick={handleBuscar}
+                                className="rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition"                            >
+                                <FiSearch className="text-emerald-900 text-xl" />
+                            </button>
+
                         </div>
 
                     </div>
-
                     <div className="w-full overflow-x-auto">
 
                         <UsuarioTable
