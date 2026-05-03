@@ -22,15 +22,14 @@ export default function LoginPage() {
 
             if (res?.token) {
                 const userData = res.usuario
-                const role = userData?.rol?.toUpperCase()
 
                 setAuth({
                     token: res.token,
                     user: {
                         id: userData?.id,
                         email: userData?.email,
-                        role,
-                        name: userData?.nombre
+                        rol: userData.rol?.toUpperCase(),
+                        nombre: userData?.nombre
                     }
                 })
 

@@ -9,12 +9,19 @@ import useAuthStore from "../../../context/useAuthStore"
 
 export default function DashboardPage() {
 
-    const rol = useAuthStore((state) => state.rol)
-    const esVendedor = rol?.toUpperCase() === "VENDEDOR"
+    const user = useAuthStore((state) => state.user)
+    const hydrated = useAuthStore((state) => state._hasHydrated)
 
-    if (!rol) {
-        return <p className="p-6">Cargando dashboard...</p>
+    if (!hydrated) {
+        return <p className="p-6">Cargando...</p>
     }
+
+    if (!user) {
+        return <p className="p-6">No hay usuario</p>
+    }
+
+    const rol = user?.rol
+    const esVendedor = rol?.toUpperCase() === "VENDEDOR"
 
     const adminWidgets = [
         { icon: <MdBarChart className="text-xl" />, title: "Ingresos", subtitle: "$340.5" },
@@ -48,9 +55,9 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-5">
 
-                {widgets.map((w, i) => (
+                {widgets.map((w) => (
                     <Widget
-                        key={i}
+                        key={w.title}
                         icon={w.icon}
                         title={w.title}
                         subtitle={w.subtitle}

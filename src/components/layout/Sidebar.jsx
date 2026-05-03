@@ -11,9 +11,12 @@ const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate()
     const location = useLocation()
     const fileInputRef = useRef(null)
-
     const user = useAuthStore((state) => state.user)
+    const hydrated = useAuthStore((state) => state._hasHydrated)
+
+
     const logout = useAuthStore((state) => state.logout)
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]
@@ -37,6 +40,13 @@ const Sidebar = ({ open, onClose }) => {
         (path !== "/dashboard" && location.pathname.startsWith(path))
 
     const menuItems = [
+        {
+            label: "Dashboard",
+            path: "/dashboard",
+            icon: FaChartBar,
+            color: "emerald",
+            roles: ["ADMINISTRADOR", "VENDEDOR"]
+        },
         {
             label: "Mi perfil",
             path: "/dashboard/perfil",
@@ -88,19 +98,17 @@ const Sidebar = ({ open, onClose }) => {
             roles: ["ADMINISTRADOR"]
 
         },
-        {
-            label: "Dashboard",
-            path: "/dashboard",
-            icon: FaChartBar,
-            color: "emerald",
-            roles: ["ADMINISTRADOR", "VENDEDOR"]
-        },
+
     ]
 
+    const role = user?.rol?.toUpperCase()
+
     const filteredItems = menuItems.filter(item =>
-        item.roles.includes(user?.role?.toUpperCase())
+        role && item.roles.includes(role)
     )
 
+
+    if (!hydrated) return null
     return (
         <aside className={`
     fixed top-0 left-0
@@ -140,12 +148,12 @@ const Sidebar = ({ open, onClose }) => {
 
                 <p className="text-emerald-950 font-bold">
                     {user?.nombre
-                        ? `${user.nombre.charAt(0).toUpperCase() + user.nombre.slice(1)} ${user.apellido || ""}`
-                        : "Usuario"}
+                        ? `${user.nombre} ${user.apellido || ""}`
+                        : user?.email || "Usuario"}
                 </p>
 
                 <p className="text-xs text-emerald-900/70">
-                    {user?.role || "Rol"}
+                    {user?.rol || "Rol"}
                 </p>
             </div>
 

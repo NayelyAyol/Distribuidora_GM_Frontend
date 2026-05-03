@@ -1,26 +1,26 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const useAuthStore = create(
     persist(
-        (set) => ({
-            token: null,
-            rol: null,
-            user: null,
+    (set) => ({
+        token: null,
+        user: null,
+        _hasHydrated: false,
 
-            setAuth: ({ token, rol, user }) =>
-                set({ token, rol, user }),
+        setAuth: ({ token, user }) => set({ token, user }),
 
-            setUser: (user) =>
-                set((state) => ({
-                    user: { ...state.user, ...user }
-                })),
+        logout: () => set({ token: null, user: null }),
 
-            logout: () =>
-                set({ token: null, rol: null, user: null })
-        }),
-        { name: "auth-storage" }
+        setHydrated: () => set({ _hasHydrated: true })
+    }),
+    {
+        name: "auth-storage",
+        onRehydrateStorage: () => (state) => {
+            state.setHydrated()
+        }
+    }
     )
 )
 
-export default useAuthStore
+export default useAuthStore;
