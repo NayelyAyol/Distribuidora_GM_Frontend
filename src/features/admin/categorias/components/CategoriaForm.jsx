@@ -57,8 +57,8 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                 console.log("EDITANDO:", form)
             } else {
                 await crearCategoria(form)
+                if (onSuccess) await onSuccess()
                 toast.success("Categoría creada correctamente")
-                if (onSuccess) onSuccess()
             }
 
             setSelectedCategory(null)
@@ -70,11 +70,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
 
         } catch (error) {
             console.error(error)
-            toast.error(
-                error.response?.data?.msg ||
-                error.message ||
-                "Error al crear categoría"
-            )
+            toast.error(error.message)
         }
     }
 
@@ -113,6 +109,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                         <input
                             type="file"
                             className="hidden"
+                            accept="image/*"
                             onChange={handleImagen}
                         />
 

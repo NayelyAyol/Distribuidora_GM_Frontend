@@ -52,9 +52,7 @@ export default function CategoriaPage() {
             const categorias = await listarCategorias()
             setData(categorias)
         } catch (error) {
-            toast.error(
-                error.response?.data?.msg || error.message || "Error al cargar categorías"
-            )
+            toast.error(error.message)
         } finally {
             setLoading(false)
         }
