@@ -15,7 +15,7 @@ import { crearCategoria } from "../services/categoriaService"
 
 import { toast } from "react-toastify"
 
-export default function CategoriaForm({ selectedCategory, setSelectedCategory }) {
+export default function CategoriaForm({ selectedCategory, setSelectedCategory, onSuccess }) {
 
     const [form, setForm] = useState({
         nombre: "",
@@ -58,6 +58,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory })
             } else {
                 await crearCategoria(form)
                 toast.success("Categoría creada correctamente")
+                if (onSuccess) onSuccess()
             }
 
             setSelectedCategory(null)

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
 
 import useAuthStore from "@/context/useAuthStore"
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
 
+import { listarCategorias } from "../services/categoriaService"
 
 export default function CategoriaPage() {
 
@@ -20,33 +21,9 @@ export default function CategoriaPage() {
 
     const [categoryToEdit, setCategoryToEdit] = useState(null)
     const [categoryToDelete, setCategoryToDelete] = useState(null)
+    const [loading, setLoading] = useState(false)
 
-    const data = [
-        {
-            id: 1,
-            nombre: "Electrónica",
-            descripcion: "Dispositivos electrónicos",
-            imagen: "/images/notFound/notFound.webp"
-        },
-        {
-            id: 2,
-            nombre: "Ropa",
-            descripcion: "Moda y accesorios",
-            imagen: "/images/notFound/notFound.webp"
-        },
-        {
-            id: 3,
-            nombre: "Hogar",
-            descripcion: "Artículos para el hogar",
-            imagen: "/images/notFound/notFound.webp"
-        },
-        {
-            id: 4,
-            nombre: "Deportes",
-            descripcion: "Artículos deportivos",
-            imagen: "/images/notFound/notFound.webp"
-        }
-    ]
+    const [data, setData] = useState([])
 
     const handleOpenDelete = (cat) => {
         setCategoryToDelete(cat)
@@ -69,6 +46,24 @@ export default function CategoriaPage() {
         navigate(`/dashboard/categorias/${cat.id}/productos`)
     }
 
+    const fetchCategorias = async () => {
+        setLoading(true)
+        try {
+            const categorias = await listarCategorias()
+            setData(categorias)
+        } catch (error) {
+            toast.error(
+                error.response?.data?.msg || error.message || "Error al cargar categorías"
+            )
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchCategorias()
+    }, [])
+
     return (
         <div className="flex flex-col gap-6 p-6">
 
@@ -82,19 +77,23 @@ export default function CategoriaPage() {
                 <CategoriaForm
                     selectedCategory={categoryToEdit}
                     setSelectedCategory={setCategoryToEdit}
+                    onSuccess={fetchCategorias}
                 />
             )}
 
             <div className="flex-1 max-h-[60vh] overflow-y-auto bg-white/60 rounded-2xl p-4 shadow-inner">
 
-                <CategoriasGrid
+                {loading ? (
+                    <p className="text-center text-gray-400">Cargando...</p>
+                ) : (<CategoriasGrid
                     data={data}
                     onDelete={handleOpenDelete}
                     onEdit={handleEdit}
-
                     onSelect={handleSelectCategory}
                     esVendedor={esVendedor}
                 />
+
+                )}
 
             </div>
 
