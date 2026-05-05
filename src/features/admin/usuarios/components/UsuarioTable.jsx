@@ -29,10 +29,11 @@ export default function UsuarioTable({
             header: "Apellido"
         }),
 
-        columnHelper.accessor("email", {
+        columnHelper.accessor(row => row.email || "-", {
+            id: "email",
             header: "Email"
         }),
-
+        
         columnHelper.accessor(row => row.perfilId?.cedula || row.cedula || "-", {
             id: "cedula",
             header: "Cédula"

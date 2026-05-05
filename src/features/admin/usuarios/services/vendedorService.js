@@ -52,3 +52,25 @@ export const buscarVendedor = async (cedula) => {
         )
     }
 }
+
+export const listarVendedoresActivos = async () => {
+    try {
+        const res = await api.get("/admin/listar-vendedores-activos")
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al obtener vendedores activos"
+        )
+    }
+}
+
+export const listarVendedoresInactivos = async () => {
+    try {
+        const res = await api.get("/admin/listar-vendedores-inactivos")
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al obtener vendedores inactivos"
+        )
+    }
+}

@@ -13,6 +13,8 @@ import {
     activarVendedor,
     desactivarVendedor,
     buscarVendedor,
+    listarVendedoresActivos,
+    listarVendedoresInactivos
 } from "../services/vendedorService"
 
 import {
@@ -31,11 +33,30 @@ export default function UsuariosPage() {
     const [tab, setTab] = useState("vendedores")
     const [selectedUser, setSelectedUser] = useState(null)
     const [search, setSearch] = useState("")
+    const [filtro, setFiltro] = useState("todos")
 
     const fetchVendedores = async () => {
         try {
             const data = await listarVendedores()
             setVendedores(data.vendedores || data)
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const fetchVendedoresActivos = async () => {
+        try {
+            const data = await listarVendedoresActivos()
+            setVendedores(data.vendedores || data)
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const fetchVendedoresInactivos = async () => {
+        try {
+            const data = await listarVendedoresInactivos()
+            setVendedores(data.Vendedores || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -169,6 +190,48 @@ export default function UsuariosPage() {
                                 className="rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition"                            >
                                 <FiSearch className="text-emerald-900 text-xl" />
                             </button>
+
+                        </div>
+
+                        <div className="flex flex-wrap gap-3 px-5">
+                            <Button
+                                onClick={() => {
+                                    setFiltro("todos")
+                                    fetchVendedores()
+                                }}
+                                className={filtro === "todos"
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : "bg-gray-200 text-gray-600"
+                                }
+                            >
+                                Todos
+                            </Button>
+
+                            <Button
+                                onClick={() => {
+                                    setFiltro("activos")
+                                    fetchVendedoresActivos()
+                                }}
+                                className={filtro === "activos"
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : "bg-gray-200 text-gray-600"
+                                }
+                            >
+                                Activos
+                            </Button>
+
+                            <Button
+                                onClick={() => {
+                                    setFiltro("inactivos")
+                                    fetchVendedoresInactivos()
+                                }}
+                                className={filtro === "inactivos"
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : "bg-gray-200 text-gray-600"
+                                }
+                            >
+                                Inactivos
+                            </Button>
 
                         </div>
 
