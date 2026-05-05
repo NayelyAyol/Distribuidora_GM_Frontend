@@ -3,13 +3,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { MdFileUpload } from "react-icons/md"
-import { buttonOutlineClass } from "@/utils/styles" 
+import { buttonOutlineClass } from "@/utils/styles"
 
 import {
     inputClass,
     labelClass,
     buttonPrimaryClass
 } from "@/utils/styles"
+
+import { crearCategoria } from "../services/categoriaService"
+
+import { toast } from "react-toastify"
 
 export default function CategoriaForm({ selectedCategory, setSelectedCategory }) {
 
@@ -43,18 +47,50 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory })
         })
     }
 
-    const handleSubmit = () => {
-        if (selectedCategory) {
-            console.log("EDITANDO:", form)
-        } else {
-            console.log("CREANDO:", form)
+    const handleSubmit = async () => {
+        try {
+            if (!form.nombre || !form.descripcion) {
+                toast.error("Todos los campos son obligatorios")
+                return
+            }
+            if (selectedCategory) {
+                console.log("EDITANDO:", form)
+            } else {
+                await crearCategoria(form)
+                toast.success("Categoría creada correctamente")
+            }
+
+            setSelectedCategory(null)
+            setForm({
+                nombre: "",
+                descripcion: "",
+                imagen: null
+            })
+
+        } catch (error) {
+            console.error(error)
+            toast.error(
+                error.response?.data?.msg ||
+                error.message ||
+                "Error al crear categoría"
+            )
+        }
+    }
+
+    const handleImagen = (e) => {
+        const file = e.target.files[0]
+
+        if (!file) return
+
+
+        if (!file.type.startsWith("image/")) {
+            toast.error("Solo se permiten imágenes")
+            return
         }
 
-        setSelectedCategory(null)
         setForm({
-            nombre: "",
-            descripcion: "",
-            imagen: null
+            ...form,
+            imagen: file
         })
     }
 
@@ -76,6 +112,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory })
                         <input
                             type="file"
                             className="hidden"
+                            onChange={handleImagen}
                         />
 
                     </label>
