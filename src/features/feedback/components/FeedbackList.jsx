@@ -15,6 +15,7 @@ export default function FeedbackList() {
 
     const [selected, setSelected] = useState(null)
     const [respuesta, setRespuesta] = useState("")
+    const [filter, setFilter] = useState("todos")
 
     const handleResponder = () => {
 
@@ -36,10 +37,44 @@ export default function FeedbackList() {
         setRespuesta("")
     }
 
+    const filteredData =
+        filter === "TODOS"
+            ? data
+            : data.filter(item => item.estado.toLowerCase() === filter.toLowerCase())
+
     return (
+
         <div className="grid gap-4">
 
-            {data.map(item => (
+            <div className="flex gap-2 mb-4">
+
+                <Button
+                    onClick={() => setFilter("TODOS")}
+                    className={filter === "TODOS" ? "bg-emerald-100 text-emerald-700"
+                        : "bg-gray-200 text-gray-600"}
+                >
+                    Todas
+                </Button>
+
+                <Button
+                    onClick={() => setFilter("Pendiente")}
+                    className={filter === "Pendiente" ? "bg-emerald-100 text-emerald-700"
+                        : "bg-gray-200 text-gray-600"}
+                >
+                    Pendientes
+                </Button>
+
+                <Button
+                    onClick={() => setFilter("Respondido")}
+                    className={filter === "Respondido" ? "bg-emerald-100 text-emerald-700"
+                        : "bg-gray-200 text-gray-600"}
+                >
+                    Respondidas
+                </Button>
+
+            </div>
+
+            {filteredData.map(item => (
                 <FeedbackCard
                     key={item.id}
                     item={item}
