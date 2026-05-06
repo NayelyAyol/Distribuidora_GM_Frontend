@@ -15,11 +15,25 @@ export const listarClientes = async () => {
 
 
 export const activarCliente = async (id) => {
-    return await api.put(`/admin/activar-cliente/${id}`)
+    try {
+        const res = await api.put(`/admin/activar-cliente/${id}`)
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al activar cliente"
+        )
+    }
 }
 
 export const desactivarCliente = async (id) => {
-    return await api.put(`/admin/desactivar-cliente/${id}`)
+    try {
+        const res = await api.put(`/admin/desactivar-cliente/${id}`)
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al desactivar cliente"
+        )
+    }
 }
 
 export const buscarCliente = async (cedula) => {
@@ -33,4 +47,26 @@ export const buscarCliente = async (cedula) => {
         )
     }
 
+}
+
+export const listarClientesActivos = async () => {
+    try {
+        const res = await api.get("/admin/listar-clientes-activos")
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al obtener clientes activos"
+        )
+    }
+}
+
+export const listarClientesInactivos = async () => {
+    try {
+        const res = await api.get("/admin/listar-clientes-inactivos")
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al obtener clientes inactivos"
+        )
+    }
 }

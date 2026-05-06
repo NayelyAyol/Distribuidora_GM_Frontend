@@ -21,7 +21,9 @@ import {
     listarClientes,
     activarCliente,
     desactivarCliente,
-    buscarCliente
+    buscarCliente,
+    listarClientesActivos,
+    listarClientesInactivos
 } from "../services/clienteService"
 
 
@@ -56,7 +58,7 @@ export default function UsuariosPage() {
     const fetchVendedoresInactivos = async () => {
         try {
             const data = await listarVendedoresInactivos()
-            setVendedores(data.Vendedores || data)
+            setVendedores(data.vendedores || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -71,11 +73,31 @@ export default function UsuariosPage() {
         }
     }
 
+    const fetchClientesActivos = async () => {
+        try {
+            const data = await listarClientesActivos()
+            setClientes(data.clientes || data)
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const fetchClientesInactivos = async () => {
+        try {
+            const data = await listarClientesInactivos()
+            setClientes(data.clientes || data)
+        } catch (error) {
+            toast.error(error.message)
+        }
+
+    }
+
     useEffect(() => {
         const loadData = async () => {
             setLoading(true)
 
             setSearch("")
+            setFiltro("todos")
 
             if (tab === "vendedores") {
                 await fetchVendedores()
@@ -129,6 +151,18 @@ export default function UsuariosPage() {
             }
         } catch (error) {
             toast.error(error.message)
+        }
+    }
+
+    const refreshData = async () => {
+        if (tab === "vendedores") {
+            if (filtro === "activos") await fetchVendedoresActivos()
+            else if (filtro === "inactivos") await fetchVendedoresInactivos()
+            else await fetchVendedores()
+        } else {
+            if (filtro === "activos") await fetchClientesActivos()
+            else if (filtro === "inactivos") await fetchClientesInactivos()
+            else await fetchClientes()
         }
     }
 
@@ -197,7 +231,12 @@ export default function UsuariosPage() {
                             <Button
                                 onClick={() => {
                                     setFiltro("todos")
-                                    fetchVendedores()
+                                    setSearch("")
+                                    if (tab === "vendedores") {
+                                        fetchVendedores()
+                                    } else {
+                                        fetchClientes()
+                                    }
                                 }}
                                 className={filtro === "todos"
                                     ? "bg-emerald-100 text-emerald-700"
@@ -210,7 +249,12 @@ export default function UsuariosPage() {
                             <Button
                                 onClick={() => {
                                     setFiltro("activos")
-                                    fetchVendedoresActivos()
+                                    setSearch("")
+                                    if (tab === "vendedores") {
+                                        fetchVendedoresActivos()
+                                    } else {
+                                        fetchClientesActivos()
+                                    }
                                 }}
                                 className={filtro === "activos"
                                     ? "bg-emerald-100 text-emerald-700"
@@ -223,7 +267,13 @@ export default function UsuariosPage() {
                             <Button
                                 onClick={() => {
                                     setFiltro("inactivos")
-                                    fetchVendedoresInactivos()
+                                    setSearch("")
+                                    if (tab === "vendedores") {
+                                        fetchVendedoresInactivos()
+                                    } else {
+                                        fetchClientesInactivos()
+                                    }
+
                                 }}
                                 className={filtro === "inactivos"
                                     ? "bg-emerald-100 text-emerald-700"
@@ -254,14 +304,16 @@ export default function UsuariosPage() {
                                             ? await activarCliente(usuario._id)
                                             : await desactivarCliente(usuario._id)
                                     }
-
+                                    await refreshData()
                                     toast.success(
                                         `${esVendedor ? "Vendedor" : "Cliente"} ${estado ? "activado" : "desactivado"}`
                                     )
-                                } catch {
-                                    toast.error("Error al actualizar estado")
+                                } catch (error) {
+                                    toast.error(error.message)
                                 }
-                            }}
+                            }
+                            }
+
                         />
 
                     </div>
