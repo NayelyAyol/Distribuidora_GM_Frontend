@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { registrarVendedor } from "../services/vendedorService"
+import { registrarCliente } from "../services/clienteService"
 
-export default function useVendedorForm(onSuccess, tipo = "VENDEDOR") {
+export default function useUsuarioForm(onSuccess, tipo = "VENDEDOR") {
 
     const [form, setForm] = useState({
         nombre: "",
@@ -117,6 +118,14 @@ export default function useVendedorForm(onSuccess, tipo = "VENDEDOR") {
             return
         }
 
+        let service
+
+        if (tipo === "VENDEDOR") {
+            service = registrarVendedor
+        } else {
+            service = registrarCliente
+        }
+
         try {
             setLoading(true)
 
@@ -124,9 +133,13 @@ export default function useVendedorForm(onSuccess, tipo = "VENDEDOR") {
 
             payload.rol=tipo
 
-            await registrarVendedor(payload)
+            await service(payload)
 
-            toast.success("Vendedor creado")
+            toast.success(
+                tipo === "VENDEDOR"
+                    ? "Vendedor creado"
+                    : "Cliente creado"
+            )
 
             if (onSuccess) onSuccess()
 

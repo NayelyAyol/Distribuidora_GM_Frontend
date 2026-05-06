@@ -1,8 +1,9 @@
-import VendedorForm from "../components/VendedorForm"
+import UsuarioForm from "../components/UsuarioForm"
 
-export default function VendedoresPage({ tipo = "VENDEDOR" }) {
+export default function UsuariosCreatePage({ tipo = "VENDEDOR" }) {
 
     const isVendedor = tipo === "VENDEDOR"
+    console.log("URL:", "/admin/registrar-cliente")
 
     return (
         <div className="p-6 space-y-6">
@@ -18,7 +19,7 @@ export default function VendedoresPage({ tipo = "VENDEDOR" }) {
                     Crear {isVendedor ? "Vendedor" : "Cliente"}
                 </h2>
 
-                <VendedorForm tipo={tipo}/>
+                <UsuarioForm tipo={tipo}/>
             </div>
 
         </div>

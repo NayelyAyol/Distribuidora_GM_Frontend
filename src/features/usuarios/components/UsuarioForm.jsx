@@ -9,9 +9,9 @@ import {
     buttonPrimaryClass
 } from "@/utils/styles"
 
-import useVendedorForm from "../hooks/useVendedorForm"
+import useUsuarioForm from "../hooks/useUsuarioForm"
 
-export default function VendedorForm({ onSuccess, tipo = "VENDEDOR" }) {
+export default function UsuarioForm({ onSuccess, tipo = "VENDEDOR" }) {
 
     const {
         form,
@@ -22,7 +22,7 @@ export default function VendedorForm({ onSuccess, tipo = "VENDEDOR" }) {
         setShowConfirmPassword,
         handleChange,
         handleSubmit
-    } = useVendedorForm(onSuccess)
+    } = useUsuarioForm(onSuccess, tipo)
 
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 gap-5" onSubmit={handleSubmit}>

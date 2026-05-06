@@ -13,9 +13,9 @@ import MainLayout from "./components/layout/MainLayout"
 
 // Pages
 import Dashboard from "./features/dashboard/pages/DashboardPage"
-import VendedorPage from "./features/admin/usuarios/pages/VendedorPage"
+import UsuariosCreatePage from "./features/usuarios/pages/UsuariosCreatePage"
 import ProfilePage from "./features/admin/profile/pages/ProfilePage"
-import UsuariosPage from "./features/admin/usuarios/pages/UsuariosPage"
+import UsuariosPage from "./features/usuarios/pages/UsuariosPage"
 import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
 import FeedbackPage from "./features/feedback/pages/FeedbackPage"
 import NotificationPage from "./features/recommendations/pages/NotificationPage"
@@ -92,7 +92,7 @@ function App() {
             path="/dashboard/clientes"
             element={
               <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
-                <VendedorPage tipo="CLIENTE" />
+                <UsuariosCreatePage tipo="CLIENTE" />
               </ProtectedRoute>
             }
           />
@@ -102,7 +102,7 @@ function App() {
             path="/dashboard/vendedores"
             element={
               <ProtectedRoute roles={["ADMINISTRADOR"]}>
-                <VendedorPage tipo="VENDEDOR" />
+                <UsuariosCreatePage tipo="VENDEDOR" />
               </ProtectedRoute>
             }
           />
