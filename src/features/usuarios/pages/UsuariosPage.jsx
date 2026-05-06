@@ -26,6 +26,7 @@ import {
     listarClientesInactivos
 } from "../services/clienteService"
 
+import useAuthStore from "../../../context/useAuthStore"
 
 export default function UsuariosPage() {
 
@@ -36,6 +37,11 @@ export default function UsuariosPage() {
     const [selectedUser, setSelectedUser] = useState(null)
     const [search, setSearch] = useState("")
     const [filtro, setFiltro] = useState("todos")
+    const user = useAuthStore((state) => state.user)
+    const rol = user?.perfilId?.rol?.toUpperCase()
+
+    const esVendedor = rol === "VENDEDOR"
+
 
     const fetchVendedores = async () => {
         try {
@@ -99,13 +105,20 @@ export default function UsuariosPage() {
             setSearch("")
             setFiltro("todos")
 
-            if (tab === "vendedores") {
-                await fetchVendedores()
-            } else {
-                await fetchClientes()
+            try {
+                if (esVendedor) {
+                    const data = await listarClientes()
+                    setClientes(data.clientes || data)
+                } else {
+                    if (tab === "vendedores") {
+                        await fetchVendedores()
+                    } else {
+                        await fetchClientes()
+                    }
+                }
+            } finally {
+                setLoading(false)
             }
-
-            setLoading(false)
         }
 
         loadData()
@@ -179,16 +192,18 @@ export default function UsuariosPage() {
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
 
                 <div className="flex border-b bg-white">
-                    <button
-                        type="button"
-                        onClick={() => setTab("vendedores")}
-                        className={`px-6 py-3 text-sm font-medium transition ${tab === "vendedores"
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "text-gray-600 hover:bg-gray-100"
-                            }`}
-                    >
-                        Vendedores
-                    </button>
+                    {!esVendedor && (
+                        <button
+                            type="button"
+                            onClick={() => setTab("vendedores")}
+                            className={`px-6 py-3 text-sm font-medium transition ${tab === "vendedores"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "text-gray-600 hover:bg-gray-100"
+                                }`}
+                        >
+                            Vendedores
+                        </button>
+                    )}
 
                     <button
                         type="button"
@@ -198,7 +213,7 @@ export default function UsuariosPage() {
                             : "text-gray-600 hover:bg-gray-100"
                             }`}
                     >
-                        Clientes
+                        {esVendedor ? "Mis Clientes" : "Clientes"}
                     </button>
                 </div>
 
@@ -289,8 +304,20 @@ export default function UsuariosPage() {
                     <div className="w-full overflow-x-auto">
 
                         <UsuarioTable
-                            data={tab === "vendedores" ? vendedores : clientes}
-                            onRefresh={tab === "vendedores" ? fetchVendedores : fetchClientes}
+                            data={
+                                esVendedor
+                                    ? clientes.filter(c => c.vendedorId === user._id)
+                                    : tab === "vendedores"
+                                        ? vendedores
+                                        : clientes
+                            }
+                            onRefresh={
+                                esVendedor
+                                    ? fetchClientes
+                                    : tab === "vendedores"
+                                        ? fetchVendedores
+                                        : fetchClientes
+                            }
                             onToggleEstado={async (usuario, estado) => {
                                 try {
                                     const esVendedor = tab === "vendedores"

@@ -38,6 +38,7 @@ export default function Navbar({ onOpenSidenav }) {
         if (location.pathname === "/dashboard/recomendaciones") return "Recomendaciones"
         if (location.pathname === "/dashboard/notificaciones") return "Notificaciones"
         if (location.pathname === "/dashboard/clientes") return "Clientes"
+        if (location.pathname === "/dashboard/clientes-creados") return "Clientes Creados"
 
         return "Dashboard"
     }
@@ -64,7 +65,7 @@ export default function Navbar({ onOpenSidenav }) {
 
                     <div className="min-w-[200px]">
                         <p className="text-sm text-gray-500 whitespace-nowrap">
-                            Pages /{" "}
+                            Página /{" "}
                             <span className="text-gray-700 font-medium">
                                 {title}
                             </span>

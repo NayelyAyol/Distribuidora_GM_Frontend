@@ -21,6 +21,7 @@ import FeedbackPage from "./features/feedback/pages/FeedbackPage"
 import NotificationPage from "./features/recommendations/pages/NotificationPage"
 import RecomendacionesPage from "./features/recommendations/pages/RecomendacionPage"
 import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
+import ClientesVendedorPage from "./features/vendedor/clientes/pages/ClientesVendedorPage"
 
 import NotFound from "./features/notfound/NotFound"
 
@@ -97,7 +98,6 @@ function App() {
             }
           />
 
-
           <Route
             path="/dashboard/vendedores"
             element={
@@ -121,6 +121,15 @@ function App() {
             element={
               <ProtectedRoute roles={["ADMINISTRADOR"]}>
                 <RecomendacionesPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/clientes-creados"
+            element={
+              <ProtectedRoute roles={["VENDEDOR"]}>
+                <ClientesVendedorPage />
               </ProtectedRoute>
             }
           />

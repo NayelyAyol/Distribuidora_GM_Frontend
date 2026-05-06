@@ -6,6 +6,7 @@ import { FaUserPlus, FaUserCircle, FaUsers, FaShoppingBag, FaChartBar } from "re
 import { HiX } from "react-icons/hi"
 import useAuthStore from "@/context/useAuthStore"
 import { MdLightbulbOutline, MdFeedback } from "react-icons/md"
+import { matchPath } from "react-router-dom"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate()
@@ -36,8 +37,7 @@ const Sidebar = ({ open, onClose }) => {
     }
 
     const isActive = (path) =>
-        location.pathname === path ||
-        (path !== "/dashboard" && location.pathname.startsWith(path))
+        matchPath({ path, end: true }, location.pathname)
 
     const menuItems = [
         {
@@ -74,6 +74,13 @@ const Sidebar = ({ open, onClose }) => {
             icon: FaUsers,
             color: "emerald",
             roles: ["ADMINISTRADOR"]
+        },
+        {
+            label: "Usuarios Creados",
+            path: "/dashboard/clientes-creados",
+            icon: FaUsers,
+            color: "emerald",
+            roles: ["VENDEDOR"]
         },
         {
             label: "Categorías",

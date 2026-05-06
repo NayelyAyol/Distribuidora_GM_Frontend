@@ -74,3 +74,16 @@ export const listarVendedoresInactivos = async () => {
         )
     }
 }
+
+export const listarClientesPorVendedor = async (vendedorId) => {
+    try {
+        const res = await api.get(`/vendedor/clientes/${vendedorId}`)
+        return res.data
+    } catch (error) {
+        console.error("Error al listar clientes del vendedor:", error)
+
+        throw new Error(
+            error.response?.data?.msg || "Error al obtener clientes del vendedor"
+        )
+    }
+}
