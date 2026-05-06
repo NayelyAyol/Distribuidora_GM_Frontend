@@ -21,16 +21,9 @@ export default function LoginPage() {
             const res = await loginRequest(credentials)
 
             if (res?.token) {
-                const userData = res.usuario
-
                 setAuth({
                     token: res.token,
-                    user: {
-                        id: userData?.id,
-                        email: userData?.email,
-                        rol: userData.rol?.toUpperCase(),
-                        nombre: userData?.nombre
-                    }
+                    user: res.usuario,
                 })
 
                 toast.success("Bienvenido")
