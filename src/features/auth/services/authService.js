@@ -65,3 +65,16 @@ export const confirmAccountRequest = async (token) => {
         }
     }
 }
+
+export const registro = async (data) => {
+    try {
+        const res = await api.post("/auth/registro", data)
+        return res.data
+    } catch (error) {
+        console.error("Error registro cliente:", error)
+
+        throw new Error(
+            error.response?.data?.msg || "Error al registrarse"
+        )
+    }
+}

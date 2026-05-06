@@ -38,7 +38,7 @@ export default function LoginCard({ onLogin }) {
 
                 <Button
                     variant="link"
-                    onClick={() => navigate("/register")}
+                    onClick={() => navigate("/registro")}
                     className={linkButtonClass}
                 >
                     Registrarse
