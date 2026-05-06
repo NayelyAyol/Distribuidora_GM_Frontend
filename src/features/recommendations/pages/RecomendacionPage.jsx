@@ -115,7 +115,7 @@ export default function RecomendacionesPage() {
                             : "text-gray-600 hover:bg-gray-100"
                             }`}
                     >
-                        Recomendaciones del vendedor
+                        Vendedor
                     </button>
 
                     <button
@@ -125,7 +125,7 @@ export default function RecomendacionesPage() {
                             : "text-gray-600 hover:bg-gray-100"
                             }`}
                     >
-                        Recomendaciones inteligentes
+                        Inteligentes
                     </button>
                 </div>
 
