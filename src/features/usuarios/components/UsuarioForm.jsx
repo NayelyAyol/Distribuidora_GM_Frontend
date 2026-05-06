@@ -51,15 +51,33 @@ export default function UsuarioForm({ onSuccess, tipo = "VENDEDOR" }) {
                 <Label className={labelClass}>Teléfono</Label>
                 <Input name="telefono" value={form.telefono} onChange={handleChange} required className={inputClass} />
             </div>
-
+            {tipo === "CLIENTE" && (
+                <div>
+                    <Label className={labelClass}>Ciudad</Label>
+                    <Input
+                        name="ciudad"
+                        value={form.ciudad}
+                        onChange={handleChange}
+                        required
+                        className={inputClass}
+                    />
+                </div>
+            )}
             <div>
                 <Label className={labelClass}>Dirección</Label>
                 <Input name="direccion" value={form.direccion} onChange={handleChange} required className={inputClass} />
             </div>
 
-            <div className="md:col-span-2">
+            <div className={tipo === "VENDEDOR" ? "md:col-span-2" : ""}>
                 <Label className={labelClass}>Email</Label>
-                <Input type="email" name="email" value={form.email} onChange={handleChange} required className={inputClass} />
+                <Input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                />
             </div>
 
             <div className="relative">
