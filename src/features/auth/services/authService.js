@@ -68,7 +68,7 @@ export const confirmAccountRequest = async (token) => {
 
 export const registro = async (data) => {
     try {
-        const res = await api.post("/auth/registro", data)
+        const res = await api.post("/clientes/registro", data)
         return res.data
     } catch (error) {
         console.error("Error registro cliente:", error)
