@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { registrarVendedor } from "../services/vendedorService"
-import { registrarCliente } from "../services/clienteService"
+import { registrarCliente } from "../services/vendedorService"
 
 export default function useUsuarioForm(onSuccess, tipo = "VENDEDOR") {
 
@@ -133,6 +133,7 @@ export default function useUsuarioForm(onSuccess, tipo = "VENDEDOR") {
 
             payload.rol=tipo
 
+            console.log("PAYLOAD FINAL:", payload)
             await service(payload)
 
             toast.success(

@@ -3,7 +3,6 @@ import UsuarioForm from "../components/UsuarioForm"
 export default function UsuariosCreatePage({ tipo = "VENDEDOR" }) {
 
     const isVendedor = tipo === "VENDEDOR"
-    console.log("URL:", "/admin/registrar-cliente")
 
     return (
         <div className="p-6 space-y-6">

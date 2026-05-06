@@ -70,16 +70,3 @@ export const listarClientesInactivos = async () => {
         )
     }
 }
-
-export const registrarCliente = async (data) => {
-    try {
-        const res = await api.post("/vendedor/registrar-cliente", data)
-        return res.data
-    } catch (error) {
-        console.error("Error al registrar cliente:", error)
-
-        throw new Error(
-            error.response?.data?.msg || "Error al registrar cliente"
-        )
-    }
-}

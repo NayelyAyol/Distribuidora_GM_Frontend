@@ -75,6 +75,20 @@ export const listarVendedoresInactivos = async () => {
     }
 }
 
+export const registrarCliente = async (data) => {
+    try {
+        const res = await api.post("/vendedores/registrar-cliente", data)
+        return res.data
+    } catch (error) {
+        console.error("Error al registrar cliente:", error)
+        console.error("ERROR COMPLETO:", error)
+        console.error("RESPUESTA BACKEND:", error.response?.data)
+        throw new Error(
+            error.response?.data?.msg || "Error al registrar cliente"
+        )
+    }
+}
+
 export const listarClientesPorVendedor = async (vendedorId) => {
     try {
         const res = await api.get(`/vendedor/clientes/${vendedorId}`)
