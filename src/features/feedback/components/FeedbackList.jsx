@@ -26,7 +26,7 @@ export default function FeedbackList() {
                 item.id === selected.id
                     ? {
                         ...item,
-                        estado: "respondido",
+                        estado: "Respondido",
                         respuesta: respuesta
                     }
                     : item
