@@ -15,8 +15,11 @@ import { listarCategorias } from "../services/categoriaService"
 
 export default function CategoriaPage() {
 
-    const rol = useAuthStore((state) => state.rol)
-    const esVendedor = rol?.toUpperCase() === "VENDEDOR"
+    const user = useAuthStore((state) => state.user)
+
+    const esVendedor = user?.rol?.toUpperCase() === "VENDEDOR"
+    const esAdmin = user?.rol?.toUpperCase() === "ADMINISTRADOR"
+
     const navigate = useNavigate()
 
     const [categoryToEdit, setCategoryToEdit] = useState(null)
@@ -71,7 +74,7 @@ export default function CategoriaPage() {
                     : "Este módulo te permite administrar las categorías de productos"}
             </p>
 
-            {!esVendedor && (
+            {esAdmin && (
                 <CategoriaForm
                     selectedCategory={categoryToEdit}
                     setSelectedCategory={setCategoryToEdit}
@@ -83,14 +86,14 @@ export default function CategoriaPage() {
 
                 {loading ? (
                     <p className="text-center text-gray-400">Cargando...</p>
-                ) : (<CategoriasGrid
-                    data={data}
-                    onDelete={handleOpenDelete}
-                    onEdit={handleEdit}
-                    onSelect={handleSelectCategory}
-                    esVendedor={esVendedor}
-                />
-
+                ) : (
+                    <CategoriasGrid
+                        data={data}
+                        onDelete={handleOpenDelete}
+                        onEdit={handleEdit}
+                        onSelect={handleSelectCategory}
+                        esVendedor={esVendedor}
+                    />
                 )}
 
             </div>
