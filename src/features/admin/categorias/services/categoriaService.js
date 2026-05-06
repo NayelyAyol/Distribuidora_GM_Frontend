@@ -2,35 +2,26 @@ import api from "@/utils/api"
 
 export const crearCategoria = async (data) => {
     try {
-        const formData = new FormData()
+        const res = await api.post("/categorias/crear", {
+            nombre: data.nombre,
+            descripcion: data.descripcion,
+            imagen: data.imagen
+        });
 
-        formData.append("nombre", data.nombre)
-        formData.append("descripcion", data.descripcion)
-
-        if (data.imagen) {
-            formData.append("imagen", data.imagen)
-        }
-
-        const res = await api.post("/admin/categorias", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        })
-
-        return res.data
+        return res.data;
 
     } catch (error) {
-        console.error("Error creando categoría:", error)
+        console.error("Error creando categoría:", error);
 
         throw new Error(
             error.response?.data?.msg || "Error al crear categoría"
-        )
+        );
     }
-}
+};
 
 export const listarCategorias = async () => {
     try {
-        const res = await api.get("/admin/listar-todas")
+        const res = await api.get("/categorias/listar-todas")
         return res.data
 
     } catch (error) {

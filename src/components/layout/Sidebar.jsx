@@ -105,8 +105,6 @@ const Sidebar = ({ open, onClose }) => {
         (item) => role && item.roles.includes(role)
     );
 
-    console.log("USER:", user);
-
     if (!hydrated) return null;
 
     return (

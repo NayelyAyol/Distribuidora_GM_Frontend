@@ -15,7 +15,12 @@ import { crearCategoria } from "../services/categoriaService"
 
 import { toast } from "react-toastify"
 
+import { uploadImage } from "../../../shared/services/cloudinaryService"
+import { useRef } from "react";
+
 export default function CategoriaForm({ selectedCategory, setSelectedCategory, onSuccess }) {
+
+    const [preview, setPreview] = useState(null)
 
     const [form, setForm] = useState({
         nombre: "",
@@ -23,6 +28,8 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
         imagen: null
     })
 
+    const fileInputRef = useRef(null);
+    
     useEffect(() => {
         if (selectedCategory) {
             setForm({
@@ -50,29 +57,47 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
     const handleSubmit = async () => {
         try {
             if (!form.nombre || !form.descripcion) {
-                toast.error("Todos los campos son obligatorios")
-                return
-            }
-            if (selectedCategory) {
-                console.log("EDITANDO:", form)
-            } else {
-                await crearCategoria(form)
-                if (onSuccess) await onSuccess()
-                toast.success("Categoría creada correctamente")
+                toast.error("Todos los campos son obligatorios");
+                return;
             }
 
-            setSelectedCategory(null)
+            let imageUrl = form.imagen;
+
+            if (form.imagen instanceof File) {
+                imageUrl = await uploadImage(form.imagen);
+            }
+
+            const payload = {
+                ...form,
+                imagen: imageUrl,
+            };
+
+            if (selectedCategory) {
+                console.log("EDITANDO:", payload);
+            } else {
+                await crearCategoria(payload);
+                if (onSuccess) await onSuccess();
+                toast.success("Categoría creada correctamente");
+            }
+
+            setSelectedCategory(null);
             setForm({
                 nombre: "",
                 descripcion: "",
-                imagen: null
-            })
+                imagen: null,
+            });
 
+
+            setPreview(null);
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         } catch (error) {
-            console.error(error)
-            toast.error(error.message)
+            console.error(error);
+            toast.error(error.message);
         }
-    }
+    };
 
     const handleImagen = (e) => {
         const file = e.target.files[0]
@@ -89,6 +114,12 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
             ...form,
             imagen: file
         })
+
+        const reader = new FileReader()
+        reader.onloadend = () => {
+            setPreview(reader.result)
+        }
+        reader.readAsDataURL(file)
     }
 
     return (
@@ -98,21 +129,31 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
 
                 <div className="h-full w-full rounded-xl bg-emerald-50 flex items-center justify-center">
 
-                    <label className="flex h-full w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 cursor-pointer hover:bg-emerald-100/40 transition">
+                    <label className="flex h-full w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 cursor-pointer hover:bg-emerald-100/40 transition overflow-hidden">
 
-                        <MdFileUpload className="text-[60px] text-emerald-500" />
+                        {preview ? (
+                            <img
+                                src={preview}
+                                className="w-full h-full object-cover"
+                                alt="preview"
+                            />
+                        ) : (
+                            <>
+                                <MdFileUpload className="text-[60px] text-emerald-500" />
 
-                        <p className="mt-2 text-sm text-gray-600">
-                            Subir imagen
-                        </p>
+                                <p className="mt-2 text-sm text-gray-600">
+                                    Subir imagen
+                                </p>
+                            </>
+                        )}
 
                         <input
                             type="file"
                             className="hidden"
                             accept="image/*"
                             onChange={handleImagen}
+                            ref={fileInputRef}
                         />
-
                     </label>
 
                 </div>
