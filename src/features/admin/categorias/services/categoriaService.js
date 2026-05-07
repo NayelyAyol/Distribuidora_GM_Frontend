@@ -57,3 +57,28 @@ export const listarCategoriasActivas = async () => {
         )
     }
 }
+
+export const desactivarCategoria = async (categoriaId) => {
+    try {
+        const res = await api.put(`/categorias/desactivar/${categoriaId}`);
+        return res.data.categorias
+    } catch (error) {
+        console.error("Error desactivando categoría:", error);
+        throw new Error(
+            error.response?.data?.msg || "Error al desactivar categoría"
+        );
+    }
+};
+
+
+export const activarCategoria = async (categoriaId) => {
+    try {
+        const res = await api.put(`/categorias/activar/${categoriaId}`);   
+        return res.data.categorias
+    } catch (error) {
+        console.error("Error activando categoría:", error);
+        throw new Error(
+            error.response?.data?.msg || "Error al activar categoría"
+        );
+    }
+};

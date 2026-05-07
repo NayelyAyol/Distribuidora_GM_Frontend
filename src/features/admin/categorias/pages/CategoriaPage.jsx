@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
 
-import { listarCategorias, listarCategoriasInactivas, listarCategoriasActivas } from "../services/categoriaService"
+import { listarCategorias, listarCategoriasInactivas, listarCategoriasActivas, desactivarCategoria, activarCategoria } from "../services/categoriaService"
 
 export default function CategoriaPage() {
 
@@ -23,24 +23,45 @@ export default function CategoriaPage() {
     const navigate = useNavigate()
 
     const [categoryToEdit, setCategoryToEdit] = useState(null)
-    const [categoryToDelete, setCategoryToDelete] = useState(null)
+    const [categoryToDisable, setCategoryToDisable] = useState(null)
     const [loading, setLoading] = useState(false)
     const [filtro, setFiltro] = useState("todos")
 
     const [data, setData] = useState([])
 
-    const handleOpenDelete = (cat) => {
-        setCategoryToDelete(cat)
+    const handleOpenDisable = (cat) => {
+        setCategoryToDisable(cat)
     }
 
-    const handleCloseDelete = () => {
-        setCategoryToDelete(null)
+    const handleCloseDisable = () => {
+        setCategoryToDisable(null)
     }
 
-    const handleConfirmDelete = () => {
-        toast.success(`Categoría ${categoryToDelete.nombre} eliminada`)
-        setCategoryToDelete(null)
+    const handleConfirmDisable = async () => {    
+        try {
+
+        if (categoryToDisable.estado) {
+            await desactivarCategoria(categoryToDisable._id)
+            toast.success("Categoría desactivada")
+        } else {
+            await activarCategoria(categoryToDisable._id)
+            toast.success("Categoría activada")
+        }
+
+        if (filtro === "todos") {
+            fetchCategorias()
+        } else if (filtro === "activos") {
+            fetchCategoriasActivas()
+        } else {
+            fetchCategoriasInactivas()
+        }
+
+        setCategoryToDisable(null)
+
+    } catch (error) {
+        toast.error(error.message)
     }
+}
 
     const handleEdit = (cat) => {
         setCategoryToEdit(cat)
@@ -130,13 +151,14 @@ export default function CategoriaPage() {
 
             <div className="bg-white/60 rounded-2xl p-4 shadow-inner">
 
+                {esAdmin && (
                 <div className="flex flex-wrap gap-3 mb-4">
 
-                    <Button
-                        onClick={() => {
-                            setFiltro("todos")
-                            fetchCategorias()
-                        }}
+                        <Button
+                            onClick={() => {
+                                setFiltro("todos")
+                                fetchCategorias()
+                            }}
                         className={
                             filtro === "todos"
                                 ? "bg-emerald-100 text-emerald-700"
@@ -173,8 +195,10 @@ export default function CategoriaPage() {
                     >
                         Inactivos
                     </Button>
-
+            
                 </div>
+                )}
+
 
                 <div className="flex-1 max-h-[60vh] overflow-y-auto">
 
@@ -183,7 +207,7 @@ export default function CategoriaPage() {
                     ) : (
                         <CategoriasGrid
                             data={data}
-                            onDelete={handleOpenDelete}
+                            onDelete={handleOpenDisable}
                             onEdit={handleEdit}
                             onSelect={handleSelectCategory}
                             esVendedor={esVendedor}
@@ -194,19 +218,19 @@ export default function CategoriaPage() {
 
             </div>
 
-            {categoryToDelete && (
+            {categoryToDisable && (
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
 
                     <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
 
                         <h2 className="text-lg font-bold text-gray-800 mb-2">
-                            Confirmar eliminación
+                            Confirmar {categoryToDisable.estado ? "desactivación" : "activación"}
                         </h2>
 
                         <p className="text-[15px] text-gray-500 mb-4">
-                            ¿Está seguro que desea eliminar la categoría{" "}
+                            ¿Está seguro que desea {categoryToDisable.estado ? "desactivar" : "activar"} la categoría{" "}
                             <span className="font-semibold text-emerald-800">
-                                {categoryToDelete.nombre}
+                                {categoryToDisable.nombre}
                             </span>
                             ?
                         </p>
@@ -216,16 +240,16 @@ export default function CategoriaPage() {
                             <Button
                                 variant="ghost"
                                 className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
-                                onClick={handleCloseDelete}
+                                onClick={handleCloseDisable}
                             >
                                 Cancelar
                             </Button>
 
                             <Button
-                                onClick={handleConfirmDelete}
+                                onClick={handleConfirmDisable}
                                 className={`max-w-[100px] ${buttonPrimaryClass}`}
                             >
-                                Eliminar
+                                {categoryToDisable.estado ? "Desactivar" : "Activar"}
                             </Button>
 
                         </div>

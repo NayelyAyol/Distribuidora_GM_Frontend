@@ -1,4 +1,4 @@
-import { FiEdit, FiTrash } from "react-icons/fi"
+import { FiEdit, FiSlash } from "react-icons/fi"
 
 export default function CategoriaCard({
     categoria,
@@ -7,11 +7,19 @@ export default function CategoriaCard({
     onSelect,
     esVendedor
 }) {
+
+const imageUrl =
+    categoria?.imagen?.url ??
+    (typeof categoria?.imagen === "string" ? categoria.imagen : "")
+
+console.log("CATEGORIA:", categoria)
+console.log("IMAGEN:", categoria.imagen)
+
     return (
         <div className="bg-white rounded-xl p-4 shadow hover:shadow-lg transition">
 
             <img
-                src={categoria.imagen || "/images/categories/default.webp"}
+                src={imageUrl || "/images/categories/default.webp"}
                 alt={categoria.nombre}
                 className="w-full h-32 object-cover rounded-lg"
             />
@@ -45,9 +53,15 @@ export default function CategoriaCard({
 
                     <button
                         onClick={() => onDelete(categoria)}
-                        className="flex items-center gap-1 text-red-500 hover:text-red-700"
+                        className={`flex items-center gap-1 transition
+                            ${categoria.estado
+                                ? "text-red-500 hover:text-red-700"
+                                : "text-emerald-600 hover:text-emerald-800"
+                            }
+    `}
                     >
-                        <FiTrash /> Eliminar
+                        <FiSlash />
+                        {categoria.estado ? "Desactivar" : "Activar"}
                     </button>
 
                 </div>

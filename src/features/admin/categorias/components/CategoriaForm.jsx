@@ -35,7 +35,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
             setForm({
                 nombre: selectedCategory.nombre,
                 descripcion: selectedCategory.descripcion,
-                imagen: selectedCategory.imagen
+                imagen: selectedCategory.imagen?.url || selectedCategory.imagen
             })
         } else {
             setForm({
@@ -68,13 +68,17 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
             }
 
             const payload = {
-                ...form,
-                imagen: imageUrl,
+                nombre: form.nombre,
+                descripcion: form.descripcion,
+                imagen: {
+                    url: imageUrl
+                }
             };
 
             if (selectedCategory) {
                 console.log("EDITANDO:", payload);
             } else {
+                console.log("PAYLOAD:", payload)
                 await crearCategoria(payload);
                 if (onSuccess) await onSuccess();
                 toast.success("Categoría creada correctamente");
