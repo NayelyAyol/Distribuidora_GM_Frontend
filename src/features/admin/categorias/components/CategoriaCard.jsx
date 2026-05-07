@@ -12,6 +12,7 @@ export default function CategoriaCard({
 
             <img
                 src={categoria.imagen || "/images/categories/default.webp"}
+                alt={categoria.nombre}
                 className="w-full h-32 object-cover rounded-lg"
             />
 

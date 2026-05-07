@@ -32,3 +32,28 @@ export const listarCategorias = async () => {
         )
     }
 }
+
+export const listarCategoriasInactivas = async () => {
+    try {
+        const res = await api.get("/categorias/inactivas")
+        return res.data.categorias
+    } catch (error) {
+        console.error("Error listando categorías inactivas:", error)
+        throw new Error(
+            error.response?.data?.msg || "Error al obtener categorías inactivas"
+        )
+    }
+}   
+
+
+export const listarCategoriasActivas = async () => {
+    try {
+        const res = await api.get("/categorias")
+        return res.data.categorias
+    } catch (error) {
+        console.error("Error listando categorías activas:", error)
+        throw new Error(
+            error.response?.data?.msg || "Error al obtener categorías activas"
+        )
+    }
+}

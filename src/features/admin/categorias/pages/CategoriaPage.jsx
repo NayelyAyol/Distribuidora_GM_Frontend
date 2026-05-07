@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
 
-import { listarCategorias } from "../services/categoriaService"
+import { listarCategorias, listarCategoriasInactivas, listarCategoriasActivas } from "../services/categoriaService"
 
 export default function CategoriaPage() {
 
@@ -25,6 +25,7 @@ export default function CategoriaPage() {
     const [categoryToEdit, setCategoryToEdit] = useState(null)
     const [categoryToDelete, setCategoryToDelete] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [filtro, setFiltro] = useState("todos")
 
     const [data, setData] = useState([])
 
@@ -46,7 +47,7 @@ export default function CategoriaPage() {
     }
 
     const handleSelectCategory = (cat) => {
-        navigate(`/dashboard/categorias/${cat.id}/productos`)
+        navigate(`/dashboard/categorias/${cat._id}/productos`)
     }
 
     const fetchCategorias = async () => {
@@ -61,8 +62,53 @@ export default function CategoriaPage() {
         }
     }
 
+    const fetchCategoriasInactivas = async () => {
+        setLoading(true)
+        try {
+            const categorias = await listarCategoriasInactivas()
+            setData(categorias)
+        } catch (error) {
+            toast.error(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const fetchCategoriasActivas = async () => {
+        setLoading(true)
+        try {
+            const categorias = await listarCategoriasActivas()
+            setData(categorias)
+        } catch (error) {
+            toast.error(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
-        fetchCategorias()
+        const loadData = async () => {
+            setLoading(true)
+
+            try {
+
+                if (esAdmin) {
+                    setFiltro("todos")
+                    await fetchCategorias()
+                } else {
+                    setFiltro("activos")
+                    await fetchCategoriasActivas()
+                }
+
+            } catch (error) {
+                toast.error(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadData()
+
     }, [])
 
     return (
@@ -82,19 +128,69 @@ export default function CategoriaPage() {
                 />
             )}
 
-            <div className="flex-1 max-h-[60vh] overflow-y-auto bg-white/60 rounded-2xl p-4 shadow-inner">
+            <div className="bg-white/60 rounded-2xl p-4 shadow-inner">
 
-                {loading ? (
-                    <p className="text-center text-gray-400">Cargando...</p>
-                ) : (
-                    <CategoriasGrid
-                        data={data}
-                        onDelete={handleOpenDelete}
-                        onEdit={handleEdit}
-                        onSelect={handleSelectCategory}
-                        esVendedor={esVendedor}
-                    />
-                )}
+                <div className="flex flex-wrap gap-3 mb-4">
+
+                    <Button
+                        onClick={() => {
+                            setFiltro("todos")
+                            fetchCategorias()
+                        }}
+                        className={
+                            filtro === "todos"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-gray-200 text-gray-600"
+                        }
+                    >
+                        Todos
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setFiltro("activos")
+                            fetchCategoriasActivas()
+                        }}
+                        className={
+                            filtro === "activos"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-gray-200 text-gray-600"
+                        }
+                    >
+                        Activos
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setFiltro("inactivos")
+                            fetchCategoriasInactivas()
+                        }}
+                        className={
+                            filtro === "inactivos"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-gray-200 text-gray-600"
+                        }
+                    >
+                        Inactivos
+                    </Button>
+
+                </div>
+
+                <div className="flex-1 max-h-[60vh] overflow-y-auto">
+
+                    {loading ? (
+                        <p className="text-center text-gray-400">Cargando...</p>
+                    ) : (
+                        <CategoriasGrid
+                            data={data}
+                            onDelete={handleOpenDelete}
+                            onEdit={handleEdit}
+                            onSelect={handleSelectCategory}
+                            esVendedor={esVendedor}
+                        />
+                    )}
+
+                </div>
 
             </div>
 

@@ -65,16 +65,12 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
 
             if (form.imagen instanceof File) {
                 imageUrl = await uploadImage(form.imagen);
-                    console.log("URL CLOUDINARY:", imageUrl)
-
             }
 
             const payload = {
                 ...form,
                 imagen: imageUrl,
             };
-
-            console.log(payload)
 
             if (selectedCategory) {
                 console.log("EDITANDO:", payload);
@@ -100,8 +96,6 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
         } catch (error) {
             console.error(error);
             toast.error(error.message);
-            console.log(error.response?.data)
-
         }
     };
 
