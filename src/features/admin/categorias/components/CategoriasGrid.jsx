@@ -12,7 +12,7 @@ export default function CategoriasGrid({
 
             {(Array.isArray(data) ? data : []).map((cat) => (
                 <CategoriaCard
-                    key={cat.id}
+                    key={cat._id}
                     categoria={cat}
                     onDelete={onDelete}
                     onEdit={onEdit}

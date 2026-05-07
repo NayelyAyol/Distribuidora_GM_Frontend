@@ -22,7 +22,7 @@ export const crearCategoria = async (data) => {
 export const listarCategorias = async () => {
     try {
         const res = await api.get("/categorias/listar-todas")
-        return res.data
+        return res.data.categorias
 
     } catch (error) {
         console.error("Error listando categorías:", error)
