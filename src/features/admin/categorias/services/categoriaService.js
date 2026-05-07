@@ -82,3 +82,20 @@ export const activarCategoria = async (categoriaId) => {
         );
     }
 };
+
+
+export const actualizarCategoria = async (categoriaId, data) => {
+    try {
+        const res = await api.put(`/categorias/actualizar/${categoriaId}`, {
+            nombre: data.nombre,
+            descripcion: data.descripcion,
+            imagen: data.imagen
+        });
+        return res.data;
+    } catch (error) {
+        console.error("Error actualizando categoría:", error);
+        throw new Error(
+            error.response?.data?.msg || "Error al actualizar categoría"
+        );
+    }
+};
