@@ -22,7 +22,7 @@ import NotificationPage from "./features/recommendations/pages/NotificationPage"
 import RecomendacionesPage from "./features/recommendations/pages/RecomendacionPage"
 import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
 import ClientesVendedorPage from "./features/vendedor/clientes/pages/ClientesVendedorPage"
-
+import RecomendacionesVendedorPage from "./features/vendedor/recomendaciones/pages/RecomendacionPage"
 import NotFound from "./features/notfound/NotFound"
 
 function App() {
@@ -121,6 +121,15 @@ function App() {
             element={
               <ProtectedRoute roles={["ADMINISTRADOR"]}>
                 <RecomendacionesPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/recomendaciones-vendedor"
+            element={
+              <ProtectedRoute roles={["VENDEDOR"]}>
+                <RecomendacionesVendedorPage />
               </ProtectedRoute>
             }
           />

@@ -39,6 +39,8 @@ export default function Navbar({ onOpenSidenav }) {
         if (location.pathname === "/dashboard/notificaciones") return "Notificaciones"
         if (location.pathname === "/dashboard/clientes") return "Clientes"
         if (location.pathname === "/dashboard/clientes-creados") return "Clientes Creados"
+        if (location.pathname === "/dashboard/recomendaciones-vendedor") return "Recomendaciones"
+
 
         return "Dashboard"
     }

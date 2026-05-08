@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
 
-export default function FeedbackForm() {
+export default function RecomendacionForm() {
 
     const [text, setText] = useState("")
 
@@ -21,13 +21,13 @@ export default function FeedbackForm() {
             <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Escribe tu sugerencia..."
+                placeholder="Escribe tu recomendación..."
                 className="w-full p-4 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={4}
             />
 
             <Button className={`${buttonPrimaryClass} w-full`}>
-                Enviar sugerencia
+                Enviar
             </Button>
 
         </form>

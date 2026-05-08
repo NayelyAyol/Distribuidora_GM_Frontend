@@ -99,6 +99,12 @@ const Sidebar = ({ open, onClose }) => {
             icon: MdLightbulbOutline,
             roles: ["ADMINISTRADOR"],
         },
+        {
+            label: "Recomendaciones",
+            path: "/dashboard/recomendaciones-vendedor",
+            icon: MdLightbulbOutline,
+            roles: ["VENDEDOR"],
+        },
     ];
 
     const filteredItems = menuItems.filter(
