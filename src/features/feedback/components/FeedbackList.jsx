@@ -15,7 +15,7 @@ export default function FeedbackList() {
 
     const [selected, setSelected] = useState(null)
     const [respuesta, setRespuesta] = useState("")
-    const [filter, setFilter] = useState("todos")
+    const [filter, setFilter] = useState("TODOS")
 
     const handleResponder = () => {
 
@@ -40,7 +40,7 @@ export default function FeedbackList() {
     const filteredData =
         filter === "TODOS"
             ? data
-            : data.filter(item => item.estado.toLowerCase() === filter.toLowerCase())
+            : data.filter(item => item.estado === filter)
 
     return (
 
