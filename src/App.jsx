@@ -21,7 +21,7 @@ import FeedbackPage from "./features/feedback/pages/FeedbackPage"
 import NotificationPage from "./features/recommendations/pages/NotificationPage"
 import RecomendacionesPage from "./features/recommendations/pages/RecomendacionPage"
 import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
-import ClientesVendedorPage from "./features/vendedor/clientes/pages/ClientesVendedorPage"
+import ClientesVendedorPage from "./features/vendedor/clientes/pages/PedidosSeleccionados"
 import RecomendacionesVendedorPage from "./features/vendedor/recomendaciones/pages/RecomendacionPage"
 import NotFound from "./features/notfound/NotFound"
 

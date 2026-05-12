@@ -4,7 +4,8 @@ import { FiSearch } from "react-icons/fi"
 import { Input } from "@/components/ui/input"
 import { inputClass } from "@/utils/styles"
 import { Button } from "@/components/ui/button"
-import UsuarioTable from "../components/UsuarioTable"
+import DataTable from "@/components/ui/DataTable"
+import { usuarioColumns } from "../columns/usuarioColumns"
 
 import {
     activarVendedor,
@@ -195,11 +196,10 @@ export default function UsuariosPage() {
                         <button
                             type="button"
                             onClick={() => setTab("vendedores")}
-                            className={`px-6 py-3 text-sm font-medium transition ${
-                                tab === "vendedores"
+                            className={`px-6 py-3 text-sm font-medium transition ${tab === "vendedores"
                                     ? "bg-emerald-100 text-emerald-800"
                                     : "text-gray-600 hover:bg-gray-100"
-                            }`}
+                                }`}
                         >
                             Vendedores
                         </button>
@@ -208,11 +208,10 @@ export default function UsuariosPage() {
                     <button
                         type="button"
                         onClick={() => setTab("clientes")}
-                        className={`px-6 py-3 text-sm font-medium transition ${
-                            tab === "clientes"
+                        className={`px-6 py-3 text-sm font-medium transition ${tab === "clientes"
                                 ? "bg-emerald-100 text-emerald-800"
                                 : "text-gray-600 hover:bg-gray-100"
-                        }`}
+                            }`}
                     >
                         {esVendedor ? "Mis Clientes" : "Clientes"}
                     </button>
@@ -297,7 +296,7 @@ export default function UsuariosPage() {
 
                     <div className="w-full overflow-x-auto">
 
-                        <UsuarioTable
+                        <DataTable
                             data={
                                 esVendedor
                                     ? clientes.filter(c => c.vendedorId === user._id)
@@ -305,8 +304,7 @@ export default function UsuariosPage() {
                                         ? vendedores
                                         : clientes
                             }
-                            onRefresh={refreshData}
-                            onToggleEstado={async (usuario, estado) => {
+                            columns={usuarioColumns(refreshData, async (usuario, estado) => {
 
                                 try {
 
@@ -336,7 +334,7 @@ export default function UsuariosPage() {
                                     toast.error(error.message)
                                 }
 
-                            }}
+                            })}
                         />
 
                     </div>

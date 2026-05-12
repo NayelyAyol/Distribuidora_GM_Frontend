@@ -1,72 +1,11 @@
 import { Card } from "@/components/ui/card"
 import {
-    createColumnHelper,
     flexRender,
     getCoreRowModel,
     useReactTable
 } from "@tanstack/react-table"
 
-import StatusBadge from "@/features/shared/components/StatusBadge"
-import { toast } from "react-toastify"
-
-const columnHelper = createColumnHelper()
-
-export default function UsuarioTable({
-    data,
-    onRefresh,
-    onToggleEstado,
-    extraColumns = []
-}) {
-
-    const columns = [
-        columnHelper.accessor(row => row.perfilId?.nombre || row.nombre || "-", {
-            id: "nombre",
-            header: "Nombre"
-        }),
-
-        columnHelper.accessor(row => row.perfilId?.apellido || row.apellido || "-", {
-            id: "apellido",
-            header: "Apellido"
-        }),
-
-        columnHelper.accessor(row => row.email || "-", {
-            id: "email",
-            header: "Email"
-        }),
-        
-        columnHelper.accessor(row => row.perfilId?.cedula || row.cedula || "-", {
-            id: "cedula",
-            header: "Cédula"
-        }),
-
-        columnHelper.accessor("estado", {
-            header: "Estado",
-            cell: ({ row }) => {
-                const usuario = row.original
-
-                const handleToggle = async (nuevoEstado) => {
-                    try {
-                        await onToggleEstado(usuario, nuevoEstado)
-                        if (onRefresh) onRefresh()
-                    } catch {
-                        toast.error("Error al actualizar estado")
-                    }
-                }
-
-
-                return (
-                    <div className="flex justify-center">
-                        <StatusBadge
-                            estado={usuario.estado}
-                            onToggle={handleToggle}
-                        />
-                    </div>
-                )
-            }
-        }),
-
-        ...extraColumns
-    ]
+export default function DataTable({ data, columns }) {
 
     const table = useReactTable({
         data: data || [],
@@ -78,6 +17,7 @@ export default function UsuarioTable({
         <Card className="w-full p-6">
 
             <div className="w-full flex overflow-x-auto">
+
                 <table className="min-w-[600px] w-full">
 
                     <thead>
@@ -99,13 +39,14 @@ export default function UsuarioTable({
                     </thead>
 
                     <tbody>
+
                         {table.getRowModel().rows.length === 0 ? (
                             <tr>
                                 <td
                                     colSpan={columns.length}
                                     className="text-center py-6 text-gray-400"
                                 >
-                                    No hay usuarios disponibles
+                                    No hay datos disponibles
                                 </td>
                             </tr>
                         ) : (
@@ -128,10 +69,13 @@ export default function UsuarioTable({
                                 </tr>
                             ))
                         )}
+
                     </tbody>
 
                 </table>
+
             </div>
+
         </Card>
     )
 }
