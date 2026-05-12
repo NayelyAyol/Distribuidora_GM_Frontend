@@ -11,7 +11,12 @@ import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
 
-import { listarCategorias, listarCategoriasInactivas, listarCategoriasActivas, desactivarCategoria, activarCategoria } from "../services/categoriaService"
+import {
+    listarCategoriasInactivas,
+    listarCategoriasActivas,
+    desactivarCategoria,
+    activarCategoria
+} from "../services/categoriaService"
 
 export default function CategoriaPage() {
 
@@ -25,7 +30,7 @@ export default function CategoriaPage() {
     const [categoryToEdit, setCategoryToEdit] = useState(null)
     const [categoryToDisable, setCategoryToDisable] = useState(null)
     const [loading, setLoading] = useState(false)
-    const [filtro, setFiltro] = useState("todos")
+    const [filtro, setFiltro] = useState("activos")
 
     const [data, setData] = useState([])
 
@@ -37,31 +42,31 @@ export default function CategoriaPage() {
         setCategoryToDisable(null)
     }
 
-    const handleConfirmDisable = async () => {    
+    const handleConfirmDisable = async () => {
+
         try {
 
-        if (categoryToDisable.estado) {
-            await desactivarCategoria(categoryToDisable._id)
-            toast.success("Categoría desactivada")
-        } else {
-            await activarCategoria(categoryToDisable._id)
-            toast.success("Categoría activada")
+            if (categoryToDisable.estado) {
+                await desactivarCategoria(categoryToDisable._id)
+                toast.success("Categoría desactivada")
+            } else {
+                await activarCategoria(categoryToDisable._id)
+                toast.success("Categoría activada")
+            }
+
+            if (filtro === "activos") {
+                await fetchCategoriasActivas()
+            } else {
+                await fetchCategoriasInactivas()
+            }
+
+            setCategoryToDisable(null)
+
+        } catch (error) {
+            toast.error(error.message)
         }
 
-        if (filtro === "todos") {
-            fetchCategorias()
-        } else if (filtro === "activos") {
-            fetchCategoriasActivas()
-        } else {
-            fetchCategoriasInactivas()
-        }
-
-        setCategoryToDisable(null)
-
-    } catch (error) {
-        toast.error(error.message)
     }
-}
 
     const handleEdit = (cat) => {
         setCategoryToEdit(cat)
@@ -69,18 +74,6 @@ export default function CategoriaPage() {
 
     const handleSelectCategory = (cat) => {
         navigate(`/dashboard/categorias/${cat._id}/productos`)
-    }
-
-    const fetchCategorias = async () => {
-        setLoading(true)
-        try {
-            const categorias = await listarCategorias()
-            setData(categorias)
-        } catch (error) {
-            toast.error(error.message)
-        } finally {
-            setLoading(false)
-        }
     }
 
     const fetchCategoriasInactivas = async () => {
@@ -113,13 +106,8 @@ export default function CategoriaPage() {
 
             try {
 
-                if (esAdmin) {
-                    setFiltro("todos")
-                    await fetchCategorias()
-                } else {
-                    setFiltro("activos")
-                    await fetchCategoriasActivas()
-                }
+                setFiltro("activos")
+                await fetchCategoriasActivas()
 
             } catch (error) {
                 toast.error(error.message)
@@ -145,60 +133,45 @@ export default function CategoriaPage() {
                 <CategoriaForm
                     selectedCategory={categoryToEdit}
                     setSelectedCategory={setCategoryToEdit}
-                    onSuccess={fetchCategorias}
+                    onSuccess={fetchCategoriasActivas}
                 />
             )}
 
             <div className="bg-white/60 rounded-2xl p-4 shadow-inner">
 
                 {esAdmin && (
-                <div className="flex flex-wrap gap-3 mb-4">
+                    <div className="flex flex-wrap gap-3 mb-4">
 
                         <Button
                             onClick={() => {
-                                setFiltro("todos")
-                                fetchCategorias()
+                                setFiltro("activos")
+                                fetchCategoriasActivas()
                             }}
-                        className={
-                            filtro === "todos"
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-gray-200 text-gray-600"
-                        }
-                    >
-                        Todos
-                    </Button>
+                            className={
+                                filtro === "activos"
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : "bg-gray-200 text-gray-600"
+                            }
+                        >
+                            Activos
+                        </Button>
 
-                    <Button
-                        onClick={() => {
-                            setFiltro("activos")
-                            fetchCategoriasActivas()
-                        }}
-                        className={
-                            filtro === "activos"
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-gray-200 text-gray-600"
-                        }
-                    >
-                        Activos
-                    </Button>
+                        <Button
+                            onClick={() => {
+                                setFiltro("inactivos")
+                                fetchCategoriasInactivas()
+                            }}
+                            className={
+                                filtro === "inactivos"
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : "bg-gray-200 text-gray-600"
+                            }
+                        >
+                            Inactivos
+                        </Button>
 
-                    <Button
-                        onClick={() => {
-                            setFiltro("inactivos")
-                            fetchCategoriasInactivas()
-                        }}
-                        className={
-                            filtro === "inactivos"
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-gray-200 text-gray-600"
-                        }
-                    >
-                        Inactivos
-                    </Button>
-            
-                </div>
+                    </div>
                 )}
-
 
                 <div className="flex-1 max-h-[60vh] overflow-y-auto">
 

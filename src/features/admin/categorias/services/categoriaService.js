@@ -43,21 +43,6 @@ export const actualizarCategoria = async (categoriaId, formData) => {
     }
 };
 
-
-export const listarCategorias = async () => {
-    try {
-        const res = await api.get("/categorias/listar-todas")
-        return res.data.categorias
-
-    } catch (error) {
-        console.error("Error listando categorías:", error)
-
-        throw new Error(
-            error.response?.data?.msg || "Error al obtener categorías"
-        )
-    }
-}
-
 export const listarCategoriasInactivas = async () => {
     try {
         const res = await api.get("/categorias/inactivas")
