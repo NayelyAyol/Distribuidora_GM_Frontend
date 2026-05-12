@@ -8,9 +8,9 @@ import { buttonPrimaryClass, buttonOutlineClass, inputClass } from "@/utils/styl
 export default function FeedbackList() {
 
     const [data, setData] = useState([
-        { id: 1, text: "Agregar modo oscuro", user: "Cliente 1", estado: "Pendiente", respuesta: null },
-        { id: 2, text: "Mejorar rendimiento", user: "Cliente 2", estado: "Pendiente", respuesta: null },
-        { id: 3, text: "Cambio de colores", user: "Cliente 3", estado: "Respondido", respuesta: "Se evaluará el cambio" }
+        { id: 1, text: "Agregar modo oscuro", user: "Cliente 1", estado: "Pendiente", respuesta: null, fecha: "2024-06-01" },
+        { id: 2, text: "Mejorar rendimiento", user: "Cliente 2", estado: "Pendiente", respuesta: null, fecha: "2024-06-02" },
+        { id: 3, text: "Cambio de colores", user: "Cliente 3", estado: "Finalizada", respuesta: "Se evaluará el cambio", fecha: "2024-06-03" }
     ])
 
     const [selected, setSelected] = useState(null)
@@ -26,7 +26,7 @@ export default function FeedbackList() {
                 item.id === selected.id
                     ? {
                         ...item,
-                        estado: "Respondido",
+                        estado: "Finalizada",
                         respuesta: respuesta
                     }
                     : item
@@ -65,11 +65,11 @@ export default function FeedbackList() {
                 </Button>
 
                 <Button
-                    onClick={() => setFilter("Respondido")}
-                    className={filter === "Respondido" ? "bg-emerald-100 text-emerald-700"
+                    onClick={() => setFilter("Finalizada")}
+                    className={filter === "Finalizada" ? "bg-emerald-100 text-emerald-700"
                         : "bg-gray-200 text-gray-600"}
                 >
-                    Respondidas
+                    Finalizadas
                 </Button>
 
             </div>
@@ -115,7 +115,7 @@ export default function FeedbackList() {
                             <Button
                                 onClick={handleResponder}
                                 className={`max-w-[100px] ${buttonPrimaryClass}`}                >
-                                Guardar
+                                Aceptar
                             </Button>
 
                         </div>

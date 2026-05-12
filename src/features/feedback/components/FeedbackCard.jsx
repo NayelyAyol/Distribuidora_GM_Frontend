@@ -5,6 +5,21 @@ export default function FeedbackCard({ item, onOpen }) {
 
     return (
         <div className="p-5 rounded-2xl border border-gray-100 shadow-sm bg-emerald-700/5 hover:shadow-md transition">
+            <div className="flex justify-between items-start mb-2">
+
+                <h3 className="font-semibold text-gray-800">
+                    {item.user}
+                </h3>
+
+                <p className="text-[11px] text-gray-400">
+                    {new Date(item.fecha).toLocaleDateString("es-EC", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    })}
+                </p>
+
+            </div>
 
             <p className="text-gray-800 text-base">
                 {item.text}
@@ -23,8 +38,8 @@ export default function FeedbackCard({ item, onOpen }) {
                 <div className="flex items-center gap-3">
 
                     <span className={`text-xs px-2 py-1 rounded-full ${item.estado === "Respondido"
-                            ? "bg-emerald-100 text-emerald-900"
-                            : "bg-blue-100 text-blue-700"
+                        ? "bg-emerald-100 text-emerald-900"
+                        : "bg-blue-100 text-blue-700"
                         }`}>
                         {item.estado}
                     </span>
