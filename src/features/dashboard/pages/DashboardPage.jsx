@@ -25,10 +25,10 @@ export default function DashboardPage() {
 
     const adminWidgets = [
         { icon: <MdBarChart className="text-xl" />, title: "Ingresos", subtitle: "$340.5" },
-        { icon: <IoDocuments className="text-xl" />, title: "Gastos del mes", subtitle: "$642.39" },
-        { icon: <MdBarChart className="text-xl" />, title: "Ventas", subtitle: "$574.34" },
+        { icon: <IoDocuments className="text-xl" />, title: "Recomendaciones", subtitle: "10", notification: 10 },
+        { icon: <IoDocuments className="text-xl" />, title: "Quejas y Sugerencias", subtitle: "4", notification: 4 },
         { icon: <MdDashboard className="text-xl" />, title: "Balance", subtitle: "$1,000" },
-        { icon: <MdBarChart className="text-xl" />, title: "Tareas", subtitle: "145" },
+        { icon: <MdBarChart className="text-xl" />, title: "Ventas", subtitle: "145" },
         { icon: <IoMdHome className="text-xl" />, title: "Proyectos", subtitle: "2433" }
     ]
 
@@ -61,6 +61,7 @@ export default function DashboardPage() {
                         icon={w.icon}
                         title={w.title}
                         subtitle={w.subtitle}
+                        notification={w.notification}
                     />
                 ))}
 
