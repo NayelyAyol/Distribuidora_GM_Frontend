@@ -46,7 +46,7 @@ export default function UsuariosPage() {
     const fetchVendedores = async () => {
         try {
             const data = await listarVendedores()
-            setVendedores(data.vendedores || data)
+            setVendedores(data.usuarios || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -55,7 +55,7 @@ export default function UsuariosPage() {
     const fetchVendedoresActivos = async () => {
         try {
             const data = await listarVendedoresActivos()
-            setVendedores(data.vendedores || data)
+            setVendedores(data.usuarios || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -64,7 +64,7 @@ export default function UsuariosPage() {
     const fetchVendedoresInactivos = async () => {
         try {
             const data = await listarVendedoresInactivos()
-            setVendedores(data.vendedores || data)
+            setVendedores(data.usuarios || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -73,7 +73,7 @@ export default function UsuariosPage() {
     const fetchClientes = async () => {
         try {
             const data = await listarClientes()
-            setClientes(data.clientes || data)
+            setClientes(data.usuarios || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -82,7 +82,7 @@ export default function UsuariosPage() {
     const fetchClientesActivos = async () => {
         try {
             const data = await listarClientesActivos()
-            setClientes(data.clientes || data)
+            setClientes(data.usuarios || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -91,7 +91,7 @@ export default function UsuariosPage() {
     const fetchClientesInactivos = async () => {
         try {
             const data = await listarClientesInactivos()
-            setClientes(data.clientes || data)
+            setClientes(data.usuarios || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -108,7 +108,7 @@ export default function UsuariosPage() {
             try {
                 if (esVendedor) {
                     const data = await listarClientes()
-                    setClientes(data.clientes || data)
+                    setClientes(data.usuarios || data)
                 } else {
                     if (tab === "vendedores") {
                         await fetchVendedores()
@@ -157,10 +157,10 @@ export default function UsuariosPage() {
         try {
             if (tab === "vendedores") {
                 const data = await buscarVendedor(search)
-                setVendedores(data.vendedores || [data])
+                setVendedores(data.usuarios || [data])
             } else {
                 const data = await buscarCliente(search)
-                setClientes(data.clientes || [data])
+                setClientes(data.usuarios || [data])
             }
         } catch (error) {
             toast.error(error.message)
@@ -311,13 +311,7 @@ export default function UsuariosPage() {
                                         ? vendedores
                                         : clientes
                             }
-                            onRefresh={
-                                esVendedor
-                                    ? fetchClientes
-                                    : tab === "vendedores"
-                                        ? fetchVendedores
-                                        : fetchClientes
-                            }
+                            onRefresh={refreshData}
                             onToggleEstado={async (usuario, estado) => {
                                 try {
                                     const esVendedor = tab === "vendedores"
