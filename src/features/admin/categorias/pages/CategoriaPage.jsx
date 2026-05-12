@@ -249,7 +249,7 @@ export default function CategoriaPage() {
                                 onClick={handleConfirmDisable}
                                 className={`max-w-[100px] ${buttonPrimaryClass}`}
                             >
-                                {categoryToDisable.estado ? "Desactivar" : "Activar"}
+                                Aceptar
                             </Button>
 
                         </div>
