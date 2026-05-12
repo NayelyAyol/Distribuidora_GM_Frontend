@@ -104,7 +104,7 @@ export default function UsuariosPage() {
 
         loadData()
 
-    }, [tab])
+    }, [tab, esVendedor])
 
     if (loading) {
         return <p className="p-6">Cargando usuarios...</p>
