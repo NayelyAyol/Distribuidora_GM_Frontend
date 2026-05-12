@@ -1,19 +1,5 @@
 import api from "@/utils/api"
 
-export const listarClientes = async () => {
-    try{
-    const res = await api.get("/admin/listar-clientes")
-    return res.data
-    } catch ( error ){
-        console.error("Error listando clientes:", error)
-
-        throw new Error(
-            error.response?.data?.msg || "Error al obtener clientes"
-        )
-    }
-}
-
-
 export const activarCliente = async (id) => {
     try {
         const res = await api.put(`/admin/activar-cliente/${id}`)

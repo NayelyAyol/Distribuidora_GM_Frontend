@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { FiSearch, FiTrash2 } from "react-icons/fi"
+import { FiSearch } from "react-icons/fi"
 import { Input } from "@/components/ui/input"
 import { inputClass } from "@/utils/styles"
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import UsuarioTable from "../components/UsuarioTable"
 
 import {
-    listarVendedores,
     activarVendedor,
     desactivarVendedor,
     buscarVendedor,
@@ -18,7 +15,6 @@ import {
 } from "../services/vendedorService"
 
 import {
-    listarClientes,
     activarCliente,
     desactivarCliente,
     buscarCliente,
@@ -34,23 +30,13 @@ export default function UsuariosPage() {
     const [clientes, setClientes] = useState([])
     const [loading, setLoading] = useState(true)
     const [tab, setTab] = useState("vendedores")
-    const [selectedUser, setSelectedUser] = useState(null)
     const [search, setSearch] = useState("")
-    const [filtro, setFiltro] = useState("todos")
+    const [filtro, setFiltro] = useState("activos")
+
     const user = useAuthStore((state) => state.user)
     const rol = user?.perfilId?.rol?.toUpperCase()
 
     const esVendedor = rol === "VENDEDOR"
-
-
-    const fetchVendedores = async () => {
-        try {
-            const data = await listarVendedores()
-            setVendedores(data.usuarios || data)
-        } catch (error) {
-            toast.error(error.message)
-        }
-    }
 
     const fetchVendedoresActivos = async () => {
         try {
@@ -65,15 +51,6 @@ export default function UsuariosPage() {
         try {
             const data = await listarVendedoresInactivos()
             setVendedores(data.usuarios || data)
-        } catch (error) {
-            toast.error(error.message)
-        }
-    }
-
-    const fetchClientes = async () => {
-        try {
-            const data = await listarClientes()
-            setClientes(data.usuarios || data)
         } catch (error) {
             toast.error(error.message)
         }
@@ -95,46 +72,42 @@ export default function UsuariosPage() {
         } catch (error) {
             toast.error(error.message)
         }
-
     }
 
     useEffect(() => {
-        const loadData = async () => {
-            setLoading(true)
 
+        const loadData = async () => {
+
+            setLoading(true)
             setSearch("")
-            setFiltro("todos")
+            setFiltro("activos")
 
             try {
+
                 if (esVendedor) {
-                    const data = await listarClientes()
-                    setClientes(data.usuarios || data)
+                    await fetchClientesActivos()
                 } else {
+
                     if (tab === "vendedores") {
-                        await fetchVendedores()
+                        await fetchVendedoresActivos()
                     } else {
-                        await fetchClientes()
+                        await fetchClientesActivos()
                     }
+
                 }
+
             } finally {
                 setLoading(false)
             }
+
         }
 
         loadData()
+
     }, [tab])
 
     if (loading) {
         return <p className="p-6">Cargando usuarios...</p>
-    }
-
-    const handleCloseDelete = () => {
-        setSelectedUser(null)
-    }
-
-    const handleConfirmDelete = () => {
-        toast.success(`Usuario ${selectedUser?.nombre || selectedUser?.email} eliminado`)
-        setSelectedUser(null)
     }
 
     const handleBuscar = async () => {
@@ -142,10 +115,19 @@ export default function UsuariosPage() {
         if (!search.trim()) {
 
             if (tab === "vendedores") {
-                await fetchVendedores()
+
+                filtro === "activos"
+                    ? await fetchVendedoresActivos()
+                    : await fetchVendedoresInactivos()
+
             } else {
-                await fetchClientes()
+
+                filtro === "activos"
+                    ? await fetchClientesActivos()
+                    : await fetchClientesInactivos()
+
             }
+
             return
         }
 
@@ -155,30 +137,46 @@ export default function UsuariosPage() {
         }
 
         try {
+
             if (tab === "vendedores") {
+
                 const data = await buscarVendedor(search)
                 setVendedores(data.usuarios || [data])
+
             } else {
+
                 const data = await buscarCliente(search)
                 setClientes(data.usuarios || [data])
+
             }
+
         } catch (error) {
             toast.error(error.message)
         }
+
     }
 
     const refreshData = async () => {
-        if (tab === "vendedores") {
-            if (filtro === "activos") await fetchVendedoresActivos()
-            else if (filtro === "inactivos") await fetchVendedoresInactivos()
-            else await fetchVendedores()
-        } else {
-            if (filtro === "activos") await fetchClientesActivos()
-            else if (filtro === "inactivos") await fetchClientesInactivos()
-            else await fetchClientes()
-        }
-    }
 
+        if (tab === "vendedores") {
+
+            if (filtro === "activos") {
+                await fetchVendedoresActivos()
+            } else {
+                await fetchVendedoresInactivos()
+            }
+
+        } else {
+
+            if (filtro === "activos") {
+                await fetchClientesActivos()
+            } else {
+                await fetchClientesInactivos()
+            }
+
+        }
+
+    }
 
     return (
         <div className="p-6 space-y-6">
@@ -192,14 +190,16 @@ export default function UsuariosPage() {
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
 
                 <div className="flex border-b bg-white">
+
                     {!esVendedor && (
                         <button
                             type="button"
                             onClick={() => setTab("vendedores")}
-                            className={`px-6 py-3 text-sm font-medium transition ${tab === "vendedores"
-                                ? "bg-emerald-100 text-emerald-800"
-                                : "text-gray-600 hover:bg-gray-100"
-                                }`}
+                            className={`px-6 py-3 text-sm font-medium transition ${
+                                tab === "vendedores"
+                                    ? "bg-emerald-100 text-emerald-800"
+                                    : "text-gray-600 hover:bg-gray-100"
+                            }`}
                         >
                             Vendedores
                         </button>
@@ -208,13 +208,15 @@ export default function UsuariosPage() {
                     <button
                         type="button"
                         onClick={() => setTab("clientes")}
-                        className={`px-6 py-3 text-sm font-medium transition ${tab === "clientes"
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "text-gray-600 hover:bg-gray-100"
-                            }`}
+                        className={`px-6 py-3 text-sm font-medium transition ${
+                            tab === "clientes"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "text-gray-600 hover:bg-gray-100"
+                        }`}
                     >
                         {esVendedor ? "Mis Clientes" : "Clientes"}
                     </button>
+
                 </div>
 
                 <div className="p-6 space-y-4">
@@ -236,63 +238,54 @@ export default function UsuariosPage() {
 
                             <button
                                 onClick={handleBuscar}
-                                className="rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition"                            >
+                                className="rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition"
+                            >
                                 <FiSearch className="text-emerald-900 text-xl" />
                             </button>
 
                         </div>
 
-                        <div className="flex flex-wrap gap-3 px-5">
-                            <Button
-                                onClick={() => {
-                                    setFiltro("todos")
-                                    setSearch("")
-                                    if (tab === "vendedores") {
-                                        fetchVendedores()
-                                    } else {
-                                        fetchClientes()
-                                    }
-                                }}
-                                className={filtro === "todos"
-                                    ? "bg-emerald-100 text-emerald-700"
-                                    : "bg-gray-200 text-gray-600"
-                                }
-                            >
-                                Todos
-                            </Button>
+                        <div className="flex flex-wrap gap-3">
 
                             <Button
-                                onClick={() => {
+                                onClick={async () => {
+
                                     setFiltro("activos")
                                     setSearch("")
+
                                     if (tab === "vendedores") {
-                                        fetchVendedoresActivos()
+                                        await fetchVendedoresActivos()
                                     } else {
-                                        fetchClientesActivos()
+                                        await fetchClientesActivos()
                                     }
+
                                 }}
-                                className={filtro === "activos"
-                                    ? "bg-emerald-100 text-emerald-700"
-                                    : "bg-gray-200 text-gray-600"
+                                className={
+                                    filtro === "activos"
+                                        ? "bg-emerald-100 text-emerald-700"
+                                        : "bg-gray-200 text-gray-600"
                                 }
                             >
                                 Activos
                             </Button>
 
                             <Button
-                                onClick={() => {
+                                onClick={async () => {
+
                                     setFiltro("inactivos")
                                     setSearch("")
+
                                     if (tab === "vendedores") {
-                                        fetchVendedoresInactivos()
+                                        await fetchVendedoresInactivos()
                                     } else {
-                                        fetchClientesInactivos()
+                                        await fetchClientesInactivos()
                                     }
 
                                 }}
-                                className={filtro === "inactivos"
-                                    ? "bg-emerald-100 text-emerald-700"
-                                    : "bg-gray-200 text-gray-600"
+                                className={
+                                    filtro === "inactivos"
+                                        ? "bg-emerald-100 text-emerald-700"
+                                        : "bg-gray-200 text-gray-600"
                                 }
                             >
                                 Inactivos
@@ -301,6 +294,7 @@ export default function UsuariosPage() {
                         </div>
 
                     </div>
+
                     <div className="w-full overflow-x-auto">
 
                         <UsuarioTable
@@ -313,28 +307,36 @@ export default function UsuariosPage() {
                             }
                             onRefresh={refreshData}
                             onToggleEstado={async (usuario, estado) => {
-                                try {
-                                    const esVendedor = tab === "vendedores"
 
-                                    if (esVendedor) {
+                                try {
+
+                                    const esTabVendedor = tab === "vendedores"
+
+                                    if (esTabVendedor) {
+
                                         estado
                                             ? await activarVendedor(usuario._id)
                                             : await desactivarVendedor(usuario._id)
+
                                     } else {
+
                                         estado
                                             ? await activarCliente(usuario._id)
                                             : await desactivarCliente(usuario._id)
+
                                     }
+
                                     await refreshData()
+
                                     toast.success(
-                                        `${esVendedor ? "Vendedor" : "Cliente"} ${estado ? "activado" : "desactivado"}`
+                                        `${esTabVendedor ? "Vendedor" : "Cliente"} ${estado ? "activado" : "desactivado"}`
                                     )
+
                                 } catch (error) {
                                     toast.error(error.message)
                                 }
-                            }
-                            }
 
+                            }}
                         />
 
                     </div>
@@ -342,47 +344,6 @@ export default function UsuariosPage() {
                 </div>
 
             </div>
-
-            {selectedUser && (
-                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
-
-                    <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
-
-                        <h2 className="text-lg font-bold text-gray-800 mb-2">
-                            Confirmar eliminación
-                        </h2>
-
-                        <p className="text-[15px] text-gray-500 mb-4 text-justify break-words">
-                            ¿Está seguro que desea eliminar el usuario{" "}
-                            <span className="font-semibold text-emerald-800">
-                                {selectedUser.nombre || selectedUser.email}
-                            </span>
-                            ?
-                        </p>
-
-                        <div className="flex justify-end gap-3">
-
-                            <Button
-                                variant="ghost"
-                                className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
-                                onClick={handleCloseDelete}
-                            >
-                                Cancelar
-                            </Button>
-
-                            <Button
-                                onClick={handleConfirmDelete}
-                                className={`max-w-[100px] ${buttonPrimaryClass}`}
-                            >
-                                Eliminar
-                            </Button>
-
-                        </div>
-
-                    </Card>
-
-                </div>
-            )}
 
         </div>
     )
