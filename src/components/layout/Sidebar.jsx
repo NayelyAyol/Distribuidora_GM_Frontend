@@ -64,9 +64,9 @@ const Sidebar = ({ open, onClose }) => {
             roles: ["ADMINISTRADOR"],
         },
         {
-            label: "Clientes",
-            path: "/dashboard/clientes",
-            icon: FaUsers,
+            label: "Pedidos",
+            path: "/dashboard/pedidos",
+            icon: FaShoppingBag,
             roles: ["VENDEDOR"],
         },
         {

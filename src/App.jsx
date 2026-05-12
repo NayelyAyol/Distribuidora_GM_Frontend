@@ -90,9 +90,9 @@ function App() {
           />
 
           <Route
-            path="/dashboard/clientes"
+            path="/dashboard/pedidos"
             element={
-              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+              <ProtectedRoute roles={["VENDEDOR"]}>
                 <UsuariosCreatePage tipo="CLIENTE" />
               </ProtectedRoute>
             }

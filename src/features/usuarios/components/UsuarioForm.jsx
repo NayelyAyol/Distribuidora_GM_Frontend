@@ -11,7 +11,7 @@ import {
 
 import useUsuarioForm from "../hooks/useUsuarioForm"
 
-export default function UsuarioForm({ onSuccess, tipo = "VENDEDOR" }) {
+export default function UsuarioForm({ onSuccess }) {
 
     const {
         form,
@@ -22,53 +22,79 @@ export default function UsuarioForm({ onSuccess, tipo = "VENDEDOR" }) {
         setShowConfirmPassword,
         handleChange,
         handleSubmit
-    } = useUsuarioForm(onSuccess, tipo)
+    } = useUsuarioForm(onSuccess)
 
     return (
         <form className="grid grid-cols-1 md:grid-cols-2 gap-5" onSubmit={handleSubmit}>
 
             <div>
                 <Label className={labelClass}>Nombre</Label>
-                <Input name="nombre" value={form.nombre} onChange={handleChange} required className={inputClass} />
+                <Input
+                    name="nombre"
+                    value={form.nombre}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                />
             </div>
 
             <div>
                 <Label className={labelClass}>Apellido</Label>
-                <Input name="apellido" value={form.apellido} onChange={handleChange} required className={inputClass} />
+                <Input
+                    name="apellido"
+                    value={form.apellido}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                />
             </div>
 
             <div>
                 <Label className={labelClass}>Cédula</Label>
-                <Input name="cedula" value={form.cedula} onChange={handleChange} required className={inputClass} />
+                <Input
+                    name="cedula"
+                    value={form.cedula}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                />
             </div>
 
             <div>
                 <Label className={labelClass}>Fecha nacimiento</Label>
-                <Input type="date" name="fecha_nacimiento" value={form.fecha_nacimiento} onChange={handleChange} required className={inputClass} />
+                <Input
+                    type="date"
+                    name="fecha_nacimiento"
+                    value={form.fecha_nacimiento}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                />
             </div>
 
             <div>
                 <Label className={labelClass}>Teléfono</Label>
-                <Input name="telefono" value={form.telefono} onChange={handleChange} required className={inputClass} />
-            </div>
-            {tipo === "CLIENTE" && (
-                <div>
-                    <Label className={labelClass}>Ciudad</Label>
-                    <Input
-                        name="ciudad"
-                        value={form.ciudad}
-                        onChange={handleChange}
-                        required
-                        className={inputClass}
-                    />
-                </div>
-            )}
-            <div>
-                <Label className={labelClass}>Dirección</Label>
-                <Input name="direccion" value={form.direccion} onChange={handleChange} required className={inputClass} />
+                <Input
+                    name="telefono"
+                    value={form.telefono}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                />
             </div>
 
-            <div className={tipo === "VENDEDOR" ? "md:col-span-2" : ""}>
+            <div>
+                <Label className={labelClass}>Dirección</Label>
+                <Input
+                    name="direccion"
+                    value={form.direccion}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                />
+            </div>
+
+            <div className="md:col-span-2">
                 <Label className={labelClass}>Email</Label>
                 <Input
                     type="email"
@@ -123,8 +149,12 @@ export default function UsuarioForm({ onSuccess, tipo = "VENDEDOR" }) {
             </div>
 
             <div className="md:col-span-2">
-                <Button type="submit" disabled={loading} className={buttonPrimaryClass}>
-                    {loading ? "Creando..." : `Aceptar`}
+                <Button
+                    type="submit"
+                    disabled={loading}
+                    className={buttonPrimaryClass}
+                >
+                    {loading ? "Creando..." : "Aceptar"}
                 </Button>
             </div>
 
