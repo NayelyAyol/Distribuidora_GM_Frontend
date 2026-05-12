@@ -11,16 +11,16 @@ import {
     buttonPrimaryClass
 } from "@/utils/styles"
 
-import { crearCategoria } from "../services/categoriaService"
+import { crearCategoria, actualizarCategoria } from "../services/categoriaService"
 
 import { toast } from "react-toastify"
 
-import { uploadImage } from "../../../shared/services/cloudinaryService"
 import { useRef } from "react";
 
 export default function CategoriaForm({ selectedCategory, setSelectedCategory, onSuccess }) {
 
     const [preview, setPreview] = useState(null)
+    const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
         nombre: "",
@@ -29,23 +29,32 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
     })
 
     const fileInputRef = useRef(null);
-    
+
     useEffect(() => {
         if (selectedCategory) {
+
+            const img =
+                selectedCategory.imagen?.url ||
+                selectedCategory.imagen ||
+                "";
+
             setForm({
                 nombre: selectedCategory.nombre,
                 descripcion: selectedCategory.descripcion,
-                imagen: selectedCategory.imagen?.url || selectedCategory.imagen
-            })
+                imagen: img
+            });
+
+            setPreview(img);
         } else {
             setForm({
                 nombre: "",
                 descripcion: "",
                 imagen: null
-            })
-        }
+            });
 
-    }, [selectedCategory])
+            setPreview(null);
+        }
+    }, [selectedCategory]);
 
     const handleChange = (e) => {
         setForm({
@@ -56,30 +65,32 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
 
     const handleSubmit = async () => {
         try {
-            if (!form.nombre || !form.descripcion) {
+            setLoading(true);
+
+            if (!form.nombre.trim() || !form.descripcion.trim()) {
                 toast.error("Todos los campos son obligatorios");
                 return;
             }
 
-            let imageUrl = form.imagen;
-
-            if (form.imagen instanceof File) {
-                imageUrl = await uploadImage(form.imagen);
+            if (!selectedCategory && !form.imagen) {
+                toast.error("La imagen es obligatoria");
+                return;
             }
 
-            const payload = {
-                nombre: form.nombre,
-                descripcion: form.descripcion,
-                imagen: {
-                    url: imageUrl
-                }
-            };
+            const formData = new FormData();
+
+            formData.append("nombre", form.nombre.trim());
+            formData.append("descripcion", form.descripcion.trim());
+
+            if (form.imagen instanceof File) {
+                formData.append("imagen", form.imagen);
+            }
 
             if (selectedCategory) {
-                console.log("EDITANDO:", payload);
+                await actualizarCategoria(selectedCategory._id, formData);
+                toast.success("Categoría actualizada correctamente");
             } else {
-                console.log("PAYLOAD:", payload)
-                await crearCategoria(payload);
+                await crearCategoria(formData);
                 if (onSuccess) await onSuccess();
                 toast.success("Categoría creada correctamente");
             }
@@ -91,64 +102,65 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                 imagen: null,
             });
 
-
             setPreview(null);
 
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
+
         } catch (error) {
             console.error(error);
             toast.error(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleImagen = (e) => {
-        const file = e.target.files[0]
+        const file = e.target.files[0];
 
-        if (!file) return
-
+        if (!file) return;
 
         if (!file.type.startsWith("image/")) {
-            toast.error("Solo se permiten imágenes")
-            return
+            toast.error("Solo se permiten imágenes");
+            return;
         }
 
-        setForm({
-            ...form,
+        setForm((prev) => ({
+            ...prev,
             imagen: file
-        })
+        }));
 
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onloadend = () => {
-            setPreview(reader.result)
-        }
-        reader.readAsDataURL(file)
-    }
+            setPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
 
     return (
         <div className="bg-white/80 backdrop-blur-xl border border-gray-200 shadow-lg rounded-2xl p-4">
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-                <div className="h-full w-full rounded-xl bg-emerald-50 flex items-center justify-center">
+                <div className="h-[255px] w-full rounded-xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
 
-                    <label className="flex h-full w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 cursor-pointer hover:bg-emerald-100/40 transition overflow-hidden">
+                    <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
 
                         {preview ? (
                             <img
                                 src={preview}
-                                className="w-full h-full object-cover"
                                 alt="preview"
+                                className="block h-full w-full object-cover"
                             />
                         ) : (
-                            <>
+                            <div className="flex flex-col items-center justify-center">
                                 <MdFileUpload className="text-[60px] text-emerald-500" />
 
                                 <p className="mt-2 text-sm text-gray-600">
                                     Subir imagen
                                 </p>
-                            </>
+                            </div>
                         )}
 
                         <input

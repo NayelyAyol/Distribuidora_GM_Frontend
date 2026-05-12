@@ -1,11 +1,11 @@
 import api from "@/utils/api"
 
-export const crearCategoria = async (data) => {
+export const crearCategoria = async (formData) => {
     try {
-        const res = await api.post("/categorias/crear", {
-            nombre: data.nombre,
-            descripcion: data.descripcion,
-            imagen: data.imagen
+        const res = await api.post("/categorias/crear", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
         });
 
         return res.data;
@@ -18,6 +18,31 @@ export const crearCategoria = async (data) => {
         );
     }
 };
+
+
+export const actualizarCategoria = async (categoriaId, formData) => {
+    try {
+        const res = await api.put(
+            `/categorias/actualizar/${categoriaId}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }
+        );
+
+        return res.data;
+
+    } catch (error) {
+        console.error("Error actualizando categoría:", error);
+
+        throw new Error(
+            error.response?.data?.msg || "Error al actualizar categoría"
+        );
+    }
+};
+
 
 export const listarCategorias = async () => {
     try {
@@ -43,8 +68,7 @@ export const listarCategoriasInactivas = async () => {
             error.response?.data?.msg || "Error al obtener categorías inactivas"
         )
     }
-}   
-
+}
 
 export const listarCategoriasActivas = async () => {
     try {
@@ -70,32 +94,14 @@ export const desactivarCategoria = async (categoriaId) => {
     }
 };
 
-
 export const activarCategoria = async (categoriaId) => {
     try {
-        const res = await api.put(`/categorias/activar/${categoriaId}`);   
+        const res = await api.put(`/categorias/activar/${categoriaId}`);
         return res.data.categorias
     } catch (error) {
         console.error("Error activando categoría:", error);
         throw new Error(
             error.response?.data?.msg || "Error al activar categoría"
-        );
-    }
-};
-
-
-export const actualizarCategoria = async (categoriaId, data) => {
-    try {
-        const res = await api.put(`/categorias/actualizar/${categoriaId}`, {
-            nombre: data.nombre,
-            descripcion: data.descripcion,
-            imagen: data.imagen
-        });
-        return res.data;
-    } catch (error) {
-        console.error("Error actualizando categoría:", error);
-        throw new Error(
-            error.response?.data?.msg || "Error al actualizar categoría"
         );
     }
 };
