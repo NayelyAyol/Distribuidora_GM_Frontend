@@ -182,7 +182,7 @@ export default function RecomendacionesPage() {
                                 onClick={handleResponder}
                                 className={`max-w-[100px] ${buttonPrimaryClass}`}
                             >
-                                Guardar
+                                Aceptar
                             </Button>
 
                         </div>

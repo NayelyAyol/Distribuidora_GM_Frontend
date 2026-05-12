@@ -58,8 +58,8 @@ export default function RecomendacionTable({
                         <StatusBadge
                             estado={recomendacion.estado}
                             onToggle={handleToggle}
-                            labelActivo="Atendida"
-                            labelInactivo="No atendida"
+                            labelActivo="Finalizada"
+                            labelInactivo="Pendiente"
                         />
                     </div>
                 )
