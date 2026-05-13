@@ -24,6 +24,8 @@ import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
 import RecomendacionesVendedorPage from "./features/vendedor/recomendaciones/pages/RecomendacionPage"
 import NotFound from "./features/notfound/NotFound"
 import PedidosDisponiblesPage from "./features/vendedor/pedidos/pages/PedidosDisponiblesPage"
+import PedidosSeleccionadosPage from "./features/vendedor/pedidos/pages/PedidosSeleccionadosPage"
+import PedidoDetallePage from "./features/vendedor/pedidos/pages/PedidoDetallePage"
 
 function App() {
   return (
@@ -97,6 +99,24 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/dashboard/mis-pedidos"
+            element={
+              <ProtectedRoute roles={["VENDEDOR"]}>
+                <PedidosSeleccionadosPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+              path="/dashboard/mis-pedidos/:id"
+              element={
+                <ProtectedRoute roles={["VENDEDOR"]}>
+                  <PedidoDetallePage />
+                </ProtectedRoute>
+              }
+            />
 
           <Route
             path="/dashboard/vendedores"

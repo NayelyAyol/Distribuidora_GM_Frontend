@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
-import { MdLightbulbOutline, MdFeedback } from "react-icons/md";
+import { MdLightbulbOutline, MdFeedback, MdInventory } from "react-icons/md";
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate();
@@ -77,9 +77,9 @@ const Sidebar = ({ open, onClose }) => {
             roles: ["ADMINISTRADOR"],
         },
         {
-            label: "Usuarios Creados",
-            path: "/dashboard/clientes-creados",
-            icon: FaUsers,
+            label: "Mis pedidos",
+            path: "/dashboard/mis-pedidos",
+            icon: MdInventory,
             roles: ["VENDEDOR"],
         },
         {
