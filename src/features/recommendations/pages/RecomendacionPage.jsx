@@ -1,16 +1,12 @@
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { FiMessageCircle, FiTrash2 } from "react-icons/fi"
-
-import RecomendacionTable from "../components/RecomendacionTable"
+import DataTable from "@/components/ui/DataTable"
+import { recomendacionColumns } from "../columns/recomendacionColumns"
 import NotificationPage from "./NotificationPage"
-import { createColumnHelper } from "@tanstack/react-table"
-
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { inputClass, buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 
-const columnHelper = createColumnHelper()
 
 export default function RecomendacionesPage() {
 
@@ -64,38 +60,6 @@ export default function RecomendacionesPage() {
         handleCloseDelete()
     }
 
-
-
-    const extraColumns = [
-        columnHelper.display({
-            id: "acciones",
-            header: "Acciones",
-            cell: ({ row }) => {
-                const rec = row.original
-
-                return (
-                    <div className="flex justify-center gap-3">
-
-                        <button
-                            onClick={() => handleOpenModal(rec)}
-                            className="text-emerald-700 hover:text-emerald-900"
-                        >
-                            <FiMessageCircle />
-                        </button>
-
-                        <button
-                            onClick={() => handleOpenDelete(rec)}
-                            className="text-red-600 hover:text-red-800"
-                        >
-                            <FiTrash2 />
-                        </button>
-
-                    </div>
-                )
-            }
-        })
-    ]
-
     return (
         <div className="p-6 space-y-6">
 
@@ -132,14 +96,17 @@ export default function RecomendacionesPage() {
                 <div className="p-6">
 
                     {tab === "vendedor" ? (
-                        <RecomendacionTable
+                        <DataTable
                             data={recomendacionesVendedor}
-                            extraColumns={extraColumns}
-                            onToggleEstado={async (rec, estado) => {
-                                toast.success(
-                                    `Recomendación ${estado ? "atendida" : "no atendida"}`
-                                )
-                            }}
+                            columns={recomendacionColumns(
+                                handleOpenModal,
+                                handleOpenDelete,
+                                async (rec, estado) => {
+                                    toast.success(
+                                        `Recomendación ${estado ? "atendida" : "pendiente"}`
+                                    )
+                                }
+                            )}
                         />
                     ) : (
                         <NotificationPage />
