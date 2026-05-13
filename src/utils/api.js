@@ -3,9 +3,6 @@ import useAuthStore from "@/context/useAuthStore";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
-    headers: {
-    "Content-Type": "application/json",
-    },
 });
 
 // Uso de token de forma automatica en cada solicitud

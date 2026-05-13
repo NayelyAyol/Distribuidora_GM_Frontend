@@ -2,11 +2,7 @@ import api from "@/utils/api"
 
 export const crearCategoria = async (formData) => {
     try {
-        const res = await api.post("/categorias/crear", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        });
+        const res = await api.post("/categorias/crear", formData);
 
         return res.data;
 
@@ -24,12 +20,7 @@ export const actualizarCategoria = async (categoriaId, formData) => {
     try {
         const res = await api.put(
             `/categorias/actualizar/${categoriaId}`,
-            formData,
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            }
+            formData
         );
 
         return res.data;

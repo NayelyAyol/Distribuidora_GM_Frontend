@@ -17,7 +17,7 @@ import { toast } from "react-toastify"
 
 import { useRef } from "react";
 
-export default function CategoriaForm({ selectedCategory, setSelectedCategory, onSuccess }) {
+export default function CategoriaForm({ selectedCategory, setSelectedCategory, onSuccess, categorias = [] }) {
 
     const [preview, setPreview] = useState(null)
     const [loading, setLoading] = useState(false);
@@ -63,7 +63,10 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
         })
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+
+        if (e) e.preventDefault();
+
         try {
             setLoading(true);
 
@@ -77,6 +80,16 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                 return;
             }
 
+            const existe = categorias.some(
+                (cat) =>
+                    cat.nombre.trim().toLowerCase() ===
+                    form.nombre.trim().toLowerCase()
+            );
+
+            if (!selectedCategory && existe) {
+                toast.error("La categoría ya existe");
+                return;
+            }
             const formData = new FormData();
 
             formData.append("nombre", form.nombre.trim());
@@ -86,6 +99,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                 formData.append("imagen", form.imagen);
             }
 
+            console.log(form.imagen instanceof File)
             if (selectedCategory) {
                 await actualizarCategoria(selectedCategory._id, formData);
                 toast.success("Categoría actualizada correctamente");
@@ -116,7 +130,8 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
         }
     };
 
-    const handleImagen = (e) => {
+        const handleImagen = (e) => {
+
         const file = e.target.files[0];
 
         if (!file) return;
@@ -126,15 +141,23 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
             return;
         }
 
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error("La imagen no debe superar los 2MB");
+            return;
+        }
+        console.log(file)
+
         setForm((prev) => ({
             ...prev,
             imagen: file
         }));
 
         const reader = new FileReader();
+
         reader.onloadend = () => {
             setPreview(reader.result);
         };
+
         reader.readAsDataURL(file);
     };
 
@@ -201,6 +224,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                     </div>
 
                     <Button
+                        type="button"
                         onClick={handleSubmit}
                         className={buttonPrimaryClass}>
                         {selectedCategory ? "Actualizar" : "Aceptar"}

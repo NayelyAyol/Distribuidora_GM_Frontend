@@ -134,6 +134,7 @@ export default function CategoriaPage() {
                     selectedCategory={categoryToEdit}
                     setSelectedCategory={setCategoryToEdit}
                     onSuccess={fetchCategoriasActivas}
+                    categorias={data}
                 />
             )}
 
