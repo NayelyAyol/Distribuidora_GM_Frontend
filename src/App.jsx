@@ -23,6 +23,7 @@ import RecomendacionesPage from "./features/recommendations/pages/RecomendacionP
 import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
 import RecomendacionesVendedorPage from "./features/vendedor/recomendaciones/pages/RecomendacionPage"
 import NotFound from "./features/notfound/NotFound"
+import PedidosDisponiblesPage from "./features/vendedor/pedidos/pages/PedidosDisponiblesPage"
 
 function App() {
   return (
@@ -92,7 +93,7 @@ function App() {
             path="/dashboard/pedidos"
             element={
               <ProtectedRoute roles={["VENDEDOR"]}>
-                <UsuariosCreatePage tipo="CLIENTE" />
+                <PedidosDisponiblesPage />
               </ProtectedRoute>
             }
           />

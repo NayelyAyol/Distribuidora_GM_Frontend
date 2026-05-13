@@ -8,6 +8,7 @@ import {
     FaUsers,
     FaShoppingBag,
     FaChartBar,
+    FaClipboardList
 } from "react-icons/fa";
 import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
@@ -66,7 +67,7 @@ const Sidebar = ({ open, onClose }) => {
         {
             label: "Pedidos",
             path: "/dashboard/pedidos",
-            icon: FaShoppingBag,
+            icon: FaClipboardList,
             roles: ["VENDEDOR"],
         },
         {
