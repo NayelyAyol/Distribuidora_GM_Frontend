@@ -15,7 +15,7 @@ export default function FeedbackList() {
 
     const [selected, setSelected] = useState(null)
     const [respuesta, setRespuesta] = useState("")
-    const [filter, setFilter] = useState("TODOS")
+    const [filter, setFilter] = useState("Pendiente")
 
     const handleResponder = () => {
 
@@ -38,23 +38,13 @@ export default function FeedbackList() {
     }
 
     const filteredData =
-        filter === "TODOS"
-            ? data
-            : data.filter(item => item.estado === filter)
+        data.filter(item => item.estado === filter)
 
     return (
 
         <div className="grid gap-4">
 
             <div className="flex gap-2 mb-4">
-
-                <Button
-                    onClick={() => setFilter("TODOS")}
-                    className={filter === "TODOS" ? "bg-emerald-100 text-emerald-700"
-                        : "bg-gray-200 text-gray-600"}
-                >
-                    Todas
-                </Button>
 
                 <Button
                     onClick={() => setFilter("Pendiente")}
