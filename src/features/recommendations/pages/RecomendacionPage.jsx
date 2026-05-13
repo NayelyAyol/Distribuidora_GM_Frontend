@@ -187,7 +187,7 @@ export default function RecomendacionesPage() {
                                 onClick={handleConfirmDelete}
                                 className={`max-w-[100px] ${buttonPrimaryClass}`}
                             >
-                                Eliminar
+                                Aceptar
                             </Button>
 
                         </div>
