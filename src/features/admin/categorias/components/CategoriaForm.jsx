@@ -80,13 +80,19 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                 return;
             }
 
-            const existe = categorias.some(
-                (cat) =>
+            const existe = categorias.some((cat) => {
+                const mismoNombre =
                     cat.nombre.trim().toLowerCase() ===
-                    form.nombre.trim().toLowerCase()
-            );
+                    form.nombre.trim().toLowerCase();
 
-            if (!selectedCategory && existe) {
+                if (selectedCategory) {
+                    return mismoNombre && cat._id !== selectedCategory._id;
+                }
+
+                return mismoNombre;
+            });
+
+            if (existe) {
                 toast.error("La categoría ya existe");
                 return;
             }
@@ -130,7 +136,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
         }
     };
 
-        const handleImagen = (e) => {
+    const handleImagen = (e) => {
 
         const file = e.target.files[0];
 

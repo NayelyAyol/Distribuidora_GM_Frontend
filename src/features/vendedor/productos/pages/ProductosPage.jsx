@@ -1,91 +1,107 @@
 import { useParams, useNavigate } from "react-router-dom"
+import { useState } from "react"
+
+import ProductosGrid from "../components/ProductosGrid"
+
+import { Button } from "@/components/ui/button"
+import { buttonPrimaryClass } from "@/utils/styles"
 
 export default function ProductosPage() {
 
     const { categoriaId } = useParams()
     const navigate = useNavigate()
 
-    const categorias = [
-        { id: 1, nombre: "Electrónica" },
-        { id: 2, nombre: "Ropa" },
-        { id: 3, nombre: "Hogar" },
-        { id: 4, nombre: "Deportes" }
-    ]
+    const [productos, setProductos] = useState([
+        {
+            id: 1,
+            nombre: "Laptop HP",
+            descripcion: "Laptop para oficina",
+            stock: 5,
+            imagen: "https://picsum.photos/300"
+        },
+        {
+            id: 2,
+            nombre: "Mouse Logitech",
+            descripcion: "Mouse inalámbrico",
+            stock: 8,
+            imagen: "https://picsum.photos/301"
+        }
+    ])
 
-    const productos = [
-        { id: 1, nombre: "Coca Cola", stock: 10 },
-        { id: 2, nombre: "Pepsi", stock: 5 },
-        { id: 3, nombre: "Laptop HP", stock: 3 },
-        { id: 4, nombre: "Audífonos Sony", stock: 8 },
-        { id: 5, nombre: "Mouse Logitech", stock: 15 },
-        { id: 6, nombre: "Teclado mecánico", stock: 6 },
-        { id: 7, nombre: "Monitor Samsung", stock: 4 },
-        { id: 2, nombre: "Pepsi", stock: 5 },
-        { id: 3, nombre: "Laptop HP", stock: 3 },
-        { id: 4, nombre: "Audífonos Sony", stock: 8 },
-        { id: 5, nombre: "Mouse Logitech", stock: 15 },
-        { id: 6, nombre: "Teclado mecánico", stock: 6 },
-        { id: 7, nombre: "Monitor Samsung", stock: 4 }
-    ]
+    const aumentarStock = (id) => {
+        setProductos((prev) =>
+            prev.map((p) =>
+                p.id === id
+                    ? { ...p, stock: p.stock + 1 }
+                    : p
+            )
+        )
+    }
 
-    const categoria = categorias.find(
-        (c) => c.id === Number(categoriaId)
-    )
+    const disminuirStock = (id) => {
+        setProductos((prev) =>
+            prev.map((p) =>
+                p.id === id && p.stock > 0
+                    ? { ...p, stock: p.stock - 1 }
+                    : p
+            )
+        )
+    }
 
     return (
-        <div className="p-6 flex flex-col gap-4">
+        <div className="p-6 flex flex-col gap-6">
 
             <div>
                 <p className="text-gray-500">
-                    Este módulo te permite visualizar los productos de la categoría seleccionada
+                    Gestiona el stock de los productos
                 </p>
             </div>
 
-            <div className="flex-1 max-h-[65vh] overflow-y-auto bg-white/60 rounded-2xl p-5 shadow-inner flex flex-col gap-4">
+            <div className="bg-white/60 rounded-2xl p-5 shadow-inner">
 
-                <div className="flex items-center justify-between">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
-                    <h2 className="text-xl font-bold">
-                        Productos de la categoría{" "}
-                        <span className="text-emerald-900">
-                            {categoria?.nombre || "Desconocida"}
-                        </span>
-                    </h2>
+    <div>
 
-                    <button
-                        onClick={() => navigate("/dashboard/categorias")}
-                        className="text-sm text-emerald-700 font-medium hover:underline"
-                    >
-                        ← Volver a categorías
-                    </button>
+        <h2 className="text-2xl font-bold text-gray-800">
+            Categoría{" "}
+            <span className="text-emerald-700">
+                Electrónica
+            </span>
+        </h2>
 
-                </div>
+    </div>
 
-                {productos.length === 0 ? (
-                    <div className="text-center py-10 text-gray-500">
-                        No hay productos disponibles en esta categoría
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="flex flex-wrap items-center justify-start lg:justify-end gap-3">
 
-                        {productos.map((p) => (
-                            <div
-                                key={p.id}
-                                onClick={() =>
-                                    navigate(`/dashboard/categorias/${categoriaId}/productos/${p.id}`)
-                                }
-                                className="bg-white p-4 rounded-xl shadow cursor-pointer hover:shadow-lg transition"
-                            >
-                                <h2 className="font-bold">{p.nombre}</h2>
+        <Button
+            className={`${buttonPrimaryClass} whitespace-nowrap`}
+        >
+            + Agregar
+        </Button>
 
-                                <p className="text-sm text-gray-500">
-                                    Stock: {p.stock}
-                                </p>
-                            </div>
-                        ))}
+        <Button
+            variant="ghost"
+            onClick={() => navigate("/dashboard/categorias")}
+            className="
+                whitespace-nowrap
+                border border-gray-200
+                hover:bg-gray-100
+                px-5 py-2
+                rounded-xl
+            "
+        >
+            ← Volver
+        </Button>
 
-                    </div>
-                )}
+    </div>
+
+</div>
+                <ProductosGrid
+                    productos={productos}
+                    onIncrease={aumentarStock}
+                    onDecrease={disminuirStock}
+                />
 
             </div>
 
