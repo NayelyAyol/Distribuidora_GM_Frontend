@@ -38,7 +38,7 @@ export default function ProductoCard({
 
                 <div className="flex items-center justify-between">
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-6 justify-center w-full">
 
                         <button
                             onClick={() => onDecrease(producto._id)}

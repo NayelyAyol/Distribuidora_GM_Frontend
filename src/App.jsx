@@ -83,15 +83,6 @@ function App() {
           />
 
           <Route
-            path="/dashboard/categorias/:categoriaId/productos/:productoId"
-            element={
-              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
-                <ProductosPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
             path="/dashboard/pedidos"
             element={
               <ProtectedRoute roles={["VENDEDOR"]}>
