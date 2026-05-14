@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-
 import {
     inputClass,
     labelClass,
@@ -36,7 +35,6 @@ export default function ProfileForm({ user, onRefresh }) {
     const handleChange = (e) => {
         const { name, value } = e.target
 
-        // Validación en tiempo real
         if (name === "nombre" || name === "apellido") {
             if (!/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/.test(value)) return
         }
@@ -54,7 +52,6 @@ export default function ProfileForm({ user, onRefresh }) {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        // Validaciones adicionales
         if (!/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(form.nombre)) {
             toast.error("El nombre solo debe contener letras")
             return
@@ -108,7 +105,6 @@ export default function ProfileForm({ user, onRefresh }) {
                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
             >
 
-                {/* Nombre */}
                 <div>
                     <Label className={`${labelClass} mb-3`}>Nombre</Label>
                     <Input
@@ -122,7 +118,6 @@ export default function ProfileForm({ user, onRefresh }) {
                     />
                 </div>
 
-                {/* Apellido */}
                 <div>
                     <Label className={`${labelClass} mb-3`}>Apellido</Label>
                     <Input
@@ -136,7 +131,6 @@ export default function ProfileForm({ user, onRefresh }) {
                     />
                 </div>
 
-                {/* Email (bloqueado) */}
                 <div className="md:col-span-2">
                     <Label className={`${labelClass} mb-3`}>Email</Label>
                     <Input
@@ -148,7 +142,6 @@ export default function ProfileForm({ user, onRefresh }) {
                     />
                 </div>
 
-                {/* Dirección */}
                 <div className="md:col-span-2">
                     <Label className={`${labelClass} mb-3`}>Dirección</Label>
                     <Input
@@ -160,7 +153,6 @@ export default function ProfileForm({ user, onRefresh }) {
                     />
                 </div>
 
-                {/* Teléfono */}
                 <div className="md:col-span-2">
                     <Label className={`${labelClass} mb-3`}>Teléfono</Label>
                     <Input
@@ -174,10 +166,9 @@ export default function ProfileForm({ user, onRefresh }) {
                     />
                 </div>
 
-                {/* Botón */}
                 <div className="md:col-span-2">
                     <Button className={buttonPrimaryClass} type="submit">
-                        Guardar cambios
+                        Guardar
                     </Button>
                 </div>
 

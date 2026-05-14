@@ -56,7 +56,7 @@ const Sidebar = ({ open, onClose }) => {
             label: "Mi perfil",
             path: "/dashboard/perfil",
             icon: FaUserCircle,
-            roles: ["ADMINISTRADOR", "VENDEDOR"],
+            roles: ["ADMINISTRADOR", "VENDEDOR", "CLIENTE"],
         },
         {
             label: "Vendedores",

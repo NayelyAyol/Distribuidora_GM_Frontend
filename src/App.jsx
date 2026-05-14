@@ -45,7 +45,7 @@ function App() {
         {/* PRIVADAS */}
         <Route
           element={
-            <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+            <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR", "CLIENTE"]}>
               <MainLayout />
             </ProtectedRoute>
           }
@@ -53,7 +53,12 @@ function App() {
 
           <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/dashboard/perfil" element={<ProfilePage />} />
+          <Route path="/dashboard/perfil" 
+          element={
+          <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR", "CLIENTE"]}>
+              <ProfilePage />
+          </ProtectedRoute> }
+          />
 
           <Route
             path="/dashboard/usuarios"
