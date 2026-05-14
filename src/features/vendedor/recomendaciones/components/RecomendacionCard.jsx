@@ -32,7 +32,7 @@ export default function RecomendacionCard({ item }) {
                         ? "bg-emerald-100 text-emerald-900"
                         : "bg-blue-100 text-blue-700"
                 }`}>
-                    {item.respuesta ? "Respondido" : "Sin respuesta"}
+                    {item.respuesta ? "Finalizada" : "Pendiente"}
                 </span>
 
             </div>

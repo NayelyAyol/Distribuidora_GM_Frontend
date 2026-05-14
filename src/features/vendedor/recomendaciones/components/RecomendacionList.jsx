@@ -25,14 +25,12 @@ export default function RecomendacionList() {
         }
     ])
 
-    const [filter, setFilter] = useState("TODOS")
+    const [filter, setFilter] = useState("CON_RESPUESTA")
 
     const filteredData =
-        filter === "TODOS"
-            ? data
-            : filter === "CON_RESPUESTA"
-                ? data.filter(item => item.respuesta)
-                : data.filter(item => !item.respuesta)
+        filter === "CON_RESPUESTA"
+            ? data.filter(item => item.respuesta)
+            : data.filter(item => !item.respuesta)
 
     return (
         <div className="grid gap-4">
@@ -40,21 +38,12 @@ export default function RecomendacionList() {
             <div className="flex gap-2 mb-4">
 
                 <Button
-                    onClick={() => setFilter("TODOS")}
-                    className={filter === "TODOS"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-gray-200 text-gray-600"}
-                >
-                    Todos
-                </Button>
-
-                <Button
                     onClick={() => setFilter("SIN_RESPUESTA")}
                     className={filter === "SIN_RESPUESTA"
                         ? "bg-emerald-100 text-emerald-700"
                         : "bg-gray-200 text-gray-600"}
                 >
-                    Sin respuesta
+                    Pendientes
                 </Button>
 
                 <Button
@@ -63,7 +52,7 @@ export default function RecomendacionList() {
                         ? "bg-emerald-100 text-emerald-700"
                         : "bg-gray-200 text-gray-600"}
                 >
-                    Respondidos
+                    Finalizadas
                 </Button>
 
             </div>
