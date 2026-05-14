@@ -12,7 +12,7 @@ import {
 } from "@/utils/styles"
 
 import { MdFileUpload } from "react-icons/md"
-
+import { FiEdit2 } from "react-icons/fi"
 import { toast } from "react-toastify"
 
 export default function ProductoForm({
@@ -216,7 +216,44 @@ export default function ProductoForm({
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto">
 
-            <div className="h-[260px] md:h-[400px] xl:h-[640px] rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
+            <div
+                className="
+        relative
+        h-[260px]
+        md:h-[400px]
+        xl:h-[640px]
+        rounded-2xl
+        overflow-hidden
+        border-2 border-dashed border-gray-300
+        bg-emerald-50
+    "
+            >
+
+                {selectedProduct && (
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="
+                absolute
+                top-4
+                right-4
+                z-10
+                w-11
+                h-11
+                rounded-full
+                bg-white/90
+                backdrop-blur-md
+                shadow-lg
+                border border-gray-200
+                flex items-center justify-center
+                hover:scale-105
+                hover:bg-emerald-50
+                transition
+            "
+                    >
+                        <FiEdit2 className="text-emerald-700 text-lg" />
+                    </button>
+                )}
 
                 <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
 

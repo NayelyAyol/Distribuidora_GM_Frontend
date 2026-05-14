@@ -27,6 +27,7 @@ import PedidosDisponiblesPage from "./features/vendedor/pedidos/pages/PedidosDis
 import PedidosPage from "./features/vendedor/pedidos/pages/PedidosPage"
 import PedidoDetallePage from "./features/vendedor/pedidos/pages/PedidoDetallePage"
 import CrearProductoPage from "./features/vendedor/productos/pages/CrearProductoPage"
+import ActualizarProductoPage from "./features/vendedor/productos/pages/ActualizarProductoPage"
 
 function App() {
   return (
@@ -101,6 +102,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/dashboard/categorias/:categoriaId/productos/actualizar"
+            element={
+              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
+                <ActualizarProductoPage />
+              </ProtectedRoute>
+            }
+          />
+
 
           <Route
             path="/dashboard/pedidos"

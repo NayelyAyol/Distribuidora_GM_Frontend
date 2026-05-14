@@ -6,7 +6,9 @@ export default function ProductoCard({
     onIncrease,
     onDecrease,
     esCliente,
-    onAddCart
+    onAddCart,
+    onEdit,
+    rol
 }) {
 
     return (
@@ -14,6 +16,8 @@ export default function ProductoCard({
             image={producto.imagen}
             title={producto.nombre}
             description={producto.descripcion}
+            onEdit={() => onEdit(producto)}
+            rol={rol}
         >
 
             {esCliente ? (

@@ -3,7 +3,9 @@ import ProductoCard from "./ProductosCard"
 export default function ProductosGrid({
     productos,
     onIncrease,
-    onDecrease
+    onDecrease,
+    onEdit,
+    rol
 }) {
 
     return (
@@ -15,6 +17,8 @@ export default function ProductosGrid({
                     producto={producto}
                     onIncrease={onIncrease}
                     onDecrease={onDecrease}
+                    onEdit={onEdit}
+                    rol={rol}
                 />
             ))}
 

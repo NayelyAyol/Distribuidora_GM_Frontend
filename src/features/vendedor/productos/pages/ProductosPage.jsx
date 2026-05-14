@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useState } from "react"
 
 import ProductosGrid from "../components/ProductosGrid"
@@ -7,7 +7,9 @@ import { buttonPrimaryClass } from "@/utils/styles"
 import { FiArrowLeft } from "react-icons/fi"
 
 export default function ProductosPage() {
+
     const navigate = useNavigate()
+    const { categoriaId } = useParams()
 
     const [productos, setProductos] = useState([
         {
@@ -46,6 +48,12 @@ export default function ProductosPage() {
         )
     }
 
+    const handleEdit = () => {
+        navigate(
+            `/dashboard/categorias/${categoriaId}/productos/actualizar`
+        )
+    }
+
     return (
         <>
             <div className="p-6 flex flex-col gap-6">
@@ -81,7 +89,9 @@ export default function ProductosPage() {
                         <div className="flex flex-wrap items-center justify-start lg:justify-end gap-3">
 
                             <Button
-                                onClick={() =>  navigate("/dashboard/categorias/:categoriaId/productos/crear")}
+                                onClick={() =>
+                                    navigate(`/dashboard/categorias/${categoriaId}/productos/crear`)
+                                }
                                 className={`${buttonPrimaryClass} whitespace-nowrap sm:w-[150px]`}
                             >
                                 + Agregar
@@ -95,12 +105,13 @@ export default function ProductosPage() {
                         productos={productos}
                         onIncrease={aumentarStock}
                         onDecrease={disminuirStock}
+                        onEdit={handleEdit}
+                        rol="vendedor"
                     />
 
                 </div>
 
             </div>
-
         </>
     )
 }
