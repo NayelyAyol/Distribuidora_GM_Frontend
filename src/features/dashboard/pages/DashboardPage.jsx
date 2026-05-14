@@ -35,7 +35,8 @@ export default function DashboardPage() {
     const vendedorWidgets = [
         { icon: <MdBarChart className="text-xl" />, title: "Mis ventas", subtitle: "$574.34" },
         { icon: <MdBarChart className="text-xl" />, title: "Ventas del mes", subtitle: "$1200" },
-        { icon: <MdBarChart className="text-xl" />, title: "Ventas de hoy", subtitle: "$120" }
+        { icon: <MdBarChart className="text-xl" />, title: "Ventas de hoy", subtitle: "$120" },
+        {icon: <IoDocuments className="text-xl" />, title: "Pedidos pendientes", subtitle: "4", notification: 4 },
     ]
 
     const widgets = esVendedor ? vendedorWidgets : adminWidgets
