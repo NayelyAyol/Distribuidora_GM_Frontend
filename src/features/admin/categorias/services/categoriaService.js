@@ -10,7 +10,9 @@ export const crearCategoria = async (formData) => {
         console.error("Error creando categoría:", error);
 
         throw new Error(
-            error.response?.data?.msg || "Error al crear categoría"
+            error.response?.data?.error ||
+            error.response?.data?.msg ||
+            "Error al crear categoría"
         );
     }
 };
