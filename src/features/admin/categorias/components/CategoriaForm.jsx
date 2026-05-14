@@ -172,15 +172,15 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-                <div className="h-[255px] w-full rounded-xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
+                <div className="min-h-[255px] h-full w-full rounded-xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
 
-                    <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
+                    <label className="flex min-h-[255px] w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
 
                         {preview ? (
                             <img
                                 src={preview}
                                 alt="preview"
-                                className="block h-full w-full object-cover"
+                                className="max-h-[310px] w-full object-contain bg-emerald-50"
                             />
                         ) : (
                             <div className="flex flex-col items-center justify-center">
