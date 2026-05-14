@@ -4,14 +4,11 @@ import NotificationItem from "../components/NotificationItem"
 export default function NotificationPage() {
 
     const notifications = [
-        "Sugerencias de productos automáticas",
-        "Recomendaciones por ventas",
-        "Alertas de stock bajo",
-        "Productos más vendidos",
-        "Clientes frecuentes",
         "Promociones sugeridas",
-        "Análisis de comportamiento",
-        "Recomendaciones mensuales"
+        "Nueva mercadería",
+        "Bajo número de ventas",
+        "Pago al SRI",
+        "Promoción por fechas festivas"
     ]
 
     return (
