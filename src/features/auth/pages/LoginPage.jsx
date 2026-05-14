@@ -28,7 +28,13 @@ export default function LoginPage() {
 
                 toast.success("Bienvenido")
 
-                navigate("/dashboard")
+                const rol = res.usuario?.rol?.toUpperCase()
+
+                if (rol === "CLIENTE") {
+                    navigate("/dashboard/perfil")
+                } else {
+                    navigate("/dashboard")
+                }
             }
         } catch (error) {
             console.error("Error:", error)
