@@ -56,7 +56,7 @@ export default function ProductosPage() {
 
                 <div>
                     <p className="text-gray-500">
-                        Gestiona el stock de los productos
+                        Este módulo te permite gestionar el stock de los productos
                     </p>
                 </div>
 
