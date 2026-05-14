@@ -24,7 +24,7 @@ import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
 import RecomendacionesVendedorPage from "./features/vendedor/recomendaciones/pages/RecomendacionPage"
 import NotFound from "./features/notfound/NotFound"
 import PedidosDisponiblesPage from "./features/vendedor/pedidos/pages/PedidosDisponiblesPage"
-import PedidosSeleccionadosPage from "./features/vendedor/pedidos/pages/PedidosSeleccionadosPage"
+import PedidosPage from "./features/vendedor/pedidos/pages/PedidosPage"
 import PedidoDetallePage from "./features/vendedor/pedidos/pages/PedidoDetallePage"
 
 function App() {
@@ -51,7 +51,12 @@ function App() {
           }
         >
 
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" 
+          element={
+            <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+              <Dashboard />
+            </ProtectedRoute>} 
+          />
 
           <Route path="/dashboard/perfil" 
           element={
@@ -99,8 +104,8 @@ function App() {
           <Route
             path="/dashboard/mis-pedidos"
             element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <PedidosSeleccionadosPage />
+              <ProtectedRoute roles={["VENDEDOR", "CLIENTE"]}>
+                <PedidosPage />
               </ProtectedRoute>
             }
           />

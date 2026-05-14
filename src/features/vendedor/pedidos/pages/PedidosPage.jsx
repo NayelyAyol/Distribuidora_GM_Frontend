@@ -1,19 +1,23 @@
 import { useMemo, useState } from "react"
-import { FiSearch } from "react-icons/fi"
+import { FiSearch, FiPlus } from "react-icons/fi"
 
 import DataTable from "@/components/ui/DataTable"
 import { pedidosSeleccionadosColumns } from "../columns/pedidosSeleccionadosColumns"
+import { pedidosClienteColumns } from "@/features/cliente/pedidos/columns/pedidosClientesColumns"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 import { inputClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
+import useAuthStore from "@/context/useAuthStore"
 
-export default function PedidosSeleccionadosPage() {
+export default function PedidosPage() {
 
     const [filtro, setFiltro] = useState("pendientes")
     const navigate = useNavigate()
+    const user = useAuthStore((state) => state.user)
+    const esCliente = user?.rol?.toUpperCase() === "CLIENTE"
 
     const pedidos = [
         {
@@ -58,7 +62,9 @@ export default function PedidosSeleccionadosPage() {
 
             <div>
                 <p className="text-gray-500">
-                    Este módulo le permite visualizar los pedidos que ha seleccionado
+                    {esCliente
+                        ? "Este módulo le permite visualizar sus pedidos realizados"
+                        : "Este módulo le permite visualizar los pedidos que ha seleccionado"}
                 </p>
             </div>
 
@@ -108,15 +114,34 @@ export default function PedidosSeleccionadosPage() {
                                 Finalizados
                             </Button>
 
+                            {esCliente && (
+                                <Button
+                                    onClick={() => navigate("/dashboard/pedidos/nuevo")}
+                                    className="
+                                                px-3 py-1.5 rounded-lg
+                                                bg-emerald-100
+                                                hover:bg-emerald-200
+                                                text-emerald-700
+                                                text-sm
+                                                flex items-center
+                                                transition
+                                            "
+                                >
+                                    <FiPlus />
+                                    Nuevo pedido
+                                </Button>
+
+                            )}
                         </div>
 
                     </div>
+
 
                     <div className="w-full overflow-x-auto">
 
                         <DataTable
                             data={pedidosFiltrados}
-                            columns={pedidosSeleccionadosColumns((pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`))}
+                            columns={esCliente ? pedidosClienteColumns(navigate(`/dashboard/mis-pedidos`)) : pedidosSeleccionadosColumns((pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`))}
                         />
 
                     </div>

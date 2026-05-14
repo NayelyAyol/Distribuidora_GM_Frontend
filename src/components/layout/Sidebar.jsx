@@ -80,7 +80,7 @@ const Sidebar = ({ open, onClose }) => {
             label: "Mis pedidos",
             path: "/dashboard/mis-pedidos",
             icon: MdInventory,
-            roles: ["VENDEDOR"],
+            roles: ["VENDEDOR", "CLIENTE"],
         },
         {
             label: "Categorías",
