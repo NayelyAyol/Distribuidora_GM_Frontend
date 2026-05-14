@@ -26,6 +26,7 @@ import NotFound from "./features/notfound/NotFound"
 import PedidosDisponiblesPage from "./features/vendedor/pedidos/pages/PedidosDisponiblesPage"
 import PedidosPage from "./features/vendedor/pedidos/pages/PedidosPage"
 import PedidoDetallePage from "./features/vendedor/pedidos/pages/PedidoDetallePage"
+import CrearProductoPage from "./features/vendedor/productos/pages/CrearProductoPage"
 
 function App() {
   return (
@@ -88,6 +89,15 @@ function App() {
             element={
               <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
                 <ProductosPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/categorias/:categoriaId/productos/crear"
+            element={
+              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
+                <CrearProductoPage />
               </ProtectedRoute>
             }
           />

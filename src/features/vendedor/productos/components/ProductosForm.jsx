@@ -27,8 +27,17 @@ export default function ProductoForm({
     const [form, setForm] = useState({
         nombre: "",
         descripcion: "",
-        precio: "",
+        codigo: "",
+        precioCompra: "",
+        precioVenta: "",
+        tipoIVA: "15",
+        precioMayorista: "",
+        cantidadMinimaMayorista: "",
         stock: "",
+        stockMinimo: "",
+        marca: "",
+        unidadMedida: "",
+        destacado: false,
         imagen: null
     })
 
@@ -41,8 +50,18 @@ export default function ProductoForm({
             setForm({
                 nombre: selectedProduct.nombre || "",
                 descripcion: selectedProduct.descripcion || "",
-                precio: selectedProduct.precio || "",
+                codigo: selectedProduct.codigo || "",
+                precioCompra: selectedProduct.precioCompra || "",
+                precioVenta: selectedProduct.precioVenta || "",
+                tipoIVA: selectedProduct.tipoIVA || "15",
+                precioMayorista: selectedProduct.precioMayorista || "",
+                cantidadMinimaMayorista:
+                    selectedProduct.cantidadMinimaMayorista || "",
                 stock: selectedProduct.stock || "",
+                stockMinimo: selectedProduct.stockMinimo || "",
+                marca: selectedProduct.marca || "",
+                unidadMedida: selectedProduct.unidadMedida || "",
+                destacado: selectedProduct.destacado || false,
                 imagen: selectedProduct.imagen || null
             })
 
@@ -60,8 +79,17 @@ export default function ProductoForm({
         setForm({
             nombre: "",
             descripcion: "",
-            precio: "",
+            codigo: "",
+            precioCompra: "",
+            precioVenta: "",
+            tipoIVA: "15",
+            precioMayorista: "",
+            cantidadMinimaMayorista: "",
             stock: "",
+            stockMinimo: "",
+            marca: "",
+            unidadMedida: "",
+            destacado: false,
             imagen: null
         })
 
@@ -74,9 +102,13 @@ export default function ProductoForm({
 
     const handleChange = (e) => {
 
+        const { name, value, type, checked } = e.target
+
         setForm({
             ...form,
-            [e.target.name]: e.target.value
+            [name]: type === "checkbox"
+                ? checked
+                : value
         })
     }
 
@@ -122,13 +154,38 @@ export default function ProductoForm({
             return
         }
 
-        if (!form.precio || Number(form.precio) <= 0) {
-            toast.error("Ingrese un precio válido")
+        if (!form.codigo.trim()) {
+            toast.error("El código es obligatorio")
             return
         }
 
-        if (!form.stock || Number(form.stock) < 0) {
+        if (Number(form.precioCompra) <= 0) {
+            toast.error("Ingrese un precio de compra válido")
+            return
+        }
+
+        if (Number(form.precioVenta) <= 0) {
+            toast.error("Ingrese un precio de venta válido")
+            return
+        }
+
+        if (Number(form.stock) < 0) {
             toast.error("Ingrese un stock válido")
+            return
+        }
+
+        if (Number(form.stockMinimo) < 0) {
+            toast.error("Ingrese un stock mínimo válido")
+            return
+        }
+
+        if (!form.marca.trim()) {
+            toast.error("La marca es obligatoria")
+            return
+        }
+
+        if (!form.unidadMedida.trim()) {
+            toast.error("La unidad de medida es obligatoria")
             return
         }
 
@@ -147,15 +204,19 @@ export default function ProductoForm({
 
         resetForm()
 
-        setSelectedProduct(null)
+        if (setSelectedProduct) {
+            setSelectedProduct(null)
+        }
 
-        onClose()
+        if (onClose) {
+            onClose()
+        }
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto">
 
-            <div className="h-[320px] rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 bg-white/70">
+            <div className="h-[260px] md:h-[400px] xl:h-[640px] rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
 
                 <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
 
@@ -164,16 +225,16 @@ export default function ProductoForm({
                         <img
                             src={preview}
                             alt="preview"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain bg-white"
                         />
 
                     ) : (
 
                         <div className="flex flex-col items-center justify-center">
 
-                            <MdFileUpload className="text-[60px] text-emerald-500" />
+                            <MdFileUpload className="text-[70px] text-emerald-500" />
 
-                            <p className="mt-2 text-sm text-gray-600">
+                            <p className="mt-3 text-sm text-gray-600">
                                 Subir imagen
                             </p>
 
@@ -193,20 +254,35 @@ export default function ProductoForm({
 
             </div>
 
-            <div className="flex flex-col justify-center gap-4">
+            <div className="space-y-5">
 
-                <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                    <Label className={`${labelClass} pb-2`}>
-                        Nombre
-                    </Label>
+                    <div>
+                        <Label className={`${labelClass} pb-2`}>
+                            Nombre
+                        </Label>
 
-                    <Input
-                        name="nombre"
-                        value={form.nombre}
-                        onChange={handleChange}
-                        className={inputClass}
-                    />
+                        <Input
+                            name="nombre"
+                            value={form.nombre}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+                    </div>
+
+                    <div>
+                        <Label className={`${labelClass} pb-2`}>
+                            Código
+                        </Label>
+
+                        <Input
+                            name="codigo"
+                            value={form.codigo}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+                    </div>
 
                 </div>
 
@@ -216,32 +292,106 @@ export default function ProductoForm({
                         Descripción
                     </Label>
 
-                    <Input
+                    <textarea
                         name="descripcion"
                         value={form.descripcion}
                         onChange={handleChange}
-                        className={inputClass}
+                        className={`${inputClass} min-h-[100px] resize-none`}
                     />
 
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                     <div>
 
                         <Label className={`${labelClass} pb-2`}>
-                            Precio
+                            Precio compra
                         </Label>
 
                         <Input
                             type="number"
-                            name="precio"
-                            value={form.precio}
+                            name="precioCompra"
+                            value={form.precioCompra}
                             onChange={handleChange}
                             className={inputClass}
                         />
 
                     </div>
+
+                    <div>
+
+                        <Label className={`${labelClass} pb-2`}>
+                            Precio venta
+                        </Label>
+
+                        <Input
+                            type="number"
+                            name="precioVenta"
+                            value={form.precioVenta}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                    </div>
+
+                    <div>
+
+                        <Label className={`${labelClass} pb-2`}>
+                            IVA
+                        </Label>
+
+                        <select
+                            name="tipoIVA"
+                            value={form.tipoIVA}
+                            onChange={handleChange}
+                            className={inputClass}
+                        >
+                            <option value="0">0%</option>
+                            <option value="15">15%</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <div>
+
+                        <Label className={`${labelClass} pb-2`}>
+                            Precio mayorista
+                        </Label>
+
+                        <Input
+                            type="number"
+                            name="precioMayorista"
+                            value={form.precioMayorista}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                    </div>
+
+                    <div>
+
+                        <Label className={`${labelClass} pb-2`}>
+                            Cantidad mínima mayorista
+                        </Label>
+
+                        <Input
+                            type="number"
+                            name="cantidadMinimaMayorista"
+                            value={form.cantidadMinimaMayorista}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                    </div>
+
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                     <div>
 
@@ -259,13 +409,79 @@ export default function ProductoForm({
 
                     </div>
 
+                    <div>
+
+                        <Label className={`${labelClass} pb-2`}>
+                            Stock mínimo
+                        </Label>
+
+                        <Input
+                            type="number"
+                            name="stockMinimo"
+                            value={form.stockMinimo}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                    </div>
+
                 </div>
 
-                <div className="flex justify-end gap-3 pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <div>
+
+                        <Label className={`${labelClass} pb-2`}>
+                            Marca
+                        </Label>
+
+                        <Input
+                            name="marca"
+                            value={form.marca}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                    </div>
+
+                    <div>
+
+                        <Label className={`${labelClass} pb-2`}>
+                            Unidad medida
+                        </Label>
+
+                        <Input
+                            name="unidadMedida"
+                            value={form.unidadMedida}
+                            onChange={handleChange}
+                            className={inputClass}
+                        />
+
+                    </div>
+
+                </div>
+
+                <div className="flex items-center gap-3 bg-white/70 p-3 rounded-xl border border-gray-200">
+
+                    <input
+                        type="checkbox"
+                        name="destacado"
+                        checked={form.destacado}
+                        onChange={handleChange}
+                        className="w-4 h-4 accent-emerald-600"
+                    />
+
+                    <Label className={labelClass}>
+                        Producto destacado
+                    </Label>
+
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4">
 
                     <Button
                         variant="ghost"
-                        className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
+                        className={`max-w-[120px] py-[22px] ${buttonOutlineClass}`}
                         onClick={onClose}
                     >
                         Cancelar
@@ -273,11 +489,9 @@ export default function ProductoForm({
 
                     <Button
                         onClick={handleSubmit}
-                        className={`max-w-[100px] ${buttonPrimaryClass}`}
+                        className={`max-w-[140px] ${buttonPrimaryClass}`}
                     >
-                        {selectedProduct
-                            ? "Actualizar"
-                            : "Aceptar"}
+                        Aceptar
                     </Button>
 
                 </div>

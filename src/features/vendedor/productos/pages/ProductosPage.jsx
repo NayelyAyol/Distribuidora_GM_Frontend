@@ -2,16 +2,12 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 
 import ProductosGrid from "../components/ProductosGrid"
-import { Card } from "@/components/ui/card"
-import ProductoForm from "../components/ProductosForm"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
 import { FiArrowLeft } from "react-icons/fi"
 
 export default function ProductosPage() {
     const navigate = useNavigate()
-    const [openModal, setOpenModal] = useState(false)
-    const [productoSeleccionado, setProductoSeleccionado] = useState(null)
 
     const [productos, setProductos] = useState([
         {
@@ -85,10 +81,7 @@ export default function ProductosPage() {
                         <div className="flex flex-wrap items-center justify-start lg:justify-end gap-3">
 
                             <Button
-                                onClick={() => {
-                                    setProductoSeleccionado(null)
-                                    setOpenModal(true)
-                                }}
+                                onClick={() =>  navigate("/dashboard/categorias/:categoriaId/productos/crear")}
                                 className={`${buttonPrimaryClass} whitespace-nowrap sm:w-[150px]`}
                             >
                                 + Agregar
@@ -108,48 +101,6 @@ export default function ProductosPage() {
 
             </div>
 
-            {openModal && (
-
-                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
-
-                    <Card
-                        className="
-                            w-[70%]
-                            sm:w-[90%]
-                            lg:max-w-3xl
-                            max-h-[80vh]
-                            overflow-y-auto
-                            p-4
-                            sm:p-6
-                            bg-emerald-50
-                            backdrop-blur-xl
-                            border border-gray-200
-                            shadow-xl
-                            rounded-2xl
-                        "
-                    >
-                        <h2 className="text-2xl font-bold text-gray-800 mb-5">
-
-                            {productoSeleccionado
-                                ? "Editar producto"
-                                : "Agregar producto"}
-
-                        </h2>
-
-                        <ProductoForm
-                            selectedProduct={productoSeleccionado}
-                            setSelectedProduct={setProductoSeleccionado}
-                            onClose={() => setOpenModal(false)}
-                            onSave={(data) => {
-                                console.log(data)
-                            }}
-                        />
-
-                    </Card>
-
-                </div>
-
-            )}
         </>
     )
 }
