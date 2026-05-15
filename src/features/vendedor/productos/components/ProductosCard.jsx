@@ -1,4 +1,5 @@
 import { FiPlus, FiMinus } from "react-icons/fi"
+import { MdAddShoppingCart } from "react-icons/md"
 import BaseCard from "../../../shared/components/BaseCard"
 
 export default function ProductoCard({
@@ -8,7 +9,7 @@ export default function ProductoCard({
     esCliente,
     onAddCart,
     onEdit,
-    rol
+    esVendedor,
 }) {
 
     return (
@@ -17,7 +18,7 @@ export default function ProductoCard({
             title={producto.nombre}
             description={producto.descripcion}
             onEdit={() => onEdit(producto)}
-            rol={rol}
+            esVendedor={esVendedor}
         >
 
             {esCliente ? (
@@ -25,17 +26,20 @@ export default function ProductoCard({
                 <button
                     onClick={() => onAddCart(producto)}
                     className="
-                        w-full
-                        bg-emerald-600
-                        hover:bg-emerald-700
+                        w-[60px]
+                        bg-emerald-200
+                        hover:bg-emerald-300
                         text-white
                         rounded-lg
                         py-2
-                        font-medium
                         transition
+                        flex
+                        items-center
+                        justify-center                
+                        justify-self-end
                     "
                 >
-                    Agregar al carrito
+                    <MdAddShoppingCart className="text-xl text-black" />
                 </button>
 
             ) : (

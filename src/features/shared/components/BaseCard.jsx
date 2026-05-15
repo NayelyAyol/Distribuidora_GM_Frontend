@@ -6,7 +6,7 @@ export default function BaseCard({
     description,
     children,
     onEdit,
-    rol
+    esVendedor,
 }) {
 
     return (
@@ -20,7 +20,7 @@ export default function BaseCard({
                     className="w-full h-32 object-cover rounded-lg"
                 />
 
-                {onEdit && rol === "vendedor" && (
+                {onEdit && esVendedor && (
                     <button
                         onClick={onEdit}
                         className="

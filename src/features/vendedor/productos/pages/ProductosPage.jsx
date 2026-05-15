@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { useState } from "react"
-
+import useAuthStore from "@/context/useAuthStore"
 import ProductosGrid from "../components/ProductosGrid"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
@@ -10,6 +10,10 @@ export default function ProductosPage() {
 
     const navigate = useNavigate()
     const { categoriaId } = useParams()
+    const user = useAuthStore((state) => state.user)
+
+    const esVendedor = user?.rol?.toUpperCase() === "VENDEDOR"
+    const esCliente = user?.rol?.toUpperCase() === "CLIENTE"
 
     const [productos, setProductos] = useState([
         {
@@ -60,7 +64,8 @@ export default function ProductosPage() {
 
                 <div>
                     <p className="text-gray-500">
-                        Este módulo te permite gestionar el stock de los productos
+                        {esVendedor ? "Este módulo te permite gestionar el stock de los productos"
+                        : "Este módulo te permite agregar productos al carrito para realizar tu compra"}
                     </p>
                 </div>
 
@@ -86,6 +91,7 @@ export default function ProductosPage() {
 
                         </div>
 
+                    {esVendedor && (
                         <div className="flex flex-wrap items-center justify-start lg:justify-end gap-3">
 
                             <Button
@@ -99,6 +105,8 @@ export default function ProductosPage() {
 
                         </div>
 
+                    )}
+
                     </div>
 
                     <ProductosGrid
@@ -106,7 +114,8 @@ export default function ProductosPage() {
                         onIncrease={aumentarStock}
                         onDecrease={disminuirStock}
                         onEdit={handleEdit}
-                        rol="vendedor"
+                        esVendedor={esVendedor}
+                        esCliente={esCliente}
                     />
 
                 </div>

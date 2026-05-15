@@ -5,7 +5,8 @@ export default function ProductosGrid({
     onIncrease,
     onDecrease,
     onEdit,
-    rol
+    esVendedor,
+    esCliente
 }) {
 
     return (
@@ -18,7 +19,8 @@ export default function ProductosGrid({
                     onIncrease={onIncrease}
                     onDecrease={onDecrease}
                     onEdit={onEdit}
-                    rol={rol}
+                    esVendedor={esVendedor}
+                    esCliente={esCliente}
                 />
             ))}
 
