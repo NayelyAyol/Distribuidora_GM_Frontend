@@ -66,7 +66,7 @@ const Sidebar = ({ open, onClose }) => {
             roles: ["ADMINISTRADOR"],
         },
         {
-            label: "Pedidos",
+            label: "Pedidos pendientes",
             path: "/dashboard/pedidos",
             icon: FaClipboardList,
             roles: ["VENDEDOR"],

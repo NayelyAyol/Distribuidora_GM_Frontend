@@ -63,8 +63,8 @@ export default function PedidosPage() {
             <div>
                 <p className="text-gray-500">
                     {esCliente
-                        ? "Este módulo le permite visualizar sus pedidos realizados"
-                        : "Este módulo le permite visualizar los pedidos que ha seleccionado"}
+                        ? "Este módulo te permite visualizar tus pedidos realizados"
+                        : "Este módulo te permite gestionar los pedidos asignados a tu cargo"}
                 </p>
             </div>
 
