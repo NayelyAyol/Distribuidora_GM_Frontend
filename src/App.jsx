@@ -28,6 +28,8 @@ import PedidoDetallePage from "./features/vendedor/pedidos/pages/PedidoDetallePa
 import CrearProductoPage from "./features/vendedor/productos/pages/CrearProductoPage"
 import ActualizarProductoPage from "./features/vendedor/productos/pages/ActualizarProductoPage"
 import VentaPage from "./features/vendedor/ventas/pages/VentaPage"
+import CarritoPage from "./features/cliente/carrito/pages/CarritoPage"
+
 
 function App() {
   return (
@@ -112,6 +114,14 @@ function App() {
             }
           />
 
+          <Route
+            path="/dashboard/mi-carrito"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <CarritoPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/dashboard/pedidos"

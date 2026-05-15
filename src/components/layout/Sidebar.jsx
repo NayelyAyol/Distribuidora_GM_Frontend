@@ -14,6 +14,7 @@ import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
 import { MdLightbulbOutline, MdFeedback, MdInventory } from "react-icons/md";
 import { FaMoneyBillWave } from "react-icons/fa";
+import { MdAddShoppingCart } from "react-icons/md"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate();
@@ -94,6 +95,12 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
             roles: ["ADMINISTRADOR", "VENDEDOR", "CLIENTE"],
+        },
+        {
+            label: "Mi carrito",
+            path: "/dashboard/mi-carrito",
+            icon: MdAddShoppingCart,
+            roles: ["CLIENTE"],
         },
         {
             label: "Quejas y sugerencias",
