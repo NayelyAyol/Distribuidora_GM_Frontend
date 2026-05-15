@@ -93,7 +93,7 @@ const Sidebar = ({ open, onClose }) => {
             label: "Categorías",
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
-            roles: ["ADMINISTRADOR", "VENDEDOR"],
+            roles: ["ADMINISTRADOR", "VENDEDOR", "CLIENTE"],
         },
         {
             label: "Quejas y sugerencias",

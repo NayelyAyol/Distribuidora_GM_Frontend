@@ -5,7 +5,8 @@ export default function CategoriasGrid({
     onDelete,
     onEdit,
     onSelect,
-    esVendedor
+    esVendedor,
+    esCliente
 }) {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -18,6 +19,7 @@ export default function CategoriasGrid({
                     onEdit={onEdit}
                     onSelect={onSelect}
                     esVendedor={esVendedor}
+                    esCliente={esCliente}
                 />
             ))}
 

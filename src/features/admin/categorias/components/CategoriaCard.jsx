@@ -6,7 +6,8 @@ export default function CategoriaCard({
     onDelete,
     onEdit,
     onSelect,
-    esVendedor
+    esVendedor,
+    esCliente
 }) {
 
     const imageUrl =
@@ -22,7 +23,7 @@ export default function CategoriaCard({
             description={categoria.descripcion}
         >
 
-            {esVendedor ? (
+            {(esVendedor || esCliente) ? (
 
                 <div
                     onClick={() => onSelect(categoria)}

@@ -24,6 +24,7 @@ export default function CategoriaPage() {
 
     const esVendedor = user?.rol?.toUpperCase() === "VENDEDOR"
     const esAdmin = user?.rol?.toUpperCase() === "ADMINISTRADOR"
+    const esCliente = user?.rol?.toUpperCase() === "CLIENTE"
 
     const navigate = useNavigate()
 
@@ -124,9 +125,10 @@ export default function CategoriaPage() {
         <div className="flex flex-col gap-6 p-6">
 
             <p className="text-gray-500">
-                {esVendedor
+                {esAdmin ? "Este módulo te permite administrar las categorías de productos"
+                : esVendedor
                     ? "Este módulo te permite administrar los productos de las diferentes categorías"
-                    : "Este módulo te permite administrar las categorías de productos"}
+                    : "Este módulo te permite visualizar las categorías y sus productos"}
             </p>
 
             {esAdmin && (
@@ -185,6 +187,7 @@ export default function CategoriaPage() {
                             onEdit={handleEdit}
                             onSelect={handleSelectCategory}
                             esVendedor={esVendedor}
+                            esCliente={esCliente}
                         />
                     )}
 

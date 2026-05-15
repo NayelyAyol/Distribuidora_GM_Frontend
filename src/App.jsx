@@ -79,7 +79,7 @@ function App() {
           <Route
             path="/dashboard/categorias"
             element={
-              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR", "CLIENTE"]}>
                 <CategoriasPage />
               </ProtectedRoute>
             }
