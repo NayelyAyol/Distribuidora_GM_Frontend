@@ -13,6 +13,7 @@ import {
 import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
 import { MdLightbulbOutline, MdFeedback, MdInventory } from "react-icons/md";
+import { FaMoneyBillWave } from "react-icons/fa";
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate();
@@ -81,6 +82,12 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/mis-pedidos",
             icon: MdInventory,
             roles: ["VENDEDOR", "CLIENTE"],
+        },
+        {
+            label: "Ventas",
+            path: "/dashboard/ventas",
+            icon: FaMoneyBillWave,
+            roles: ["VENDEDOR"],
         },
         {
             label: "Categorías",

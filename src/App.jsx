@@ -27,6 +27,7 @@ import PedidosPage from "./features/vendedor/pedidos/pages/PedidosPage"
 import PedidoDetallePage from "./features/vendedor/pedidos/pages/PedidoDetallePage"
 import CrearProductoPage from "./features/vendedor/productos/pages/CrearProductoPage"
 import ActualizarProductoPage from "./features/vendedor/productos/pages/ActualizarProductoPage"
+import VentaPage from "./features/vendedor/ventas/pages/VentaPage"
 
 function App() {
   return (
@@ -126,6 +127,15 @@ function App() {
             element={
               <ProtectedRoute roles={["VENDEDOR", "CLIENTE"]}>
                 <PedidosPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/ventas"
+            element={
+              <ProtectedRoute roles={["VENDEDOR"]}>
+                <VentaPage />
               </ProtectedRoute>
             }
           />
