@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom"
+
 export default function CarritoResumen({ carrito }) {
+    const navigate = useNavigate()
 
     const subtotal = carrito.reduce(
         (acc, p) => acc + p.precio * p.cantidad,
@@ -58,6 +61,7 @@ export default function CarritoResumen({ carrito }) {
                     font-medium
                     transition
                 "
+                onClick={() => navigate("/dashboard/mi-carrito/pago")}
             >
                 Pagar
             </button>

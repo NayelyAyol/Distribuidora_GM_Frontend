@@ -29,7 +29,9 @@ import CrearProductoPage from "./features/vendedor/productos/pages/CrearProducto
 import ActualizarProductoPage from "./features/vendedor/productos/pages/ActualizarProductoPage"
 import VentaPage from "./features/vendedor/ventas/pages/VentaPage"
 import CarritoPage from "./features/cliente/carrito/pages/CarritoPage"
-
+import SeleccionMetodoPagoPage from "./features/cliente/carrito/pages/SeleccionMetodoPago"
+import ConfirmacionPedidoPage from "./features/cliente/carrito/pages/ConfirmacionPedidoPage"
+import PedidoExitosoPage from "./features/cliente/carrito/pages/PedidoExitosoPage"
 
 function App() {
   return (
@@ -119,6 +121,33 @@ function App() {
             element={
               <ProtectedRoute roles={["CLIENTE"]}>
                 <CarritoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mi-carrito/pago"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <SeleccionMetodoPagoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mi-carrito/pago/confirmar-pago"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <ConfirmacionPedidoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <PedidoExitosoPage />
               </ProtectedRoute>
             }
           />

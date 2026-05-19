@@ -1,6 +1,7 @@
 import CarritoItem from "../components/CarritoItem"
 
 export default function CarritoList({
+    editable = true,
     carrito,
     onCantidadChange,
     onRemove
@@ -15,6 +16,7 @@ export default function CarritoList({
                     producto={producto}
                     onCantidadChange={onCantidadChange}
                     onRemove={onRemove}
+                    editable={editable}
                 />
             ))}
 

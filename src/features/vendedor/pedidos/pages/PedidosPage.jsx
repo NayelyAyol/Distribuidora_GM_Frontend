@@ -141,9 +141,18 @@ export default function PedidosPage() {
 
                         <DataTable
                             data={pedidosFiltrados}
-                            columns={esCliente ? pedidosClienteColumns(navigate(`/dashboard/mis-pedidos`)) : pedidosSeleccionadosColumns((pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`))}
+                            columns={
+                                esCliente
+                                    ? pedidosClienteColumns({
+                                        onRevisar: (pedido) =>
+                                            navigate(`/dashboard/mis-pedidos/${pedido.id}`)
+                                    })
+                                    : pedidosSeleccionadosColumns(
+                                        (pedido) =>
+                                            navigate(`/dashboard/mis-pedidos/${pedido.id}`)
+                                    )
+                            }
                         />
-
                     </div>
 
                 </div>
