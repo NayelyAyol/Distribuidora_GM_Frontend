@@ -116,7 +116,7 @@ export default function PedidosPage() {
 
                             {esCliente && (
                                 <Button
-                                    onClick={() => navigate("/dashboard/pedidos/nuevo")}
+                                    onClick={() => navigate("/dashboard/mis-pedidos/nuevo-pedido")}
                                     className="
                                                 px-3 py-1.5 rounded-lg
                                                 bg-emerald-100

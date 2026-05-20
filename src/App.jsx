@@ -35,6 +35,7 @@ import PedidoExitosoPage from "./features/cliente/carrito/pages/PedidoExitosoPag
 import CobroPage from "./features/vendedor/ventas/pages/CobroPage"
 import ConfirmacionVentaPage from "./features/vendedor/ventas/pages/ConfirmacionVentaPage"
 import VentaExitosaPage from "./features/vendedor/ventas/pages/VentaExitosaPage"
+import NuevoPedidoPage from "./features/cliente/pedidos/pages/NuevoPedidoPage"
 
 function App() {
   return (
@@ -169,6 +170,15 @@ function App() {
             element={
               <ProtectedRoute roles={["VENDEDOR", "CLIENTE"]}>
                 <PedidosPage />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/dashboard/mis-pedidos/nuevo-pedido"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <NuevoPedidoPage />
               </ProtectedRoute>
             }
           />
