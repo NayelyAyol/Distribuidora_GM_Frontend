@@ -188,7 +188,7 @@ export default function ConfirmacionPedidoPage() {
                     flex flex-col gap-4
                 ">
 
-                    <ResumenPago carrito={carrito} />
+                    <ResumenPago productos={carrito} />
 
                     <Button
                         onClick={() =>

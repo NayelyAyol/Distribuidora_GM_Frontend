@@ -1,20 +1,23 @@
 import ProductoItemFactura from "./ProductoItemFactura"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
+import { useNavigate } from "react-router-dom"
 
 export default function FacturaPanel({
     factura,
     eliminarProducto,
     limpiarFactura,
     cambiarCantidad
-}) {    
+}) {
+    const navigate = useNavigate()
+
     const subtotal = factura.reduce(
         (acc, p) => acc + p.precio * p.cantidad,
         0
     )
 
     const iva = subtotal * 0.15
-    
+
 
     const total = subtotal + iva
 
@@ -33,12 +36,12 @@ export default function FacturaPanel({
                     </p>
                 ) : (
                     factura.map(p => (
-                    <ProductoItemFactura
-                        key={p.id}
-                        producto={p}
-                        onDelete={eliminarProducto}
-                        onCantidadChange={cambiarCantidad}
-                    />
+                        <ProductoItemFactura
+                            key={p.id}
+                            producto={p}
+                            onDelete={eliminarProducto}
+                            onCantidadChange={cambiarCantidad}
+                        />
                     ))
                 )}
 
@@ -63,10 +66,14 @@ export default function FacturaPanel({
                     Limpiar
                 </Button>
 
-                <Button className={buttonPrimaryClass}>
+                <Button
+                    onClick={() =>
+                        navigate("/dashboard/ventas/cobro")
+                    }
+                    className={buttonPrimaryClass}
+                >
                     Cobrar
                 </Button>
-
             </div>
 
         </div>

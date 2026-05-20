@@ -1,8 +1,8 @@
 export default function ResumenPago({
-    carrito
+    productos = []
 }) {
 
-    const subtotal = carrito.reduce(
+    const subtotal = productos.reduce(
         (acc, p) => acc + p.precio * p.cantidad,
         0
     )
@@ -27,19 +27,27 @@ export default function ResumenPago({
             </h2>
 
             <div className="flex justify-between">
-                <span>Subtotal</span>
+
+                <span>
+                    Subtotal
+                </span>
 
                 <span>
                     ${subtotal.toFixed(2)}
                 </span>
+
             </div>
 
             <div className="flex justify-between">
-                <span>IVA</span>
+
+                <span>
+                    IVA
+                </span>
 
                 <span>
                     ${iva.toFixed(2)}
                 </span>
+
             </div>
 
             <div className="
@@ -48,11 +56,15 @@ export default function ResumenPago({
                 font-bold
                 text-emerald-700
             ">
-                <span>Total</span>
+
+                <span>
+                    Total
+                </span>
 
                 <span>
                     ${total.toFixed(2)}
                 </span>
+
             </div>
 
         </div>

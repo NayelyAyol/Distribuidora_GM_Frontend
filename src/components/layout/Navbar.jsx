@@ -48,6 +48,9 @@ export default function Navbar({ onOpenSidenav }) {
         if (location.pathname === "/dashboard/mi-carrito/pago") return "Método de Pago"
         if (location.pathname === "/dashboard/mi-carrito/pago/confirmar-pago") return "Confirmación de Pedido"
         if (location.pathname === "/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso") return "Comprobante"
+        if (location.pathname === "/dashboard/ventas/cobro") return "Cobro"
+        if (location.pathname === "/dashboard/ventas/cobro/confirmacion-venta") return "Confirmación de Pago"
+        if (location.pathname === "/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa") return "Comprobante"
 
         return "Dashboard"
     }
