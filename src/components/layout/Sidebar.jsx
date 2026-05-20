@@ -8,13 +8,14 @@ import {
     FaUsers,
     FaShoppingBag,
     FaChartBar,
-    FaClipboardList
+    FaClipboardList,
+    FaMoneyBillWave
 } from "react-icons/fa";
 import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
 import { MdLightbulbOutline, MdFeedback, MdInventory } from "react-icons/md";
-import { FaMoneyBillWave } from "react-icons/fa";
 import { MdAddShoppingCart } from "react-icons/md"
+import { FiMessageSquare } from "react-icons/fi"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate();
@@ -100,6 +101,12 @@ const Sidebar = ({ open, onClose }) => {
             label: "Mi carrito",
             path: "/dashboard/mi-carrito",
             icon: MdAddShoppingCart,
+            roles: ["CLIENTE"],
+        },
+        {
+            label: "Quejas y Sugerencias",
+            path: "/dashboard/mis-quejas-y-sugerencias",
+            icon: FiMessageSquare,
             roles: ["CLIENTE"],
         },
         {

@@ -36,6 +36,7 @@ import CobroPage from "./features/vendedor/ventas/pages/CobroPage"
 import ConfirmacionVentaPage from "./features/vendedor/ventas/pages/ConfirmacionVentaPage"
 import VentaExitosaPage from "./features/vendedor/ventas/pages/VentaExitosaPage"
 import NuevoPedidoPage from "./features/cliente/pedidos/pages/NuevoPedidoPage"
+import QuejasSugerenciasClientePage from "./features/cliente/quejasysugerencias/pages/QuejasSugerenciasClientePage"
 
 function App() {
   return (
@@ -156,6 +157,15 @@ function App() {
             }
           />
 
+            <Route
+              path="/dashboard/mis-quejas-y-sugerencias"
+              element={
+                <ProtectedRoute roles={["CLIENTE"]}>
+                  <QuejasSugerenciasClientePage />
+                </ProtectedRoute>
+              }
+            />
+
           <Route
             path="/dashboard/pedidos"
             element={
@@ -240,7 +250,7 @@ function App() {
           <Route
             path="/dashboard/quejas-sugerencias"
             element={
-              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
+              <ProtectedRoute roles={["ADMINISTRADOR"]}>
                 <FeedbackPage />
               </ProtectedRoute>
             }

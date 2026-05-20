@@ -8,20 +8,20 @@ export default function RecomendacionList() {
         {
             id: 1,
             text: "Agregar modo oscuro",
-            user: "Cliente 1",
-            respuesta: "Estamos evaluando su solicitud"
+            respuesta: "Estamos evaluando su solicitud",
+            fecha: "2026-05-10"
         },
         {
             id: 2,
-            text: "Mejorar rendimiento",
-            user: "Cliente 2",
-            respuesta: null
+            text: "El pedido llegó tarde",
+            respuesta: null,
+            fecha: "2026-05-12"
         },
         {
             id: 3,
-            text: "Cambio de colores",
-            user: "Cliente 3",
-            respuesta: "Se aplicará en la próxima actualización"
+            text: "Mejorar rendimiento",
+            respuesta: "Se aplicará en la próxima actualización",
+            fecha: "2026-05-15"
         }
     ])
 

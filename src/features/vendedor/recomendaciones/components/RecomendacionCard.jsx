@@ -3,9 +3,19 @@ export default function RecomendacionCard({ item }) {
     return (
         <div className="p-5 rounded-2xl border border-gray-100 shadow-sm bg-white hover:shadow-md transition">
 
-            <p className="text-gray-800 text-base font-medium">
-                {item.text}
-            </p>
+            <div className="flex justify-between items-start">
+
+                <p className="text-gray-800 text-base font-medium">
+                    {item.text}
+                </p>
+
+                <span className="text-xs text-gray-400">
+                    {item.fecha
+                        ? new Date(item.fecha).toLocaleDateString()
+                        : ""}
+                </span>
+
+            </div>
 
             <div className="border-t mt-4 pt-3">
 

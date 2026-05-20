@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
+import { toast } from "react-toastify"
 
 export default function RecomendacionForm() {
 
@@ -9,9 +10,30 @@ export default function RecomendacionForm() {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        if (!text.trim()) return
+        if (!text.trim()) {
+            toast.error("Escribe un mensaje antes de enviar")
+            return
+        }
 
-        console.log(text)
+        if (text.trim().length < 10) {
+            toast.error("El mensaje debe tener al menos 10 caracteres")
+            return
+        }
+
+        if (text.trim().length > 300) {
+            toast.error("El mensaje no puede superar 300 caracteres")
+            return
+        }
+
+        const data = {
+            text: text.trim(),
+            fecha: new Date().toISOString()
+        }
+
+        console.log(data)
+
+        toast.success("Mensaje enviado correctamente")
+
         setText("")
     }
 
