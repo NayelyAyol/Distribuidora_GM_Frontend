@@ -139,20 +139,20 @@ export default function PedidosPage() {
 
                     <div className="w-full overflow-x-auto">
 
-                        <DataTable
-                            data={pedidosFiltrados}
-                            columns={
-                                esCliente
-                                    ? pedidosClienteColumns({
-                                        onRevisar: (pedido) =>
-                                            navigate(`/dashboard/mis-pedidos/${pedido.id}`)
-                                    })
-                                    : pedidosSeleccionadosColumns(
-                                        (pedido) =>
-                                            navigate(`/dashboard/mis-pedidos/${pedido.id}`)
-                                    )
-                            }
-                        />
+                    <DataTable
+                        data={pedidosFiltrados}
+                        columns={
+                            esCliente
+                                ? pedidosClienteColumns(
+                                    (pedido) =>
+                                        navigate(`/dashboard/mis-pedidos/${pedido.id}`)
+                                )
+                                : pedidosSeleccionadosColumns(
+                                    (pedido) =>
+                                        navigate(`/dashboard/mis-pedidos/${pedido.id}`)
+                                )
+                        }
+                    />
                     </div>
 
                 </div>

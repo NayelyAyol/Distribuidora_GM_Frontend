@@ -34,11 +34,13 @@ export const pedidosClienteColumns = (onRevisar) => [
     columnHelper.display({
         id: "acciones",
         header: "Acción",
+
         cell: ({ row }) => {
 
             const pedido = row.original
 
             return (
+
                 <button
                     onClick={() => onRevisar(pedido)}
                     className="
@@ -52,9 +54,13 @@ export const pedidosClienteColumns = (onRevisar) => [
                         transition
                     "
                 >
+
                     <FiEye />
+
                     Ver
+
                 </button>
+
             )
         }
     })

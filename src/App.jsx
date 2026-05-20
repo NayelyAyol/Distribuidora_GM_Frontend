@@ -222,7 +222,7 @@ function App() {
           <Route
               path="/dashboard/mis-pedidos/:id"
               element={
-                <ProtectedRoute roles={["VENDEDOR"]}>
+                <ProtectedRoute roles={["VENDEDOR","CLIENTE"]}>
                   <PedidoDetallePage />
                 </ProtectedRoute>
               }
