@@ -37,6 +37,7 @@ import ConfirmacionVentaPage from "./features/vendedor/ventas/pages/Confirmacion
 import VentaExitosaPage from "./features/vendedor/ventas/pages/VentaExitosaPage"
 import NuevoPedidoPage from "./features/cliente/pedidos/pages/NuevoPedidoPage"
 import QuejasSugerenciasClientePage from "./features/cliente/quejasysugerencias/pages/QuejasSugerenciasClientePage"
+import CatalogoPage from "./features/catalogo/pages/CatalogoPage"
 
 function App() {
   return (
@@ -117,6 +118,15 @@ function App() {
             element={
               <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
                 <ActualizarProductoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/catalogo"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <CatalogoPage />
               </ProtectedRoute>
             }
           />

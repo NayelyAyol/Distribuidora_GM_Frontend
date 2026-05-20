@@ -15,7 +15,7 @@ import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
 import { MdLightbulbOutline, MdFeedback, MdInventory } from "react-icons/md";
 import { MdAddShoppingCart } from "react-icons/md"
-import { FiMessageSquare } from "react-icons/fi"
+import { FiMessageSquare, FiGrid} from "react-icons/fi"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate();
@@ -95,7 +95,13 @@ const Sidebar = ({ open, onClose }) => {
             label: "Categorías",
             path: "/dashboard/categorias",
             icon: FaShoppingBag,
-            roles: ["ADMINISTRADOR", "VENDEDOR", "CLIENTE"],
+            roles: ["ADMINISTRADOR", "VENDEDOR"],
+        },
+        {
+            label: "Catálogo",
+            path: "/dashboard/catalogo",
+            icon: FiGrid,
+            roles: ["CLIENTE"],
         },
         {
             label: "Mi carrito",
