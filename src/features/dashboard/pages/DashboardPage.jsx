@@ -6,8 +6,11 @@ import { MdBarChart, MdDashboard } from "react-icons/md"
 import { IoMdHome } from "react-icons/io"
 import { IoDocuments } from "react-icons/io5"
 import useAuthStore from "../../../context/useAuthStore"
+import { useNavigate } from "react-router-dom"
 
 export default function DashboardPage() {
+
+    const navigate = useNavigate()
 
     const user = useAuthStore((state) => state.user)
     const hydrated = useAuthStore((state) => state._hasHydrated)
@@ -24,22 +27,70 @@ export default function DashboardPage() {
     const esVendedor = rol?.toUpperCase() === "VENDEDOR"
 
     const adminWidgets = [
-        { icon: <MdBarChart className="text-xl" />, title: "Ingresos", subtitle: "$340.5" },
-        { icon: <IoDocuments className="text-xl" />, title: "Recomendaciones", subtitle: "10", notification: 10 },
-        { icon: <IoDocuments className="text-xl" />, title: "Quejas y Sugerencias", subtitle: "4", notification: 4 },
-        { icon: <MdDashboard className="text-xl" />, title: "Balance", subtitle: "$1,000" },
-        { icon: <MdBarChart className="text-xl" />, title: "Ventas", subtitle: "145" },
-        { icon: <IoMdHome className="text-xl" />, title: "Proyectos", subtitle: "2433" }
+        {
+            icon: <MdBarChart className="text-xl" />,
+            title: "Ingresos",
+            subtitle: "$340.5"
+        },
+        {
+            icon: <IoDocuments className="text-xl" />,
+            title: "Recomendaciones",
+            subtitle: "10",
+            notification: 10,
+            path: "/dashboard/recomendaciones"
+        },
+        {
+            icon: <IoDocuments className="text-xl" />,
+            title: "Quejas y Sugerencias",
+            subtitle: "4",
+            notification: 4,
+            path: "/dashboard/quejas-sugerencias"
+        },
+        {
+            icon: <MdDashboard className="text-xl" />,
+            title: "Balance",
+            subtitle: "$1,000"
+        },
+        {
+            icon: <MdBarChart className="text-xl" />,
+            title: "Ventas",
+            subtitle: "145"
+        },
+        {
+            icon: <IoMdHome className="text-xl" />,
+            title: "Proyectos",
+            subtitle: "2433"
+        }
     ]
 
     const vendedorWidgets = [
-        { icon: <MdBarChart className="text-xl" />, title: "Mis ventas", subtitle: "$574.34" },
-        { icon: <MdBarChart className="text-xl" />, title: "Ventas del mes", subtitle: "$1200" },
-        { icon: <MdBarChart className="text-xl" />, title: "Ventas de hoy", subtitle: "$120" },
-        {icon: <IoDocuments className="text-xl" />, title: "Pedidos pendientes", subtitle: "4", notification: 4 },
+        {
+            icon: <MdBarChart className="text-xl" />,
+            title: "Mis ventas",
+            subtitle: "$574.34"
+        },
+        {
+            icon: <MdBarChart className="text-xl" />,
+            title: "Ventas del mes",
+            subtitle: "$1200"
+        },
+        {
+            icon: <MdBarChart className="text-xl" />,
+            title: "Ventas de hoy",
+            subtitle: "$120"
+        },
+        {
+            icon: <IoDocuments className="text-xl" />,
+            title: "Pedidos pendientes",
+            subtitle: "4",
+            notification: 4,
+            path: "/dashboard/pedidos"
+        },
     ]
 
-    const widgets = esVendedor ? vendedorWidgets : adminWidgets
+    const widgets = esVendedor
+        ? vendedorWidgets
+        : adminWidgets
 
     const mensaje = esVendedor
         ? "Este módulo te permite visualizar las ventas realizadas"
@@ -63,6 +114,11 @@ export default function DashboardPage() {
                         title={w.title}
                         subtitle={w.subtitle}
                         notification={w.notification}
+                        onClick={
+                            w.path
+                                ? () => navigate(w.path)
+                                : undefined
+                        }
                     />
                 ))}
 
