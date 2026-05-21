@@ -18,11 +18,17 @@ export default function NotificationPage() {
 
                 <div className="divide-y">
                     {notifications.map((item, index) => (
+
                         <NotificationItem
                             key={index}
                             id={`switch${index}`}
                             label={item}
+
+                            showButton={
+                                index === 0 || index === 4
+                            }
                         />
+
                     ))}
                 </div>
 
