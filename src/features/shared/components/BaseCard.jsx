@@ -1,5 +1,3 @@
-import { FiEdit2 } from "react-icons/fi"
-
 export default function BaseCard({
     image,
     title,
@@ -7,13 +5,19 @@ export default function BaseCard({
     children,
     onEdit,
     esVendedor,
+    onClick,
+    className =""   
 }) {
 
     return (
-        <div className="relative h-full w-full bg-white rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col">
+        <div
+            onClick={onClick}  
+            className={`relative h-full w-full bg-white rounded-xl p-4 shadow hover:shadow-lg transition flex flex-col cursor-pointer"
+            ${className}`}
+        >
 
             <div className="relative w-full h-32">
-                
+
                 <img
                     src={image}
                     alt={title}
@@ -22,7 +26,10 @@ export default function BaseCard({
 
                 {onEdit && esVendedor && (
                     <button
-                        onClick={onEdit}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            onEdit()
+                        }}
                         className="
                             absolute
                             top-2

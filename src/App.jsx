@@ -38,6 +38,7 @@ import VentaExitosaPage from "./features/vendedor/ventas/pages/VentaExitosaPage"
 import NuevoPedidoPage from "./features/cliente/pedidos/pages/NuevoPedidoPage"
 import QuejasSugerenciasClientePage from "./features/cliente/quejasysugerencias/pages/QuejasSugerenciasClientePage"
 import CatalogoPage from "./features/catalogo/pages/CatalogoPage"
+import ProductoDetallePage from "./features/producto/pages/ProductoDetallePage"
 
 function App() {
   return (
@@ -127,6 +128,15 @@ function App() {
             element={
               <ProtectedRoute roles={["CLIENTE"]}>
                 <CatalogoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/producto/:id"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <ProductoDetallePage />
               </ProtectedRoute>
             }
           />

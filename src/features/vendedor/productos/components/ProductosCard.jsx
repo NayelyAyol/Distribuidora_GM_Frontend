@@ -1,4 +1,3 @@
-import { FiPlus, FiMinus } from "react-icons/fi"
 import { MdAddShoppingCart } from "react-icons/md"
 import BaseCard from "../../../shared/components/BaseCard"
 
@@ -10,6 +9,7 @@ export default function ProductoCard({
     onAddCart,
     onEdit,
     esVendedor,
+    onSelectProducto
 }) {
 
     return (
@@ -19,12 +19,16 @@ export default function ProductoCard({
             description={producto.descripcion}
             onEdit={() => onEdit(producto)}
             esVendedor={esVendedor}
+            onClick={() => onSelectProducto?.(producto)} 
         >
 
             {esCliente ? (
 
                 <button
-                    onClick={() => onAddCart(producto)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onAddCart(producto)
+                    }}
                     className="
                         w-[60px]
                         bg-emerald-200
