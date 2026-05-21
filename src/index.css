@@ -31,3 +31,37 @@ html, body {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
+
+@media print {
+    nav,
+    aside,
+    header,
+    footer {
+        display: none !important;
+    }
+
+    button {
+        display: none !important;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .print-area,
+    .print-area * {
+        visibility: visible;
+    }
+
+    .print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    html, body {
+        height: auto;
+        overflow: hidden;
+    }
+}

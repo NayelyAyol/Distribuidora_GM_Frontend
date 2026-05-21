@@ -1,3 +1,5 @@
+import { FiEdit2 } from "react-icons/fi"
+
 export default function BaseCard({
     image,
     title,

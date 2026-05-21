@@ -83,13 +83,13 @@ export default function IngresoProducto({ onAdd }) {
                 </button>
 
             </div>
-
+            {/*
             <Button
                 onClick={() => setScannerOpen(true)}
                 className={`${buttonOutlineClass} py-5`}
             >
                 Escanear con cámara
-            </Button>
+            </Button>*/}
 
             <Button
                 onClick={handleAgregar}

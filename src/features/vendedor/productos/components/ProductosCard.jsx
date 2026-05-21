@@ -1,5 +1,6 @@
 import { MdAddShoppingCart } from "react-icons/md"
 import BaseCard from "../../../shared/components/BaseCard"
+import { FiMinus, FiPlus } from "react-icons/fi"
 
 export default function ProductoCard({
     producto,

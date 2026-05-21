@@ -14,7 +14,9 @@ import {
 import { Button } from "@/components/ui/button"
 
 export default function VentaExitosaPage() {
-
+    const handlePrint = () => {
+        window.print()
+    }
     const navigate = useNavigate()
 
     return (
@@ -38,19 +40,20 @@ export default function VentaExitosaPage() {
             ">
 
                 <div className="
-                    w-full
-                    max-w-2xl
-                    bg-white/80
-                    backdrop-blur-xl
-                    border border-gray-200
-                    shadow-xl
-                    rounded-3xl
-                    p-10
-                    flex flex-col
-                    items-center
-                    text-center
-                    gap-8
-                ">
+    w-full
+    max-w-2xl
+    bg-white/80
+    backdrop-blur-xl
+    border border-gray-200
+    shadow-xl
+    rounded-3xl
+    p-10
+    flex flex-col
+    items-center
+    text-center
+    gap-8
+    print-area
+">
 
                     <div className="
                         w-24 h-24
@@ -164,6 +167,7 @@ export default function VentaExitosaPage() {
                         </Button>
 
                         <Button
+                            onClick={handlePrint}
                             className={`${buttonOutlineClass} p-[22px]`}
                         >
 

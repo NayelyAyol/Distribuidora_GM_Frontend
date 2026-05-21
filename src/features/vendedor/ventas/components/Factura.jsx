@@ -11,6 +11,8 @@ export default function FacturaPanel({
 }) {
     const navigate = useNavigate()
 
+    
+
     const subtotal = factura.reduce(
         (acc, p) => acc + p.precio * p.cantidad,
         0
