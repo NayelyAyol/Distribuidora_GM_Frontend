@@ -29,7 +29,7 @@ export default function PedidosDisponiblesPage() {
 
             <div>
                 <p className="text-gray-500">
-                    Este módulo te permite seleccionar un pedido disponible
+                    Este módulo te permite seleccionar un pedido por atender
                 </p>
             </div>
 
