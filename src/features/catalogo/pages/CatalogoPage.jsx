@@ -162,6 +162,7 @@ export default function CatalogoPage() {
                     className="
                     max-h-[400px]
                     overflow-y-auto
+                    custom-scroll
                     pr-2
                 "
                 >

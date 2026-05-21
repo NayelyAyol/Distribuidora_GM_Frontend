@@ -224,6 +224,7 @@ export default function ProductoDetallePage() {
                     className="
                     max-h-[400px]
                     overflow-y-auto
+                    custom-scroll
                     pr-2
                 "
                 >
