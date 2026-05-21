@@ -4,9 +4,10 @@ import CantidadSelector from "../CantidadSelector"
 import ProductosRecomendados from "../ProductosRecomendados"
 import { useNavigate } from "react-router-dom"
 import { FiArrowLeft } from "react-icons/fi"
+import useAuthStore from "@/context/useAuthStore"
 
 export default function ProductoDetallePage() {
-
+    const user = useAuthStore((state) => state.user)
     const navigate = useNavigate()
     const { id } = useParams()
 
@@ -202,6 +203,13 @@ export default function ProductoDetallePage() {
                     />
 
                     <button
+                        onClick={() => {
+                            if (!user) {
+                                navigate("/registro")
+                                return
+                            }
+                            console.log("Agregar carrito")
+                        }}
                         className="
                             mt-4
                             w-full

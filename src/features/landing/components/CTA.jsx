@@ -4,7 +4,7 @@ export default function CTA() {
     const navigate = useNavigate()
     
     return (
-        <section className="text-center py-20">
+        <section className="bg-emerald-50 text-center py-20">
 
             <h2 className="text-4xl font-black text-emerald-950">
                 ¿Listo para optimizar tu abastecimiento de oficina?

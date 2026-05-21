@@ -10,7 +10,11 @@ import { useNavigate } from "react-router-dom"
 
 import BaseCard from "../../shared/components/BaseCard"
 
-export default function MejoresProductos({ productos }) {
+export default function MejoresProductos({
+    productos = [],
+    showHeader = true,
+    onSelectProducto
+}) {
 
     const navigate = useNavigate()
 
@@ -93,88 +97,111 @@ export default function MejoresProductos({ productos }) {
     }
 
     return (
-        <div className="relative w-full flex items-center gap-4 sm:gap-9">
+        <section
+            id="destacados"
+            className="px-6 py-10"
+        >
 
-            <button
-                onClick={scrollLeft}
-                className="
+            {showHeader && (
+
+                <div className="mb-6 text-center">
+
+                    <h2 className="text-3xl font-bold">
+                        Productos destacados
+                    </h2>
+
+                    <p className="text-emerald-900 mt-2">
+                        Descubre algunos de los productos más populares
+                    </p>
+
+                </div>
+
+            )}
+
+            <div className="relative w-full flex items-center gap-4 sm:gap-9">
+
+                <button
+                    onClick={scrollLeft}
+                    className="
                     z-20 bg-white/90 hover:bg-white
                     shadow-md rounded-full
                     p-2 sm:p-3
                     ml-1 sm:ml-2
                     transition-colors
                 "
-            >
-                <FiChevronLeft
-                    className="
+                >
+                    <FiChevronLeft
+                        className="
                         text-xl sm:text-2xl
                         text-gray-700
                     "
-                />
-            </button>
+                    />
+                </button>
 
-            <div className="flex-1 overflow-hidden py-3">
+                <div className="flex-1 overflow-hidden py-3">
 
-                <div
-                    ref={trackRef}
-                    className="
+                    <div
+                        ref={trackRef}
+                        className="
                         flex gap-4
                         will-change-transform
                         w-max shrink-0
                         pl-4
                     "
-                >
+                    >
 
-                    {[...productos, ...productos].map((p, index) => (
+                        {[...productos, ...productos].map((p, index) => (
 
-                        <div
-                            key={index}
-                            ref={index === 0 ? cardRef : null}
-                        >
+                            <div
+                                key={index}
+                                ref={index === 0 ? cardRef : null}
+                            >
 
-                            <BaseCard
-                                image={p.imagen}
-                                title={p.nombre}
-                                description={p.descripcion}
-                                onClick={() =>
-                                    navigate(`/dashboard/producto/${p._id}`)
-                                }
-                                className="
+                                <BaseCard
+                                    image={p.imagen}
+                                    title={p.nombre}
+                                    description={p.descripcion}
+                                    onClick={() => {
+                                        if (onSelectProducto) {
+                                            onSelectProducto(p)
+                                        }
+                                    }}
+                                    className="
                                     min-w-[160px]
                                     sm:min-w-[200px]
                                     md:min-w-[232px]
                                     max-w-[240px]
                                     flex-shrink-0
                                 "
-                            >
+                                >
 
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        console.log("Favorito", p)
-                                    }}
-                                    className="
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            console.log("Favorito", p)
+                                        }}
+                                        className="
                                         absolute
                                         top-3
                                         right-3
                                         z-10
                                     "
-                                >
-                                    <FiStar
-                                        className="
+                                    >
+                                        <FiStar
+                                            className="
                                             text-yellow-500
                                             bg-white
                                             text-xl
                                         "
-                                    />
-                                </button>
+                                        />
+                                    </button>
 
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        console.log("Agregar carrito", p)
-                                    }}
-                                    className="
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            console.log("Agregar carrito", p)
+                                        }}
+                                        className="
                                         absolute
                                         bottom-3
                                         right-3
@@ -189,43 +216,45 @@ export default function MejoresProductos({ productos }) {
                                         items-center
                                         justify-center
                                     "
-                                >
-                                    <MdAddShoppingCart
-                                        className="
+                                    >
+                                        <MdAddShoppingCart
+                                            className="
                                             text-xl
                                             text-black
                                         "
-                                    />
-                                </button>
+                                        />
+                                    </button>
 
-                            </BaseCard>
+                                </BaseCard>
 
-                        </div>
+                            </div>
 
-                    ))}
+                        ))}
+
+                    </div>
 
                 </div>
 
-            </div>
-
-            <button
-                onClick={scrollRight}
-                className="
+                <button
+                    onClick={scrollRight}
+                    className="
                     z-20 bg-white/90 hover:bg-white
                     shadow-md rounded-full
                     p-2 sm:p-3
                     mr-1 sm:mr-2
                     transition-colors
                 "
-            >
-                <FiChevronRight
-                    className="
+                >
+                    <FiChevronRight
+                        className="
                         text-xl sm:text-2xl
                         text-gray-700
                     "
-                />
-            </button>
+                    />
+                </button>
 
-        </div>
+            </div>
+
+        </section>
     )
 }

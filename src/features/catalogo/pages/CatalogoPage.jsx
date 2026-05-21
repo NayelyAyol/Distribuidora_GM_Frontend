@@ -7,9 +7,18 @@ import SearchBar from "../components/SearchBar"
 import Filtros from "../components/Filtros"
 import MejoresProductos from "../components/MejoresProductos"
 
+import useAuthStore from "@/context/useAuthStore"
+import Navbar from "@/layouts/Navbar"
+
 export default function CatalogoPage() {
 
     const navigate = useNavigate()
+
+    const user = useAuthStore((state) => state.user)
+
+    const basePath = user
+        ? "/dashboard/producto"
+        : "/producto"
 
     const [search, setSearch] = useState("")
     const [categoriaActiva, setCategoriaActiva] = useState(null)
@@ -108,6 +117,16 @@ export default function CatalogoPage() {
         console.log("buscar:", search)
     }
 
+    const handleAddCart = (producto) => {
+
+        if (!user) {
+            navigate("/registro")
+            return
+        }
+
+        console.log("Agregar carrito:", producto)
+    }
+
     const productosFiltrados = productos.filter((p) => {
 
         const matchSearch = p.nombre
@@ -122,60 +141,73 @@ export default function CatalogoPage() {
     })
 
     return (
-        <div className="p-6 flex flex-col gap-6">
+    <div className="p-6 flex flex-col gap-6">
 
+        {user && (
             <p className="text-gray-500">
-                Este módulo te permite visualizar
-                los productos disponibles
+                Este módulo te permite visualizar los productos disponibles
             </p>
+        )}
 
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+        <div className="min-h-screen bg-white/60 rounded-xl">
 
-                <div className="w-full lg:w-auto lg:flex-shrink-0">
-                    <SearchBar
-                        search={search}
-                        setSearch={setSearch}
-                        handleBuscar={handleBuscar}
-                    />
-                </div>
+            <div className="p-6 flex flex-col gap-6">
 
-                <div className="w-full overflow-x-auto">
-                    <div className="flex gap-2 lg:justify-end min-w-max">
-                        <Filtros
-                            categorias={categorias}
-                            categoriaActiva={categoriaActiva}
-                            setCategoriaActiva={setCategoriaActiva}
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+
+                    <div className="w-full lg:w-auto lg:flex-shrink-0">
+                        <SearchBar
+                            search={search}
+                            setSearch={setSearch}
+                            handleBuscar={handleBuscar}
                         />
                     </div>
+
+                    <div className="w-full overflow-x-auto">
+                        <div className="flex gap-2 lg:justify-end min-w-max">
+                            <Filtros
+                                categorias={categorias}
+                                categoriaActiva={categoriaActiva}
+                                setCategoriaActiva={setCategoriaActiva}
+                            />
+                        </div>
+                    </div>
+
                 </div>
 
-            </div>
+                <MejoresProductos
+                    productos={productosDestacados}
+                    showHeader={false}
+                    onSelectProducto={(p) =>
+                        navigate(`${basePath}/${p._id}`)
+                    }
+                />
 
-            <MejoresProductos productos={productosDestacados} />
+                <div className="p-4">
 
-            <div className="bg-white/60 p-4 rounded-2xl shadow-inner">
-                <h2 className="font-bold text-gray-700 mb-4">
-                    Todos los productos
-                </h2>
+                    <h2 className="font-bold text-gray-700 mb-4">
+                        Todos los productos
+                    </h2>
 
-                <div
-                    className="
-                    max-h-[400px]
-                    overflow-y-auto
-                    custom-scroll
-                    pr-2
-                "
-                >
-                    <ProductosGrid
-                        productos={productosFiltrados}
-                        esCliente={true}
-                        esVendedor={false}
-                        onAddCart={(p) => console.log("cart:", p)}
-                        onSelectProducto={(p) => navigate(`/dashboard/producto/${p._id}`)}
-                    />
+                    <div className="max-h-[400px] overflow-y-auto custom-scroll pr-2">
+
+                        <ProductosGrid
+                            productos={productosFiltrados}
+                            esCliente={true}
+                            esVendedor={false}
+                            onAddCart={handleAddCart}
+                            onSelectProducto={(p) =>
+                                navigate(`${basePath}/${p._id}`)
+                            }
+                        />
+
+                    </div>
+
                 </div>
+
             </div>
 
         </div>
-    )
+    </div>
+)
 }

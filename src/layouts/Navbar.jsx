@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 export default function Navbar() {
 
@@ -12,11 +12,19 @@ export default function Navbar() {
             </h1>
 
             <nav className="hidden md:flex gap-8 font-medium text-emerald-900">
-                <a href="#features">Servicios</a>
-                <a href="#about">Nosotros</a>
-                <a href="#testimonials">Clientes</a>
-                <a href="#faq">Preguntas Frecuentes</a>
+                <a href="/#features">Servicios</a>
+                <a href="/#about">Nosotros</a>
+                <a href="/#testimonials">Clientes</a>
+                <a href="/#destacados">Productos destacados</a>
+                <a href="/#faq">Preguntas Frecuentes</a>
+                <Link
+                    to="/catalogo"
+                >
+                    Ver productos
+                </Link>
             </nav>
+
+
 
             <button
                 onClick={() => navigate("/login")}

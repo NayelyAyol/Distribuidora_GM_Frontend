@@ -39,6 +39,7 @@ import NuevoPedidoPage from "./features/cliente/pedidos/pages/NuevoPedidoPage"
 import QuejasSugerenciasClientePage from "./features/cliente/quejasysugerencias/pages/QuejasSugerenciasClientePage"
 import CatalogoPage from "./features/catalogo/pages/CatalogoPage"
 import ProductoDetallePage from "./features/producto/pages/ProductoDetallePage"
+import PublicLayout from "./layouts/PublicLayout"
 
 function App() {
   return (
@@ -48,12 +49,20 @@ function App() {
       <Routes>
 
         {/* PUBLICAS */}
-        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/registro" element={<Register />} />
         <Route path="/recuperar-contraseña" element={<ForgotPassword />} />
         <Route path="/resetear-contraseña" element={<ResetPasswordPage />} />
+        <Route element={<PublicLayout />}>
+            <Route path="/catalogo" element={<CatalogoPage />} />
+            <Route path="/" element={<Landing />} />
+        </Route>
+        <Route
+          path="/producto/:id"
+          element={<ProductoDetallePage />}
+        />
+
 
         {/* PRIVADAS */}
         <Route
