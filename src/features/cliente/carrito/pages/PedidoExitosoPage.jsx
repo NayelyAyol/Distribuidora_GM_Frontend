@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom"
 import {
     FiCheckCircle,
     FiShoppingBag,
-    FiShoppingCart
+    FiShoppingCart,
+    FiPrinter
 } from "react-icons/fi"
 
 import {
@@ -14,7 +15,9 @@ import {
 import { Button } from "@/components/ui/button"
 
 export default function PedidoExitosoPage() {
-
+    const handlePrint = () => {
+        window.print()
+    }
     const navigate = useNavigate()
 
     return (
@@ -49,6 +52,7 @@ export default function PedidoExitosoPage() {
                 flex flex-col
                 items-center
                 text-center
+                print-area
                 gap-8
             ">
 
@@ -143,36 +147,44 @@ export default function PedidoExitosoPage() {
 
                     <div className="
                     w-full
-                    grid grid-cols-1 md:grid-cols-2
+                    flex flex-col
                     gap-4
                 ">
 
-                        <Button
-                            onClick={() =>
-                                navigate("/dashboard/mi-carrito")
-                            }
-                            className={buttonPrimaryClass}
-                        >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Button
+                                onClick={() =>
+                                    navigate("/dashboard/mi-carrito")
+                                }
+                                className={buttonPrimaryClass}
+                            >
+                                <FiShoppingCart size={20} />
+                                Volver al carrito
+                            </Button>
 
-                            <FiShoppingCart size={20} />
+                            <Button
+                                onClick={() =>
+                                    navigate("/dashboard/mis-pedidos")
+                                }
+                                className={buttonPrimaryClass}
+                            >
+                                <FiShoppingBag size={20} />
+                                Ver mis pedidos
+                            </Button>
+                        </div>
 
-                            Volver al carrito
+                        <div className="flex justify-center">
+                            <Button
+                                onClick={handlePrint}
+                                className={`${buttonOutlineClass} p-[22px]`}
+                            >
 
-                        </Button>
+                                <FiPrinter size={20} />
 
-                        <Button
-                            onClick={() =>
-                                navigate("/dashboard/mis-pedidos")
-                            }
-                            className={`${buttonOutlineClass} p-[23px]`}
-                        >
+                                Imprimir factura
 
-                            <FiShoppingBag size={20} />
-
-                            Ver mis pedidos
-
-                        </Button>
-
+                            </Button>
+                        </div>
                     </div>
 
                 </div>
