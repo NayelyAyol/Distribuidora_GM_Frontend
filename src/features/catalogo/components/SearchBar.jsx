@@ -15,13 +15,13 @@ export default function SearchBar({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => {
-                    if (e.key === "Enter") handleBuscar()
+                    if (e.key === "Enter" && search.trim()) handleBuscar()
                 }}
                 className="bg-transparent border-0 focus:ring-0 flex-1 px-4"
             />
 
             <button
-                onClick={handleBuscar}
+                onClick={() => search.trim() && handleBuscar()}
                 className="rounded-full flex items-center justify-center h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition"
             >
                 <FiSearch className="text-emerald-900 text-xl" />

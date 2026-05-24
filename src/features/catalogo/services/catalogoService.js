@@ -14,7 +14,7 @@ export const Catalogo = async() =>{
 
 export const BuscarProducto = async(nombre) =>{
     try{
-        const res = api.get(`/productos/gestion?buscar=${nombre}`)
+        const res = await api.get(`/productos/gestion?buscar=${nombre}`)
         return res.data.productos
     } catch (error){
         console.error("Error al buscar el producto")
