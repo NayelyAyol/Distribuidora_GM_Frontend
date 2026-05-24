@@ -5,116 +5,69 @@ import ProductosRecomendados from "../ProductosRecomendados"
 import { useNavigate } from "react-router-dom"
 import { FiArrowLeft } from "react-icons/fi"
 import useAuthStore from "@/context/useAuthStore"
+import { Catalogo } from "@/features/catalogo/services/catalogoService"
+import { useLocation } from "react-router-dom"
 
 export default function ProductoDetallePage() {
     const user = useAuthStore((state) => state.user)
     const navigate = useNavigate()
     const { id } = useParams()
-
+    const location = useLocation()
     const [cantidad, setCantidad] = useState(1)
 
-        const [productos] = useState([
-        {
-            _id: "1",
-            nombre: "Laptop HP",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            precio:30,
-            imagen: "https://picsum.photos/300",
-            categoriaId: "1"
-        },
-        {
-            _id: "2",
-            nombre: "Mouse",
-            descripcion: "Mouse inteligente",
-            stock: 5,
-            precio:30,
-            imagen: "https://picsum.photos/301",
-            categoriaId: "1"
-        },
-        {
-            _id: "3",
-            nombre: "Mouse Logitech",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            precio:30,
-            imagen: "https://picsum.photos/302",
-            categoriaId: "2"
-        },
-        {
-            _id: "4",
-            nombre: "Escobas",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            precio:30,
-            imagen: "https://picsum.photos/303",
-            categoriaId: "1"
-        },
-        {
-            _id: "5",
-            nombre: "Mouse Logitech",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            precio:30,
-            imagen: "https://picsum.photos/304",
-            categoriaId: "2"
-        },
-                {
-            _id: "6",
-            nombre: "CPU",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            precio:30,
-            imagen: "https://picsum.photos/305",
-            categoriaId: "1"
-        },
-        {
-            _id: "7",
-            nombre: "Tazas",
-            descripcion: "Mouse inteligente",
-            stock: 5,
-            precio:30,
-            imagen: "https://picsum.photos/306",
-            categoriaId: "1"
-        },
-        {
-            _id: "8",
-            nombre: "Alfombra",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            precio:30,
-            imagen: "https://picsum.photos/307",
-            categoriaId: "2"
-        },
-        {
-            _id: "9",
-            nombre: "Forros",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            precio:30,
-            imagen: "https://picsum.photos/308",
-            categoriaId: "1"
-        },
-        {
-            _id: "10",
-            nombre: "Toallas",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            precio:30,
-            imagen: "https://picsum.photos/309",
-            categoriaId: "1"
-        }
-    ])
+    const [productos, setProductos] = useState([])
+    const [loading, setLoading] = useState(true)
 
-    const producto = productos.find(
-        p => p._id === id
-    )
+    const basePath = user
+        ? "/dashboard/catalogo"
+        : "/catalogo"
+
+    const from = location.state?.from || basePath
+
+    useEffect(() => {
+
+        const cargarProductos = async () => {
+
+            try {
+
+                const data = await Catalogo()
+
+                setProductos(data)
+
+            } catch (error) {
+
+                console.error(error)
+
+            } finally {
+
+                setLoading(false)
+            }
+        }
+
+        cargarProductos()
+
+    }, [])
 
     useEffect(() => {
 
         window.scrollTo(0, 0)
+        setCantidad(1)
 
     }, [id])
+
+    const producto = productos.find(
+        (p) => String(p._id) === String(id)
+    )
+
+    if (loading) {
+        return <p>Cargando...</p>
+    }
+
+    const recomendados = productos.filter(
+        (p) =>
+            p.categoria?._id === producto.categoria?._id &&
+            p._id !== producto._id
+    )
 
     if (!producto) {
         return (
@@ -124,27 +77,32 @@ export default function ProductoDetallePage() {
         )
     }
 
-    const recomendados = productos.filter(
-        p =>
-            p.categoriaId === producto.categoriaId &&
-            p._id !== producto._id
-    )
-
     return (
         <div className="p-6 flex flex-col gap-8">
-
+        {user && (
             <p className="text-gray-500">
                 Este módulo te permite visualizar
                 un producto seleccionado
-            </p>
+            </p>)
+        }
 
-            <div className="relative grid lg:grid-cols-2 gap-8 bg-white p-6 rounded-2xl shadow">
+            <div className="
+                relative
+                grid
+                grid-cols-1
+                lg:grid-cols-2
+                gap-6 lg:gap-8
+                bg-white
+                p-4 sm:p-6
+                rounded-2xl
+                shadow
+            ">
 
                 <div className="absolute pt-8 px-8">
 
                     <button
                         onClick={() =>
-                            navigate("/dashboard/catalogo")
+                            navigate(from)
                         }
                         className="
                             w-11 h-11 rounded-xl
@@ -168,10 +126,10 @@ export default function ProductoDetallePage() {
                 </div>
 
                 <img
-                    src={producto.imagen}
+                    src={producto.imagen?.url || "/images/categories/default.webp"}
                     className="
                         w-full
-                        h-[350px]
+                        h-[420px]
                         object-cover
                         rounded-xl
                     "
@@ -183,19 +141,80 @@ export default function ProductoDetallePage() {
                         {producto.nombre}
                     </h1>
 
-                    <p className="text-gray-500 mt-2">
+                    <p className="text-gray-500 mt-2 text-justify">
                         {producto.descripcion}
                     </p>
 
                     <p className="text-xl font-semibold mt-4">
-                        ${producto.precio}
+                        ${producto.precioVenta}
                     </p>
 
                     <p className="text-sm text-gray-400 mt-1">
                         Stock: {producto.stock}
                     </p>
 
+                    <div className="mt-5 flex flex-wrap gap-2">
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-emerald-100 text-emerald-700
+                            text-sm font-medium
+                        ">
+                            Marca: {producto.marca}
+                        </span>
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Color: {producto.color}
+                        </span>
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Tamaño: {producto.tamanio}
+                        </span>
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Unidad: {producto.unidadMedida}
+                        </span>
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Presentación: {producto.presentacion}
+                        </span>
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Material: {producto.material}
+                        </span>
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Categoría: {producto.categoria?.nombre}
+                        </span>
+
+                    </div>
+
                     <CantidadSelector
+                        key={producto._id}
                         cantidad={cantidad}
                         setCantidad={setCantidad}
                         min={1}
@@ -236,9 +255,9 @@ export default function ProductoDetallePage() {
                     pr-2
                 "
                 >
-                <ProductosRecomendados
-                    productos={recomendados}
-                />
+                    <ProductosRecomendados
+                        productos={recomendados}
+                    />
                 </div>
             </div>
 

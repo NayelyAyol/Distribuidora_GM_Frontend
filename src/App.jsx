@@ -56,12 +56,9 @@ function App() {
         <Route path="/resetear-contraseña" element={<ResetPasswordPage />} />
         <Route element={<PublicLayout />}>
             <Route path="/catalogo" element={<CatalogoPage />} />
+            <Route path="/producto/:id" element={<ProductoDetallePage />}/>
             <Route path="/" element={<Landing />} />
         </Route>
-        <Route
-          path="/producto/:id"
-          element={<ProductoDetallePage />}
-        />
 
 
         {/* PRIVADAS */}

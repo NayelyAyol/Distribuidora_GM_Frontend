@@ -7,7 +7,7 @@ import {
 
 import { MdAddShoppingCart } from "react-icons/md"
 import { useNavigate } from "react-router-dom"
-
+import useAuthStore from "@/context/useAuthStore"
 import BaseCard from "../../shared/components/BaseCard"
 
 export default function MejoresProductos({
@@ -96,6 +96,12 @@ export default function MejoresProductos({
         }
     }
 
+    const user = useAuthStore((state) => state.user)
+
+    const basePath = user
+        ? "/dashboard/producto"
+        : "/producto"
+
     return (
         <section
             id="destacados"
@@ -150,10 +156,10 @@ export default function MejoresProductos({
                     "
                     >
 
-                        {[...productos, ...productos].map((p, index) => (
+                        {[...productos, ...productos, ...productos, ...productos].map((p, index) => (
 
                             <div
-                                key={index}
+                                key={`${p._id}-${index}`}
                                 ref={index === 0 ? cardRef : null}
                             >
 
@@ -161,10 +167,14 @@ export default function MejoresProductos({
                                     image={p.imagen}
                                     title={p.nombre}
                                     description={p.descripcion}
+                                    price={p.precioVenta}
                                     onClick={() => {
+
                                         if (onSelectProducto) {
                                             onSelectProducto(p)
                                         }
+
+                                        navigate(`${basePath}/${p._id}`)
                                     }}
                                     className="
                                     min-w-[160px]
@@ -202,10 +212,6 @@ export default function MejoresProductos({
                                             console.log("Agregar carrito", p)
                                         }}
                                         className="
-                                        absolute
-                                        bottom-3
-                                        right-3
-                                        z-10
                                         w-[42px]
                                         h-[42px]
                                         bg-emerald-200

@@ -1,7 +1,12 @@
-import BaseCard from "../shared/components/BaseCard"
 import { useNavigate } from "react-router-dom"
+import { MdAddShoppingCart } from "react-icons/md"
 
-export default function ProductosRecomendados({ productos }) {
+import BaseCard from "../shared/components/BaseCard"
+
+export default function ProductosRecomendados({
+    productos,
+    onAddCart
+}) {
 
     const navigate = useNavigate()
 
@@ -20,11 +25,39 @@ export default function ProductosRecomendados({ productos }) {
                         key={p._id}
                         image={p.imagen}
                         title={p.nombre}
-                        description={`$${p.precio}`}
+                        description={p.descripcion}
+                        price={p.precioVenta}
                         onClick={() =>
                             navigate(`/dashboard/producto/${p._id}`)
                         }
-                    />
+                    >
+
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                onAddCart?.(p)
+                            }}
+                            className="
+                                w-[42px]
+                                h-[42px]
+                                bg-emerald-200
+                                hover:bg-emerald-300
+                                rounded-xl
+                                transition
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+                            <MdAddShoppingCart
+                                className="
+                                    text-xl
+                                    text-black
+                                "
+                            />
+                        </button>
+
+                    </BaseCard>
 
                 ))}
 

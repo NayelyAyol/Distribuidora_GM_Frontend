@@ -15,9 +15,10 @@ export default function ProductoCard({
 
     return (
         <BaseCard
-            image={producto.imagen}
+            image={producto.imagen?.url}
             title={producto.nombre}
             description={producto.descripcion}
+            price={producto.precioVenta}
             onEdit={() => onEdit(producto)}
             esVendedor={esVendedor}
             onClick={() => onSelectProducto?.(producto)} 

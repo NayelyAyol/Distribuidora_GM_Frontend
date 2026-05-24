@@ -62,10 +62,10 @@ export default function ProductoForm({
                 marca: selectedProduct.marca || "",
                 unidadMedida: selectedProduct.unidadMedida || "",
                 destacado: selectedProduct.destacado || false,
-                imagen: selectedProduct.imagen || null
+                imagen: selectedProduct.imagen?.url || null
             })
 
-            setPreview(selectedProduct.imagen)
+            setPreview(selectedProduct.imagen?.url)
 
         } else {
 

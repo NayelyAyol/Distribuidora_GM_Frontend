@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import ProductosGrid from "../../vendedor/productos/components/ProductosGrid"
@@ -8,7 +8,7 @@ import Filtros from "../components/Filtros"
 import MejoresProductos from "../components/MejoresProductos"
 
 import useAuthStore from "@/context/useAuthStore"
-import Navbar from "@/layouts/Navbar"
+import { Catalogo } from "../services/catalogoService"
 
 export default function CatalogoPage() {
 
@@ -23,92 +23,27 @@ export default function CatalogoPage() {
     const [search, setSearch] = useState("")
     const [categoriaActiva, setCategoriaActiva] = useState(null)
 
-    const [productos] = useState([
-        {
-            _id: "1",
-            nombre: "Laptop HP",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            imagen: "https://picsum.photos/300",
-            categoriaId: "1"
-        },
-        {
-            _id: "2",
-            nombre: "Mouse",
-            descripcion: "Mouse inteligente",
-            stock: 5,
-            imagen: "https://picsum.photos/301",
-            categoriaId: "1"
-        },
-        {
-            _id: "3",
-            nombre: "Mouse Logitech",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            imagen: "https://picsum.photos/302",
-            categoriaId: "2"
-        },
-        {
-            _id: "4",
-            nombre: "Escobas",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            imagen: "https://picsum.photos/303",
-            categoriaId: "1"
-        },
-        {
-            _id: "5",
-            nombre: "Mouse Logitech",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            imagen: "https://picsum.photos/304",
-            categoriaId: "2"
-        },
-        {
-            _id: "6",
-            nombre: "CPU",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            imagen: "https://picsum.photos/305",
-            categoriaId: "1"
-        },
-        {
-            _id: "7",
-            nombre: "Tazas",
-            descripcion: "Mouse inteligente",
-            stock: 5,
-            imagen: "https://picsum.photos/306",
-            categoriaId: "1"
-        },
-        {
-            _id: "8",
-            nombre: "Alfombra",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            imagen: "https://picsum.photos/307",
-            categoriaId: "2"
-        },
-        {
-            _id: "9",
-            nombre: "Forros",
-            descripcion: "Laptop oficina",
-            stock: 5,
-            imagen: "https://picsum.photos/308",
-            categoriaId: "1"
-        },
-        {
-            _id: "10",
-            nombre: "Toallas",
-            descripcion: "Inalámbrico",
-            stock: 10,
-            imagen: "https://picsum.photos/309",
-            categoriaId: "1"
+    const [productos, setProductos] = useState([])
+
+    useEffect(()=>{
+        const cargarProductos = async ()=>{
+            try{
+                const data = await Catalogo()
+                setProductos(data)
+            }catch (error){
+                console.error(error)
+            }
         }
-    ])
+        cargarProductos()
+    }, [])
 
     const categorias = [
-        { _id: "1", nombre: "Electrónica" },
-        { _id: "2", nombre: "Accesorios" }
+        ...new Map(
+            productos.map((p) => [
+                p.categoria?._id,
+                p.categoria
+            ])
+        ).values()
     ]
 
     const productosDestacados = productos.slice(0, 5)
@@ -134,7 +69,7 @@ export default function CatalogoPage() {
             .includes(search.toLowerCase())
 
         const matchCategoria = categoriaActiva
-            ? p.categoriaId === categoriaActiva
+            ? p.categoria?._id === categoriaActiva
             : true
 
         return matchSearch && matchCategoria
