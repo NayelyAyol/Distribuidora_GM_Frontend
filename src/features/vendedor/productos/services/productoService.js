@@ -11,3 +11,19 @@ export const actualizarProducto = async(productoId, formData) => {
         )
     }
 }
+
+export const gestionProductos = async (params = {}) => {
+    try {
+        const res = await api.get("/productos/gestion",
+            {
+                params
+            }
+        )
+        return res.data
+    } catch (error) {
+        console.error("Error al gestionar productos",error)
+        throw new Error(
+            error.response?.data?.msg || "Error al gestionar productos"
+        )
+    }
+}

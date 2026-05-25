@@ -7,13 +7,16 @@ export default function ProductosGrid({
     onEdit,
     esVendedor,
     esCliente,
-    onSelectProducto
+    onSelectProducto,
+    onToggleEstado
 }) {
 
     return (
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
             {productos.map((producto) => (
+
                 <ProductoCard
                     key={producto._id}
                     producto={producto}
@@ -23,7 +26,9 @@ export default function ProductosGrid({
                     esVendedor={esVendedor}
                     esCliente={esCliente}
                     onSelectProducto={onSelectProducto}
+                    onToggleEstado={onToggleEstado}
                 />
+
             ))}
 
         </div>
