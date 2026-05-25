@@ -1,4 +1,4 @@
-import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
+import { FaFacebook, FaTiktok } from "react-icons/fa6"
 
 export default function Footer() {
     return (
@@ -11,9 +11,21 @@ export default function Footer() {
                 </h3>
 
                 <div className="flex gap-4 text-xl">
-                    <FaFacebook />
-                    <FaInstagram />
-                    <FaXTwitter />
+                    <a
+                        href="https://www.facebook.com/grupomorenoecuador/?locale=es_LA"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <FaFacebook />
+                    </a>
+
+                    <a
+                        href="https://www.tiktok.com/@distribuidoragrupomoreno?_r=1&_t=ZS-96eL0VI0Crx"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <FaTiktok />
+                    </a>
                 </div>
 
             </div>
