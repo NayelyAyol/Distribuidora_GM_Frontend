@@ -6,8 +6,7 @@ import { FiArrowLeft } from "react-icons/fi"
 import { toast } from "react-toastify"
 import ProductoForm from "../components/ProductosForm"
 import {
-    actualizarProducto,
-    obtenerProductoPorId
+    actualizarProducto
 } from "../services/productoService"
 
 export default function ActualizarProductoPage() {
@@ -16,7 +15,7 @@ export default function ActualizarProductoPage() {
     const { id } = useParams()
     const [producto, setProducto] = useState(null)
 
-    useEffect(() => {
+    /*useEffect(() => {
         const cargarProducto = async () => {
             try {
                 const data =
@@ -27,7 +26,7 @@ export default function ActualizarProductoPage() {
             }
         }
         cargarProducto()
-    }, [id])
+    }, [id])*/
 
     const handleSave = async (formData) => {
         try {
@@ -68,7 +67,7 @@ export default function ActualizarProductoPage() {
                 </div>
                 {producto && (
                     <ProductoForm
-                        selectedProduct={producto}
+                        selectedProduct={null}
                         onSave={handleSave}
                         onClose={() => navigate(-1)}
                     />
