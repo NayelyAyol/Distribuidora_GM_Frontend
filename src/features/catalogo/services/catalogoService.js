@@ -12,14 +12,17 @@ export const Catalogo = async() =>{
     }
 } 
 
-export const BuscarProducto = async(nombre) =>{
-    try{
-        const res = await api.get(`/productos/gestion?buscar=${nombre}`)
+export const Explorar = async (params = {}) => {
+    try {
+        const res = await api.get("/productos/explorar", {
+            params
+        })
+
         return res.data.productos
-    } catch (error){
-        console.error("Error al buscar el producto")
-        throw new Error (
-            error.response?.data?.msg || "Error al buscar el producto"
+    } catch (error) {
+        console.error("Error al explorar los productos", error)
+        throw new Error(
+            error.response?.data?.msg || "Error al explorar los productos"
         )
     }
 }
