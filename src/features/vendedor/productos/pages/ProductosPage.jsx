@@ -20,7 +20,9 @@ import {
 } from "@/features/admin/categorias/services/categoriaService"
 
 import {
-    gestionProductos
+    gestionProductos,
+    activarProducto,
+    desactivarProducto
 } from "../services/productoService"
 
 export default function ProductosPage() {
@@ -186,33 +188,34 @@ export default function ProductosPage() {
     }
 
     const handleConfirmEstado = async () => {
-
         try {
-
             if (productoSeleccionado.estado) {
-
-                console.log("Desactivar producto")
-
-                toast.success(
-                    "Producto desactivado"
+                await desactivarProducto(
+                    productoSeleccionado._id
                 )
-
+                toast.success("Producto desactivado")
             } else {
-
-                console.log("Activar producto")
-
-                toast.success(
-                    "Producto activado"
-                )
-
+                await activarProducto(productoSeleccionado._id)
+                toast.success("Producto activado")
             }
-
+            const params = {
+                categoria: categoriaId,
+                buscar: search,
+                page,
+                limit: 8
+            }
+            if (estadoActivo !== "todos") {
+                params.estado =
+                    estadoActivo === "activos"
+            }
+            const data = await gestionProductos(params)
+            setProductos(data.productos)
+            setTotalPaginas(
+                data.totalPaginas
+            )
             handleCloseModal()
-
         } catch (error) {
-
             toast.error(error.message)
-
         }
     }
 

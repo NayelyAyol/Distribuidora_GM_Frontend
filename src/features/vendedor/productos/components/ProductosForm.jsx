@@ -142,7 +142,7 @@ export default function ProductoForm({
         reader.readAsDataURL(file)
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
 
         if (!form.nombre.trim()) {
             toast.error("El nombre es obligatorio")
@@ -194,7 +194,39 @@ export default function ProductoForm({
             return
         }
 
-        onSave(form)
+    try {
+
+        const formData = new FormData()
+
+        formData.append("nombre", form.nombre)
+        formData.append("descripcion", form.descripcion)
+        formData.append("codigo", form.codigo)
+        formData.append("precioCompra", form.precioCompra)
+        formData.append("precioVenta", form.precioVenta)
+        formData.append("tipoIVA", form.tipoIVA)
+        formData.append("precioMayorista", form.precioMayorista)
+
+        formData.append(
+            "cantidadMinimaMayorista",
+            form.cantidadMinimaMayorista
+        )
+
+        formData.append("stock", form.stock)
+        formData.append("stockMinimo", form.stockMinimo)
+        formData.append("marca", form.marca)
+        formData.append("unidadMedida", form.unidadMedida)
+        formData.append("destacado", form.destacado)
+
+        if (form.imagen instanceof File) {
+
+            formData.append(
+                "imagen",
+                form.imagen
+            )
+
+        }
+
+        await onSave(formData)
 
         toast.success(
             selectedProduct
@@ -211,7 +243,14 @@ export default function ProductoForm({
         if (onClose) {
             onClose()
         }
+
+    } catch (error) {
+
+        toast.error(error.message)
+
     }
+
+}
 
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto">

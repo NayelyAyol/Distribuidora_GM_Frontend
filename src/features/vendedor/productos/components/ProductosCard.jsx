@@ -27,10 +27,10 @@ export default function ProductoCard({
                         e.stopPropagation()
                         onToggleEstado(producto)
                     }}
-                    className={` absolute top-6 left-5 z-10 w-10 h-10 rounded-full flex items-center justify-center transition shadow-sm
+                    className={`absolute top-6 left-5 z-10 w-10 h-10 rounded-full flex items-center justify-center transition shadow-sm
                         ${producto.estado
-                            ? "bg-red-100 text-red-600 hover:bg-red-200"
-                            : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200"
+                            ? "bg-emerald-100 text-emerald-600 hover:bg-emerald-200"
+                            : "bg-red-100 text-red-600 hover:bg-red-200"
                         }
                     `}
                 >

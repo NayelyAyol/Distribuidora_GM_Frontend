@@ -1,19 +1,45 @@
+import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-
 import { FiArrowLeft } from "react-icons/fi"
+import { toast } from "react-toastify"
 import ProductoForm from "../components/ProductosForm"
+import {
+    actualizarProducto,
+    obtenerProductoPorId
+} from "../services/productoService"
 
 export default function ActualizarProductoPage() {
 
     const navigate = useNavigate()
     const { id } = useParams()
+    const [producto, setProducto] = useState(null)
 
-    const handleSave = async (data) => {
-        console.log("EDITANDO:", id, data)
-        navigate(-1)
+    useEffect(() => {
+        const cargarProducto = async () => {
+            try {
+                const data =
+                    await obtenerProductoPorId(id)
+                setProducto(data)
+            } catch (error) {
+                toast.error(error.message)
+            }
+        }
+        cargarProducto()
+    }, [id])
+
+    const handleSave = async (formData) => {
+        try {
+            await actualizarProducto(
+                id,
+                formData
+            )
+            toast.success("Producto actualizado correctamente")
+            navigate(-1)
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
     return (
@@ -27,7 +53,11 @@ export default function ActualizarProductoPage() {
 
                 <div className="flex items-center gap-3 mb-6">
 
-                    <Button variant="ghost" onClick={() => navigate(-1)}>
+                    <Button
+                        variant="ghost"
+                        onClick={() => navigate(-1)}
+                    >
+
                         <FiArrowLeft className="text-[20px]" />
                     </Button>
 
@@ -36,13 +66,13 @@ export default function ActualizarProductoPage() {
                     </h2>
 
                 </div>
-
-                <ProductoForm
-                    selectedProductId={id} 
-                    onSave={handleSave}
-                    onClose={() => navigate(-1)}
-                />
-
+                {producto && (
+                    <ProductoForm
+                        selectedProduct={producto}
+                        onSave={handleSave}
+                        onClose={() => navigate(-1)}
+                    />
+                )}
             </Card>
         </div>
     )
