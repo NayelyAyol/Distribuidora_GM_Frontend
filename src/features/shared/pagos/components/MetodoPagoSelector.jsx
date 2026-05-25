@@ -40,7 +40,6 @@ export default function MetodoPagoSelector({
                 }
             />
 
-
         </div>
     )
 }

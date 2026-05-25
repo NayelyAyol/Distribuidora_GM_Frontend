@@ -34,7 +34,7 @@ export default function PedidoImagenForm({
                 className="
                     relative
                     h-[260px]
-                    md:h-[400px]
+                    md:h-[458px]
                     rounded-3xl
                     overflow-hidden
                     border-2

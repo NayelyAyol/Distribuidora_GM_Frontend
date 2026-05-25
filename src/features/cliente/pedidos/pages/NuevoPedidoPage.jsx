@@ -1,55 +1,28 @@
-import { FiImage } from "react-icons/fi"
-
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
-
-import MetodoPagoSelector
-from "../../../shared/pagos/components/MetodoPagoSelector"
-
-import ResumenPago
-from "../../../shared/pagos/components/ResumenPago"
-
-import TarjetaForm
-from "../../../shared/pagos/components/TarjetaForm"
-
-import TransferenciaForm
-from "../../../shared/pagos/components/TransferenciaForm"
-
-import PedidoInfoForm
-from "../components/PedidoInfoForm"
-
-import PedidoImagenForm
-from "../components/PedidoImagenForm"
-
-import PedidoDireccionForm
-from "../components/PedidoDireccionForm"
-
-import PedidoObservacionesForm
-from "../components/PedidoObservacionesForm"
-
-import usePedidoForm
-from "../hooks/usePedidoForm"
+import MetodoPagoSelector from "../../../shared/pagos/components/MetodoPagoSelector"
+import TarjetaForm from "../../../shared/pagos/components/TarjetaForm"
+import TransferenciaForm from "../../../shared/pagos/components/TransferenciaForm"
+import PedidoInfoForm from "../components/PedidoInfoForm"
+import PedidoImagenForm from "../components/PedidoImagenForm"
+import PedidoDatosForm from "../components/PedidoDatosForm"
+import PedidoObservacionesForm from "../components/PedidoObservacionesForm"
+import usePedidoForm from "../hooks/usePedidoForm"
 
 export default function NuevoPedidoPage() {
-
     const pedidoForm = usePedidoForm()
 
     const {
         form,
-
         metodoPago,
         setMetodoPago,
-
-        imagen,
-
         preview,
-
         fileInputRef,
-
         handleChange,
         handleImagenChange,
         handleSubmit
     } = pedidoForm
+    const mostrarFormulariosPago = false
 
     return (
 
@@ -61,10 +34,7 @@ export default function NuevoPedidoPage() {
                 requeridos
             </p>
 
-            <div className="
-                grid grid-cols-1
-                gap-6
-            ">
+            <div className="grid grid-cols-1 gap-6">
 
                 <PedidoInfoForm
                     form={form}
@@ -95,7 +65,7 @@ export default function NuevoPedidoPage() {
 
                         <div className="space-y-6">
 
-                            <PedidoDireccionForm
+                            <PedidoDatosForm
                                 form={form}
                                 handleChange={handleChange}
                             />
@@ -122,18 +92,11 @@ export default function NuevoPedidoPage() {
 
                     <div>
 
-                        <h2 className="
-                            text-lg
-                            font-semibold
-                            text-gray-800
-                        ">
+                        <h2 className="text-lg font-semibold text-gray-800">
                             Método de pago
                         </h2>
 
-                        <p className="
-                            text-sm
-                            text-gray-500
-                        ">
+                        <p className="text-sm text-gray-500">
                             Selecciona cómo deseas pagar
                         </p>
 
@@ -144,51 +107,32 @@ export default function NuevoPedidoPage() {
                         setMetodoSeleccionado={setMetodoPago}
                     />
 
-                    {
-                        metodoPago === "tarjeta"
-                        && (
-                            <div className="pt-4">
-                                <TarjetaForm />
-                            </div>
-                        )
-                    }
+                    {mostrarFormulariosPago && metodoPago === "tarjeta" && (
+                        <div className="pt-4">
+                            <TarjetaForm />
+                        </div>
+                    )}
 
-                    {
-                        metodoPago === "transferencia"
-                        && (
-                            <div className="pt-4">
-                                <TransferenciaForm />
-                            </div>
-                        )
-                    }
+                    {mostrarFormulariosPago && metodoPago === "transferencia" && (
+                        <div className="pt-4">
+                            <TransferenciaForm />
+                        </div>
+                    )}
 
-                    {
-                        metodoPago === "efectivo"
-                        && (
-
-                            <div
-                                className="
-                                    mt-4
-                                    rounded-2xl
-                                    bg-emerald-50
-                                    border
-                                    border-emerald-100
-                                    p-4
-                                "
-                            >
-
-                                <p className="
-                                    text-sm
-                                    text-emerald-800
-                                ">
-                                    El pago se realizará
-                                    al momento de la entrega.
-                                </p>
-
-                            </div>
-
-                        )
-                    }
+                    {metodoPago === "efectivo" && (
+                        <div className="
+                            mt-4
+                            rounded-2xl
+                            bg-emerald-50
+                            border
+                            border-emerald-100
+                            p-4
+                        ">
+                            <p className="text-sm text-emerald-800">
+                                El pago se realizará al momento de la entrega.
+                            </p>
+                        </div>
+                    )}
 
                 </div>
 
@@ -200,61 +144,6 @@ export default function NuevoPedidoPage() {
                     p-6
                     space-y-6
                 ">
-
-                    <div
-                        className="
-                            rounded-2xl
-                            bg-emerald-50
-                            p-4
-                            flex items-center gap-4
-                        "
-                    >
-
-                        <div
-                            className="
-                                w-12
-                                h-12
-                                rounded-xl
-                                bg-emerald-100
-                                flex items-center
-                                justify-center
-                            "
-                        >
-
-                            <FiImage
-                                className="
-                                    text-xl
-                                    text-emerald-700
-                                "
-                            />
-
-                        </div>
-
-                        <div>
-
-                            <p className="
-                                font-medium
-                                text-gray-800
-                            ">
-                                Imagen subida
-                            </p>
-
-                            <p className="
-                                text-sm
-                                text-gray-500
-                            ">
-                                {
-                                    imagen
-                                        ? imagen.name
-                                        : "Sin archivo seleccionado"
-                                }
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <ResumenPago productos={[]} />
 
                     <Button
                         onClick={handleSubmit}

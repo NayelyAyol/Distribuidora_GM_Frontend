@@ -18,7 +18,7 @@ export default function PedidoDireccionForm({
                         font-semibold
                         text-gray-800
                     ">
-                        Dirección de entrega
+                        Datos del usuario
                     </h2>
 
                 </div>
@@ -26,7 +26,7 @@ export default function PedidoDireccionForm({
                 <div className="grid gap-4">
 
                     <Input
-                        placeholder="Dirección"
+                        placeholder="Nombre"
                         name="direccion"
                         value={form.direccion}
                         onChange={handleChange}
@@ -37,7 +37,7 @@ export default function PedidoDireccionForm({
                     />
 
                     <Input
-                        placeholder="Referencia"
+                        placeholder="Cédula"
                         name="referencia"
                         value={form.referencia}
                         onChange={handleChange}
@@ -48,7 +48,18 @@ export default function PedidoDireccionForm({
                     />
 
                     <Input
-                        placeholder="Teléfono"
+                        placeholder="Correo"
+                        name="referencia"
+                        value={form.referencia}
+                        onChange={handleChange}
+                        className="
+                            h-12
+                            rounded-xl
+                        "
+                    />
+
+                    <Input
+                        placeholder="Teléfono de respaldo"
                         name="telefono"
                         value={form.telefono}
                         onChange={handleChange}
