@@ -23,21 +23,21 @@ export default function PedidosPage() {
         {
             id: 1,
             cliente: "Juan Pérez",
-            cedula: "1712345678",
+            nombre: "Lista de utiles",
             fecha: "2026-05-10",
             estado: "PENDIENTE"
         },
         {
             id: 2,
             cliente: "María López",
-            cedula: "1712345679",
+            nombre: "Maquillaje",
             fecha: "2026-05-08",
             estado: "FINALIZADO"
         },
         {
             id: 3,
             cliente: "Carlos García",
-            cedula: "1712345680",
+            nombre: "Juguetes",
             fecha: "2026-05-09",
             estado: "PENDIENTE"
         }

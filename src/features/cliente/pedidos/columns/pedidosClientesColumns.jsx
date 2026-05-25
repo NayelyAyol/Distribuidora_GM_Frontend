@@ -10,9 +10,9 @@ export const pedidosClienteColumns = (onRevisar) => [
         header: "Fecha"
     }),
 
-    columnHelper.accessor("total", {
-        header: "Total",
-        cell: ({ row }) => `$${row.original.total}`
+    columnHelper.accessor("nombre", {
+        header: "Nombre",
+        cell: ({ row }) => row.original.nombre
     }),
 
     columnHelper.accessor("estado", {
