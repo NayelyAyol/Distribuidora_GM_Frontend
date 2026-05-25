@@ -24,8 +24,12 @@ export default function CatalogoPage() {
 
     const [search, setSearch] = useState("")
     const [categoriaActiva, setCategoriaActiva] = useState(null)
+
     const [destacados, setDestacados] = useState([])
     const [productos, setProductos] = useState([])
+
+    const [page, setPage] = useState(1)
+    const [totalPaginas, setTotalPaginas] = useState(1)
 
     useEffect(() => {
 
@@ -55,13 +59,17 @@ export default function CatalogoPage() {
 
     useEffect(() => {
 
+        setPage(1)
+
+    }, [search, categoriaActiva])
+
+    useEffect(() => {
+
         const cargarProductos = async () => {
 
             try {
 
                 const texto = search.trim()
-
-                // Validación mínima de búsqueda
                 if (
                     texto.length > 0 &&
                     texto.length < 2
@@ -72,11 +80,12 @@ export default function CatalogoPage() {
                 const data = await Explorar({
                     buscar: texto,
                     categoria: categoriaActiva,
-                    page: 1,
+                    page,
                     limit: 20
                 })
 
-                setProductos(data)
+                setProductos(data.productos)
+                setTotalPaginas(data.totalPaginas)
 
             } catch (error) {
 
@@ -90,14 +99,13 @@ export default function CatalogoPage() {
             }
         }
 
-        // Debounce para evitar demasiadas peticiones
         const delay = setTimeout(() => {
             cargarProductos()
         }, 400)
 
         return () => clearTimeout(delay)
 
-    }, [search, categoriaActiva])
+    }, [search, categoriaActiva, page])
 
     const categorias = [
         ...new Map(
@@ -196,6 +204,45 @@ export default function CatalogoPage() {
                                         navigate(`${basePath}/${p._id}`)
                                     }
                                 />
+
+                            )}
+
+                        </div>
+
+                        <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+
+                            {Array.from(
+                                { length: totalPaginas },
+                                (_, index) => {
+
+                                    const numero = index + 1
+
+                                    const activa = numero === page
+
+                                    return (
+
+                                        <button
+                                            key={numero}
+                                            onClick={() => setPage(numero)}
+                                            className={`
+                                                min-w-[40px]
+                                                h-[40px]
+                                                px-3
+                                                rounded-xl
+                                                border
+                                                transition
+                                                font-medium
+
+                                                ${activa
+                                                    ? "bg-emerald-100 text-emerald-700"
+                                                    : "text-gray-600 hover:bg-gray-100"
+                                                }
+                                            `}
+                                        >
+                                            {numero}
+                                        </button>
+                                    )
+                                }
                             )}
 
                         </div>
