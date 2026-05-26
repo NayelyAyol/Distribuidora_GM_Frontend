@@ -57,6 +57,7 @@ export default function Navbar({ onOpenSidenav }) {
         if (location.pathname.startsWith("/dashboard/producto/")) {
             return "Producto"
         }
+        if (location.pathname === "/dashboard/chat") return "Chat"
 
         return "Dashboard"
     }

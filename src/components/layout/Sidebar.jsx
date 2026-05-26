@@ -15,7 +15,7 @@ import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
 import { MdLightbulbOutline, MdFeedback, MdInventory } from "react-icons/md";
 import { MdAddShoppingCart } from "react-icons/md"
-import { FiMessageSquare, FiGrid} from "react-icons/fi"
+import { FiMessageSquare, FiGrid, FiMessageCircle } from "react-icons/fi"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate();
@@ -132,6 +132,12 @@ const Sidebar = ({ open, onClose }) => {
             path: "/dashboard/recomendaciones-vendedor",
             icon: MdLightbulbOutline,
             roles: ["VENDEDOR"],
+        },
+        {
+            label: "Chat",
+            path: "/dashboard/chat",
+            icon: FiMessageCircle,
+            roles: ["VENDEDOR","CLIENTE"],
         },
     ];
 

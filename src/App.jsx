@@ -40,6 +40,7 @@ import QuejasSugerenciasClientePage from "./features/cliente/quejasysugerencias/
 import CatalogoPage from "./features/catalogo/pages/CatalogoPage"
 import ProductoDetallePage from "./features/producto/pages/ProductoDetallePage"
 import PublicLayout from "./layouts/PublicLayout"
+import ChatPage from "./features/shared/chat/pages/ChatPage"
 
 function App() {
   return (
@@ -296,6 +297,15 @@ function App() {
             element={
               <ProtectedRoute roles={["VENDEDOR"]}>
                 <RecomendacionesVendedorPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/chat"
+            element={
+              <ProtectedRoute roles={["VENDEDOR", "CLIENTE"]}>
+                <ChatPage />
               </ProtectedRoute>
             }
           />
