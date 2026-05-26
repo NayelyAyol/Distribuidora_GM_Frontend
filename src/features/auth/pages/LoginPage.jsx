@@ -53,6 +53,9 @@ export default function LoginPage() {
                 <div className={imageWrapperClass}>
                     <img
                         src="/images/Login/ImgLogin.webp"
+                        onError={(e) => {
+                            e.target.src = "/images/notFound/notFound.webp"
+                        }}
                         alt="login"
                         className="absolute inset-0 w-full h-full object-cover"
                     />
