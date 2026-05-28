@@ -133,12 +133,6 @@ const Sidebar = ({ open, onClose }) => {
             icon: MdLightbulbOutline,
             roles: ["VENDEDOR"],
         },
-        {
-            label: "Chat",
-            path: "/dashboard/chat",
-            icon: FiMessageCircle,
-            roles: ["VENDEDOR","CLIENTE"],
-        },
     ];
 
     const filteredItems = menuItems.filter(
