@@ -5,7 +5,7 @@ import ProductosRecomendados from "../ProductosRecomendados"
 import { useNavigate } from "react-router-dom"
 import { FiArrowLeft } from "react-icons/fi"
 import useAuthStore from "@/context/useAuthStore"
-import { Catalogo } from "@/features/catalogo/services/catalogoService"
+import { Explorar } from "@/features/catalogo/services/catalogoService"
 import { useLocation } from "react-router-dom"
 
 export default function ProductoDetallePage() {
@@ -29,10 +29,9 @@ export default function ProductoDetallePage() {
         const cargarProductos = async () => {
 
             try {
-
-                const data = await Catalogo()
-
-                setProductos(data)
+                const data = await Explorar()
+                
+                setProductos(data?.productos || [])
 
             } catch (error) {
 

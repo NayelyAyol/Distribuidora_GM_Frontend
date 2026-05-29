@@ -11,14 +11,14 @@ import MejoresProductos from "../features/catalogo/components/MejoresProductos"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { Catalogo } from "../features/catalogo/services/catalogoService"
+import { Explorar } from "../features/catalogo/services/catalogoService"
 
 export default function Home() {
 
     const location = useLocation()
     const navigate = useNavigate()
 
-    const [productos, setProductos] = useState([])
+    const [productosDestacados, setProductosDestacados] = useState([])
 
     useEffect(() => {
 
@@ -42,22 +42,22 @@ export default function Home() {
         const cargarProductos = async () => {
 
             try {
+                const data = await Explorar()
+                
+                const listaProductos = data?.productos || []
 
-                const data = await Catalogo()
+                const filtrados = listaProductos.filter(p => p?.destacado === true)
 
-                setProductos(data)
+                setProductosDestacados(filtrados)
 
             } catch (error) {
-
-                console.error(error)
+                console.error("Error al cargar los productos destacados en Home:", error)
             }
         }
 
         cargarProductos()
 
     }, [])
-
-    const productosDestacados = productos.slice(0, 5)
 
     return (
         <>
