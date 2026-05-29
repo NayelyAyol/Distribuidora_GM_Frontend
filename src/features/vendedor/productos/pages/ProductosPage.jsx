@@ -168,10 +168,10 @@ export default function ProductosPage() {
         )
     }
 
-    const handleEdit = () => {
-
+    const handleEdit = (producto) => {
         navigate(
-            `/dashboard/categorias/${categoriaId}/productos/actualizar`
+            `/dashboard/categorias/${categoriaId}/productos/actualizar/${producto._id}`, 
+            { state: { productoSelec: producto } } // Pasamos todo el objeto en el state
         )
     }
 
