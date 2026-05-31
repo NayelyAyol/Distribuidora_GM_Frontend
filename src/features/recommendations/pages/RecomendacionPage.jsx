@@ -134,6 +134,7 @@ export default function RecomendacionesPage() {
                             onChange={(e) => setRespuesta(e.target.value)}
                             placeholder="Escribe tu respuesta..."
                             className={`${inputClass} h-28 resize-none`}
+                            maxLength={100}
                         />
                         <div className="flex justify-end gap-3 mt-4">
 
