@@ -216,6 +216,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                             value={form.nombre}
                             onChange={handleChange}
                             className={inputClass}
+                            maxlength={20}
                         />
                     </div>
 

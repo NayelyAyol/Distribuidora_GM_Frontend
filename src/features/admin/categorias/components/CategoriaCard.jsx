@@ -40,38 +40,32 @@ export default function CategoriaCard({
 
             ) : (
 
-                <div className="flex justify-between">
+            <div className="flex flex-wrap justify-between items-center w-full gap-2 mt-4">
+                <button
+                    onClick={() => onEdit(categoria)}
+                    className="
+                        flex items-center gap-1 text-emerald-600 hover:text-emerald-800
+                        font-medium text-sm sm:text-base
+                    "
+                >
+                    <FiEdit className="shrink-0" />
+                    Editar
+                </button>
 
-                    <button
-                        onClick={() => onEdit(categoria)}
-                        className="
-                            flex items-center gap-1
-                            text-emerald-600
-                            hover:text-emerald-800
-                        "
-                    >
-                        <FiEdit />
-                        Editar
-                    </button>
-
-                    <button
-                        onClick={() => onDelete(categoria)}
-                        className={`
-                            flex items-center gap-1 transition
-                            ${categoria.estado
-                                ? "text-red-500 hover:text-red-700"
-                                : "text-emerald-600 hover:text-emerald-800"
-                            }
-                        `}
-                    >
-                        <FiSlash />
-
-                        {categoria.estado
-                            ? "Desactivar"
-                            : "Activar"}
-                    </button>
-
-                </div>
+                <button
+                    onClick={() => onDelete(categoria)}
+                    className={`
+                        flex items-center gap-1 transition font-medium text-sm sm:text-base
+                        ${categoria.estado
+                            ? "text-red-500 hover:text-red-700"
+                            : "text-emerald-600 hover:text-emerald-800"
+                        }
+                    `}
+                >
+                    <FiSlash className="shrink-0" />
+                    {categoria.estado ? "Desactivar" : "Activar"}
+                </button>
+            </div>
 
             )}
 
