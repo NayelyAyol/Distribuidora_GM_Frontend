@@ -8,9 +8,9 @@ import { buttonPrimaryClass, buttonOutlineClass, inputClass } from "@/utils/styl
 export default function FeedbackList() {
 
     const [data, setData] = useState([
-        { id: 1, text: "Agregar modo oscuro", user: "Cliente 1", estado: "Pendiente", respuesta: null, fecha: "2024-06-01" },
-        { id: 2, text: "Mejorar rendimiento", user: "Cliente 2", estado: "Pendiente", respuesta: null, fecha: "2024-06-02" },
-        { id: 3, text: "Cambio de colores", user: "Cliente 3", estado: "Finalizada", respuesta: "Se evaluará el cambio", fecha: "2024-06-03" }
+        { id: 1, tipo: "Queja", text: "Agregar modo oscuro", user: "Cliente 1", estado: "Pendiente", respuesta: null, fecha: "2024-06-01" },
+        { id: 2, tipo: "Sugerencia", text: "Mejorar rendimiento", user: "Cliente 2", estado: "Pendiente", respuesta: null, fecha: "2024-06-02" },
+        { id: 3, tipo: "Queja", text: "Cambio de colores", user: "Cliente 3", estado: "Finalizada", respuesta: "Se evaluará el cambio", fecha: "2024-06-03" }
     ])
 
     const [selected, setSelected] = useState(null)
@@ -89,7 +89,8 @@ export default function FeedbackList() {
                             value={respuesta}
                             onChange={(e) => setRespuesta(e.target.value)}
                             placeholder="Escribe tu respuesta..."
-                            className={`${inputClass} h-28 resize-none`}
+                            className={`${inputClass} h-[120px] resize-none`}
+                            maxLength={100}
                         />
 
                         <div className="flex justify-end gap-3 mt-4">

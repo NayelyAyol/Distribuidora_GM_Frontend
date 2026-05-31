@@ -8,7 +8,7 @@ export default function FeedbackCard({ item, onOpen }) {
             <div className="flex justify-between items-start mb-2">
 
                 <h3 className="font-semibold text-gray-800">
-                    {item.user}
+                    {item.tipo}
                 </h3>
 
                 <p className="text-[11px] text-gray-400">
