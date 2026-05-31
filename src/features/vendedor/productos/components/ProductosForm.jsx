@@ -31,12 +31,28 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
             </div>
 
             <div className="space-y-4">
-                <div><Label className={`${labelClass} mb-3`}>Nombre *</Label><Input name="nombre" value={form.nombre} onChange={handleChange} className={inputClass} /></div>
-                <div><Label className={`${labelClass} mb-3`}>Código Interno *</Label><Input name="codigo" value={form.codigo} onChange={handleChange} className={inputClass} /></div>
+                <div><Label className={`${labelClass} mb-3`}>Nombre *</Label>
+                <Input name="nombre" 
+                value={form.nombre} 
+                onChange={handleChange} 
+                className={inputClass}
+                maxlength={20}
+                /></div>
+                <div><Label className={`${labelClass} mb-3`}>Código Interno *</Label>
+                <Input name="codigo" 
+                value={form.codigo} 
+                onChange={handleChange} 
+                className={inputClass} 
+                maxlength={8}/></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><Label className={`${labelClass} mb-3`}>Código Barras</Label><Input name="codigoBarras" value={form.codigoBarras} onChange={handleChange} className={inputClass} /></div>
-                    <div><Label className={`${labelClass} mb-3`}>Categoría ID *</Label><Input name="categoria" value={form.categoria} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Categoría ID *</Label>
+                    <Input name="categoria" 
+                    value={form.categoria} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    /></div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -44,7 +60,12 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                     <div><Label className={`${labelClass} mb-3`}>Marca *</Label><Input name="marca" value={form.marca} onChange={handleChange} className={inputClass} /></div>
                 </div>
 
-                <div><Label className={`${labelClass} mb-3`}>Descripción</Label><textarea name="descripcion" value={form.descripcion} onChange={handleChange} className={`${inputClass} min-h-[80px] resize-none`} /></div>
+                <div><Label className={`${labelClass} mb-3`}>Descripción</Label>
+                <textarea name="descripcion" 
+                value={form.descripcion} 
+                onChange={handleChange} 
+                className={`${inputClass} min-h-[80px] resize-none`}
+                maxlength={100}/></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><Label className={`${labelClass} mb-3`}>Color</Label><Input name="color" value={form.color} onChange={handleChange} className={inputClass} /></div>
