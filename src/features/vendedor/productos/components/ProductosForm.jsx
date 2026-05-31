@@ -1,579 +1,125 @@
-import { useEffect, useRef, useState } from "react"
-
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-
-import {
-    inputClass,
-    labelClass,
-    buttonPrimaryClass,
-    buttonOutlineClass
-} from "@/utils/styles"
-
+import { inputClass, labelClass, buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { MdFileUpload } from "react-icons/md"
 import { FiEdit2 } from "react-icons/fi"
-import { toast } from "react-toastify"
+import { useProductoForm } from "../hooks/useProductoForm"
 
-export default function ProductoForm({
-    selectedProduct,
-    setSelectedProduct,
-    onClose,
-    onSave
-}) {
-
-    const [preview, setPreview] = useState(null)
-
-    const [form, setForm] = useState({
-        nombre: "",
-        descripcion: "",
-        codigo: "",
-        precioCompra: "",
-        precioVenta: "",
-        tipoIVA: "15",
-        precioMayorista: "",
-        cantidadMinimaMayorista: "",
-        stock: "",
-        stockMinimo: "",
-        marca: "",
-        unidadMedida: "",
-        destacado: false,
-        imagen: null
-    })
-
-    const fileInputRef = useRef(null)
-
-    useEffect(() => {
-
-        if (selectedProduct) {
-
-            setForm({
-                nombre: selectedProduct.nombre || "",
-                descripcion: selectedProduct.descripcion || "",
-                codigo: selectedProduct.codigo || "",
-                precioCompra: selectedProduct.precioCompra || "",
-                precioVenta: selectedProduct.precioVenta || "",
-                tipoIVA: selectedProduct.tipoIVA || "15",
-                precioMayorista: selectedProduct.precioMayorista || "",
-                cantidadMinimaMayorista:
-                    selectedProduct.cantidadMinimaMayorista || "",
-                stock: selectedProduct.stock || "",
-                stockMinimo: selectedProduct.stockMinimo || "",
-                marca: selectedProduct.marca || "",
-                unidadMedida: selectedProduct.unidadMedida || "",
-                destacado: selectedProduct.destacado || false,
-                imagen: selectedProduct.imagen?.url || null
-            })
-
-            setPreview(selectedProduct.imagen?.url)
-
-        } else {
-
-            resetForm()
-        }
-
-    }, [selectedProduct])
-
-    const resetForm = () => {
-
-        setForm({
-            nombre: "",
-            descripcion: "",
-            codigo: "",
-            precioCompra: "",
-            precioVenta: "",
-            tipoIVA: "15",
-            precioMayorista: "",
-            cantidadMinimaMayorista: "",
-            stock: "",
-            stockMinimo: "",
-            marca: "",
-            unidadMedida: "",
-            destacado: false,
-            imagen: null
-        })
-
-        setPreview(null)
-
-        if (fileInputRef.current) {
-            fileInputRef.current.value = ""
-        }
-    }
-
-    const handleChange = (e) => {
-
-        const { name, value, type, checked } = e.target
-
-        setForm({
-            ...form,
-            [name]: type === "checkbox"
-                ? checked
-                : value
-        })
-    }
-
-    const handleImagen = (e) => {
-
-        const file = e.target.files[0]
-
-        if (!file) return
-
-        if (!file.type.startsWith("image/")) {
-            toast.error("Solo se permiten imágenes")
-            return
-        }
-
-        if (file.size > 2 * 1024 * 1024) {
-            toast.error("La imagen no debe superar los 2MB")
-            return
-        }
-
-        setForm((prev) => ({
-            ...prev,
-            imagen: file
-        }))
-
-        const reader = new FileReader()
-
-        reader.onloadend = () => {
-            setPreview(reader.result)
-        }
-
-        reader.readAsDataURL(file)
-    }
-
-    const handleSubmit = async () => {
-
-        if (!form.nombre.trim()) {
-            toast.error("El nombre es obligatorio")
-            return
-        }
-
-        if (!form.descripcion.trim()) {
-            toast.error("La descripción es obligatoria")
-            return
-        }
-
-        if (!form.codigo.trim()) {
-            toast.error("El código es obligatorio")
-            return
-        }
-
-        if (Number(form.precioCompra) <= 0) {
-            toast.error("Ingrese un precio de compra válido")
-            return
-        }
-
-        if (Number(form.precioVenta) <= 0) {
-            toast.error("Ingrese un precio de venta válido")
-            return
-        }
-
-        if (Number(form.stock) < 0) {
-            toast.error("Ingrese un stock válido")
-            return
-        }
-
-        if (Number(form.stockMinimo) < 0) {
-            toast.error("Ingrese un stock mínimo válido")
-            return
-        }
-
-        if (!form.marca.trim()) {
-            toast.error("La marca es obligatoria")
-            return
-        }
-
-        if (!form.unidadMedida.trim()) {
-            toast.error("La unidad de medida es obligatoria")
-            return
-        }
-
-        if (!selectedProduct && !form.imagen) {
-            toast.error("La imagen es obligatoria")
-            return
-        }
-
-    try {
-
-        const formData = new FormData()
-
-        formData.append("nombre", form.nombre)
-        formData.append("descripcion", form.descripcion)
-        formData.append("codigo", form.codigo)
-        formData.append("precioCompra", form.precioCompra)
-        formData.append("precioVenta", form.precioVenta)
-        formData.append("tipoIVA", form.tipoIVA)
-        formData.append("precioMayorista", form.precioMayorista)
-
-        formData.append(
-            "cantidadMinimaMayorista",
-            form.cantidadMinimaMayorista
-        )
-
-        formData.append("stock", form.stock)
-        formData.append("stockMinimo", form.stockMinimo)
-        formData.append("marca", form.marca)
-        formData.append("unidadMedida", form.unidadMedida)
-        formData.append("destacado", form.destacado)
-
-        if (form.imagen instanceof File) {
-
-            formData.append(
-                "imagen",
-                form.imagen
-            )
-
-        }
-
-        await onSave(formData)
-
-        toast.success(
-            selectedProduct
-                ? "Producto actualizado"
-                : "Producto creado"
-        )
-
-        resetForm()
-
-        if (setSelectedProduct) {
-            setSelectedProduct(null)
-        }
-
-        if (onClose) {
-            onClose()
-        }
-
-    } catch (error) {
-
-        toast.error(error.message)
-
-    }
-
-}
+export default function ProductoForm({ selectedProduct, setSelectedProduct, onClose, onSave }) {
+    const { form, preview, handleChange, handleImagen, submitForm, fileInputRef } = 
+        useProductoForm(selectedProduct, onSave, onClose, setSelectedProduct);
 
     return (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto">
-
-            <div
-                className="
-        relative
-        h-[260px]
-        md:h-[400px]
-        xl:h-[640px]
-        rounded-2xl
-        overflow-hidden
-        border-2 border-dashed border-gray-300
-        bg-emerald-50
-    "
-            >
-
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto items-start">
+            
+            <div className="relative h-full min-h-[400px] rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
                 {selectedProduct && (
-                    <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="
-                absolute
-                top-4
-                right-4
-                z-10
-                w-11
-                h-11
-                rounded-full
-                bg-white/90
-                backdrop-blur-md
-                shadow-lg
-                border border-gray-200
-                flex items-center justify-center
-                hover:scale-105
-                hover:bg-emerald-50
-                transition
-            "
-                    >
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/90 backdrop-blur-md shadow-lg border border-gray-200 flex items-center justify-center hover:scale-105 transition">
                         <FiEdit2 className="text-emerald-700 text-lg" />
                     </button>
                 )}
-
                 <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
-
-                    {preview ? (
-
-                        <img
-                            src={preview}
-                            alt="preview"
-                            className="w-full h-full object-contain bg-white"
-                        />
-
-                    ) : (
-
+                    {preview ? <img src={preview} alt="preview" className="w-full h-full object-cover" /> : (
                         <div className="flex flex-col items-center justify-center">
-
-                            <MdFileUpload className="text-[70px] text-emerald-500" />
-
-                            <p className="mt-3 text-sm text-gray-600">
-                                Subir imagen
-                            </p>
-
+                            <MdFileUpload className="text-[90px] text-emerald-500" />
+                            <p className="mt-3 text-sm text-gray-600">Subir imagen</p>
                         </div>
-
                     )}
-
-                    <input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleImagen}
-                        ref={fileInputRef}
-                    />
-
+                    <input type="file" className="hidden" accept="image/*" onChange={handleImagen} ref={fileInputRef} />
                 </label>
-
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-4">
+                <div><Label className={`${labelClass} mb-3`}>Nombre *</Label><Input name="nombre" value={form.nombre} onChange={handleChange} className={inputClass} /></div>
+                <div><Label className={`${labelClass} mb-3`}>Código Interno *</Label><Input name="codigo" value={form.codigo} onChange={handleChange} className={inputClass} /></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                        <Label className={`${labelClass} pb-2`}>
-                            Nombre
-                        </Label>
-
-                        <Input
-                            name="nombre"
-                            value={form.nombre}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-                    </div>
-
-                    <div>
-                        <Label className={`${labelClass} pb-2`}>
-                            Código
-                        </Label>
-
-                        <Input
-                            name="codigo"
-                            value={form.codigo}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-                    </div>
-
-                </div>
-
-                <div>
-
-                    <Label className={`${labelClass} pb-2`}>
-                        Descripción
-                    </Label>
-
-                    <textarea
-                        name="descripcion"
-                        value={form.descripcion}
-                        onChange={handleChange}
-                        className={`${inputClass} min-h-[100px] resize-none`}
-                    />
-
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            Precio compra
-                        </Label>
-
-                        <Input
-                            type="number"
-                            name="precioCompra"
-                            value={form.precioCompra}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            Precio venta
-                        </Label>
-
-                        <Input
-                            type="number"
-                            name="precioVenta"
-                            value={form.precioVenta}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            IVA
-                        </Label>
-
-                        <select
-                            name="tipoIVA"
-                            value={form.tipoIVA}
-                            onChange={handleChange}
-                            className={inputClass}
-                        >
-                            <option value="0">0%</option>
-                            <option value="15">15%</option>
-                        </select>
-
-                    </div>
-
+                    <div><Label className={`${labelClass} mb-3`}>Código Barras</Label><Input name="codigoBarras" value={form.codigoBarras} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Categoría ID *</Label><Input name="categoria" value={form.categoria} onChange={handleChange} className={inputClass} /></div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><Label className={`${labelClass} mb-3`}>Proveedor *</Label><Input name="proveedor" value={form.proveedor} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Marca *</Label><Input name="marca" value={form.marca} onChange={handleChange} className={inputClass} /></div>
+                </div>
 
-                    <div>
+                <div><Label className={`${labelClass} mb-3`}>Descripción</Label><textarea name="descripcion" value={form.descripcion} onChange={handleChange} className={`${inputClass} min-h-[80px] resize-none`} /></div>
 
-                        <Label className={`${labelClass} pb-2`}>
-                            Precio mayorista
-                        </Label>
-
-                        <Input
-                            type="number"
-                            name="precioMayorista"
-                            value={form.precioMayorista}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            Cantidad mínima mayorista
-                        </Label>
-
-                        <Input
-                            type="number"
-                            name="cantidadMinimaMayorista"
-                            value={form.cantidadMinimaMayorista}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><Label className={`${labelClass} mb-3`}>Color</Label><Input name="color" value={form.color} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Material</Label><Input name="material" value={form.material} onChange={handleChange} className={inputClass} /></div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            Stock
-                        </Label>
-
-                        <Input
-                            type="number"
-                            name="stock"
-                            value={form.stock}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            Stock mínimo
-                        </Label>
-
-                        <Input
-                            type="number"
-                            name="stockMinimo"
-                            value={form.stockMinimo}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
+                    <div><Label className={`${labelClass} mb-3`}>Presentación</Label><Input name="presentacion" value={form.presentacion} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Unidad Medida *</Label><Input name="unidadMedida" value={form.unidadMedida} onChange={handleChange} className={inputClass} /></div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><Label className={`${labelClass} mb-3`}>Precio Compra *</Label>
+                    <Input type="number" 
+                    name="precioCompra" 
+                    value={form.precioCompra} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    min="0"
+                    onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "e") {
+                        e.preventDefault();
+                    }
+                    }}/></div>
+                    <div><Label className={`${labelClass} mb-3`}>Precio Venta *</Label>
+                    <Input type="number" 
+                    name="precioVenta" 
+                    value={form.precioVenta} 
+                    onChange={handleChange} 
+                    className={inputClass}
+                    min="0"
+                    onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "e") {
+                        e.preventDefault();
+                    }
+                    }}/></div>
+                </div>
 
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            Marca
-                        </Label>
-
-                        <Input
-                            name="marca"
-                            value={form.marca}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
-                    <div>
-
-                        <Label className={`${labelClass} pb-2`}>
-                            Unidad medida
-                        </Label>
-
-                        <Input
-                            name="unidadMedida"
-                            value={form.unidadMedida}
-                            onChange={handleChange}
-                            className={inputClass}
-                        />
-
-                    </div>
-
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><Label className={`${labelClass} mb-3`}>Stock *</Label>
+                    <Input type="number" 
+                    name="stock" 
+                    value={form.stock} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    min="0"
+                    onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "e") {
+                        e.preventDefault();
+                    }
+                    }}/></div>
+                    <div><Label className={`${labelClass} mb-3`}>Stock Mínimo *</Label>
+                    <Input type="number" 
+                    name="stockMinimo" 
+                    value={form.stockMinimo} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    min="0"
+                    onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "e") {
+                        e.preventDefault();
+                    }
+                    }}/></div>
                 </div>
 
                 <div className="flex items-center gap-3 bg-white/70 p-3 rounded-xl border border-gray-200">
-
-                    <input
-                        type="checkbox"
-                        name="destacado"
-                        checked={form.destacado}
-                        onChange={handleChange}
-                        className="w-4 h-4 accent-emerald-600"
-                    />
-
-                    <Label className={labelClass}>
-                        Producto destacado
-                    </Label>
-
+                    <input type="checkbox" name="destacado" checked={form.destacado} onChange={handleChange} className="w-5 h-5 accent-emerald-600" />
+                    <Label className={labelClass}>Producto destacado</Label>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-4">
-
-                    <Button
-                        variant="ghost"
-                        className={`max-w-[120px] py-[22px] ${buttonOutlineClass}`}
-                        onClick={onClose}
-                    >
-                        Cancelar
-                    </Button>
-
-                    <Button
-                        onClick={handleSubmit}
-                        className={`max-w-[140px] ${buttonPrimaryClass}`}
-                    >
-                        Aceptar
-                    </Button>
-
+                <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
+                    <Button variant="ghost" className={`w-full sm:w-[120px] py-[22px] ${buttonOutlineClass}`} onClick={onClose}>Cancelar</Button>
+                    <Button onClick={submitForm} className={`w-full sm:w-[140px] ${buttonPrimaryClass}`}>Aceptar</Button>
                 </div>
-
             </div>
-
         </div>
     )
 }

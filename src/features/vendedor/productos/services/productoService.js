@@ -1,5 +1,17 @@
 import api from "@/utils/api"
 
+export const crearProducto = async (formData) => {
+    try {
+        const res = await api.post("/productos/crear", formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return res.data;
+    } catch (error) {
+        console.error("Error al crear producto", error);
+        throw new Error(error.response?.data?.msg || "Error al crear producto");
+    }
+}
+
 export const actualizarProducto = async(productoId, formData) => {
     try{
     const res = await api.put(`productos/actualizar/${productoId}`, formData)
