@@ -174,7 +174,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
 
                 <div className="min-h-[255px] h-full w-full rounded-xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
 
-                    <label className="flex min-h-[255px] w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
+                    <label className="flex min-h-[255px] w-full cursor-pointer items-center justify-center p-8 hover:bg-emerald-100/40 transition">
 
                         {preview ? (
                             <img
@@ -216,17 +216,18 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                             value={form.nombre}
                             onChange={handleChange}
                             className={inputClass}
-                            maxlength={20}
+                            maxlength={25}
                         />
                     </div>
 
                     <div>
                         <Label className={`${labelClass} pb-2`}>Descripción</Label>
-                        <Input
+                        <textarea
                             name="descripcion"
                             value={form.descripcion}
                             onChange={handleChange}
                             className={inputClass}
+                            maxlength={100}
                         />
                     </div>
 

@@ -176,7 +176,7 @@ export default function CategoriaPage() {
                     </div>
                 )}
 
-                <div className="flex-1 max-h-[60vh] overflow-y-auto">
+                <div className="flex-1 max-h-[60vh] overflow-y-auto custom-scroll">
 
                     {loading ? (
                         <p className="text-center text-gray-400">Cargando...</p>
