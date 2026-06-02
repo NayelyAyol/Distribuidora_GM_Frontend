@@ -64,40 +64,32 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
     }
 
     const handleSubmit = async (e) => {
-
         if (e) e.preventDefault();
+
+        if (!form.nombre.trim() || !form.descripcion.trim()) {
+            toast.error("Todos los campos son obligatorios");
+            return;
+        }
+
+        if (!selectedCategory && !form.imagen) {
+            toast.error("La imagen es obligatoria");
+            return;
+        }
+
+        const existe = categorias.some((cat) => {
+            const mismoNombre = cat.nombre.trim().toLowerCase() === form.nombre.trim().toLowerCase();
+            return selectedCategory ? (mismoNombre && cat._id !== selectedCategory._id) : mismoNombre;
+        });
+
+        if (existe) {
+            toast.error("La categoría ya existe");
+            return;
+        }
 
         try {
             setLoading(true);
 
-            if (!form.nombre.trim() || !form.descripcion.trim()) {
-                toast.error("Todos los campos son obligatorios");
-                return;
-            }
-
-            if (!selectedCategory && !form.imagen) {
-                toast.error("La imagen es obligatoria");
-                return;
-            }
-
-            const existe = categorias.some((cat) => {
-                const mismoNombre =
-                    cat.nombre.trim().toLowerCase() ===
-                    form.nombre.trim().toLowerCase();
-
-                if (selectedCategory) {
-                    return mismoNombre && cat._id !== selectedCategory._id;
-                }
-
-                return mismoNombre;
-            });
-
-            if (existe) {
-                toast.error("La categoría ya existe");
-                return;
-            }
             const formData = new FormData();
-
             formData.append("nombre", form.nombre.trim());
             formData.append("descripcion", form.descripcion.trim());
 
@@ -105,32 +97,24 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                 formData.append("imagen", form.imagen);
             }
 
-            console.log(form.imagen instanceof File)
             if (selectedCategory) {
                 await actualizarCategoria(selectedCategory._id, formData);
                 toast.success("Categoría actualizada correctamente");
             } else {
                 await crearCategoria(formData);
-                if (onSuccess) await onSuccess();
                 toast.success("Categoría creada correctamente");
             }
 
+            if (onSuccess) await onSuccess(); 
+            
             setSelectedCategory(null);
-            setForm({
-                nombre: "",
-                descripcion: "",
-                imagen: null,
-            });
-
+            setForm({ nombre: "", descripcion: "", imagen: null });
             setPreview(null);
-
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-            }
+            if (fileInputRef.current) fileInputRef.current.value = "";
 
         } catch (error) {
             console.error(error);
-            toast.error(error.message);
+            toast.error(error.message || "Error al procesar la categoría");
         } finally {
             setLoading(false);
         }

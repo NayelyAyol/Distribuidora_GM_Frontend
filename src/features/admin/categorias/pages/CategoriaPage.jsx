@@ -135,7 +135,13 @@ export default function CategoriaPage() {
                 <CategoriaForm
                     selectedCategory={categoryToEdit}
                     setSelectedCategory={setCategoryToEdit}
-                    onSuccess={fetchCategoriasActivas}
+                    onSuccess={async () => {
+                        if (filtro === "activos") {
+                            await fetchCategoriasActivas();
+                        } else {
+                            await fetchCategoriasInactivas();
+                        }
+                    }}
                     categorias={data}
                 />
             )}
@@ -176,22 +182,24 @@ export default function CategoriaPage() {
                     </div>
                 )}
 
-                <div className="flex-1 max-h-[60vh] overflow-y-auto custom-scroll">
-
-                    {loading ? (
-                        <p className="text-center text-gray-400">Cargando...</p>
-                    ) : (
-                        <CategoriasGrid
-                            data={data}
-                            onDelete={handleOpenDisable}
-                            onEdit={handleEdit}
-                            onSelect={handleSelectCategory}
-                            esVendedor={esVendedor}
-                            esCliente={esCliente}
-                        />
-                    )}
-
-                </div>
+            <div className="flex-1 max-h-[60vh] overflow-y-auto custom-scroll">
+                {loading ? (
+                    <p className="text-center text-gray-400">Cargando...</p>
+                ) : data.length > 0 ? (
+                    <CategoriasGrid
+                        data={data}
+                        onDelete={handleOpenDisable}
+                        onEdit={handleEdit}
+                        onSelect={handleSelectCategory}
+                        esVendedor={esVendedor}
+                        esCliente={esCliente}
+                    />
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-full py-10">
+                        <p className="text-gray-400 text-sm">No hay categorías disponibles.</p>
+                    </div>
+                )}
+            </div>
 
             </div>
 
