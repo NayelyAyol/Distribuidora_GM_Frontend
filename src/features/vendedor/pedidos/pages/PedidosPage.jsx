@@ -23,18 +23,67 @@ export default function PedidosPage() {
     const user = useAuthStore((state) => state.user)
     const esCliente = user?.rol?.toUpperCase() === "CLIENTE"
 
-    const pedidos = [
-        { id: 1, cliente: "Juan Pérez", cedula:"1111111", nombre: "Lista de utiles", fecha: "2026-05-10", estado: "PENDIENTE", esPedidoFoto: false },
-        { id: 2, cliente: "María López",cedula:"333333", nombre: "Maquillaje", fecha: "2026-05-08", estado: "FINALIZADO", esPedidoFoto: true },
-        { id: 3, cliente: "Carlos García",cedula:"555555", nombre: "Juguetes", fecha: "2026-05-09", estado: "PENDIENTE", esPedidoFoto: false }
-    ]
+const pedidos = [
+    {
+        id: 1,
+        cliente: "Juan Pérez",
+        cedula: "1111111",
+        nombre: "Lista de utiles",
+        fecha: "2026-05-10",
+        estado: "PENDIENTE",
+        esPedidoFoto: false
+    },
+    {
+        id: 2,
+        cliente: "María López",
+        cedula: "333333",
+        nombre: "Maquillaje",
+        fecha: "2026-05-08",
+        estado: "FINALIZADO",
+        esPedidoFoto: true
+    },
+    {
+        id: 3,
+        cliente: "Carlos García",
+        cedula: "555555",
+        nombre: "Juguetes",
+        fecha: "2026-05-09",
+        estado: "PENDIENTE",
+        esPedidoFoto: false
+    },
+    {
+        id: 4,
+        cliente: "Ana Torres",
+        cedula: "777777",
+        nombre: "Cuadernos",
+        fecha: "2026-05-11",
+        estado: "CANCELADO",
+        esPedidoFoto: false
+    }
+]
 
     const pedidosFiltrados = useMemo(() => {
-        return pedidos.filter((pedido) => {
-            return filtro === "pendientes" 
-                ? pedido.estado === "PENDIENTE" 
-                : pedido.estado === "FINALIZADO"
-        })
+
+        if (filtro === "pendientes") {
+            return pedidos.filter(
+                (pedido) => pedido.estado === "PENDIENTE"
+            )
+        }
+
+        if (filtro === "finalizados") {
+            return pedidos.filter(
+                (pedido) => pedido.estado === "FINALIZADO"
+            )
+        }
+
+        if (filtro === "cancelados") {
+            return pedidos.filter(
+                (pedido) => pedido.estado === "CANCELADO"
+            )
+        }
+
+        return pedidos
+
     }, [pedidos, filtro])
 
     const handleAbrirChat = (pedido) => {
@@ -73,7 +122,7 @@ export default function PedidosPage() {
                             <Input
                                 type="text"
                                 placeholder="Buscar pedido..."
-                                className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1`}
+                                className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1 placeholder:text-sm`}
                             />
                             <button className="rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition">
                                 <FiSearch className="text-emerald-900 text-xl" />
@@ -92,6 +141,15 @@ export default function PedidosPage() {
                                 className={filtro === "finalizados" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
                             >
                                 Finalizados
+                            </Button>
+                            <Button
+                                onClick={() => setFiltro("cancelados")}
+                                className={
+                                    filtro === "cancelados"
+                                        ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"
+                                }
+                            >
+                                Cancelados
                             </Button>
 
                             {esCliente && (
@@ -119,7 +177,7 @@ export default function PedidosPage() {
                                     : pedidosSeleccionadosColumns(
                                         (pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`),
                                         handleAbrirChat,
-                                        handleRealizarPago
+                                        filtro !== "cancelados"
                                     )
                             }
                         />
