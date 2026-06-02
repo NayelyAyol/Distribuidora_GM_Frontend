@@ -18,6 +18,7 @@ export default function PedidosPage() {
     const [filtro, setFiltro] = useState("pendientes")
     const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null)
     const [isChatOpen, setIsChatOpen] = useState(false)
+    const [isPagoOpen, setIsPagoOpen] = useState(false)
     
     const navigate = useNavigate()
     const user = useAuthStore((state) => state.user)
@@ -40,6 +41,11 @@ export default function PedidosPage() {
     const handleAbrirChat = (pedido) => {
         setPedidoSeleccionado(pedido)
         setIsChatOpen(true)
+    }
+
+    const handleRealizarPago = (pedido) => {
+        setPedidoSeleccionado(pedido)
+        setIsPagoOpen(true)
     }
 
     return (
@@ -99,11 +105,13 @@ export default function PedidosPage() {
                                 esCliente
                                     ? pedidosClienteColumns(
                                         (pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`),
-                                        handleAbrirChat // <--- Pasamos el manejador del chat
+                                        handleAbrirChat,
+                                        handleRealizarPago
                                     )
                                     : pedidosSeleccionadosColumns(
                                         (pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`),
-                                        handleAbrirChat // <--- Pasamos el manejador del chat
+                                        handleAbrirChat,
+                                        handleRealizarPago
                                     )
                             }
                         />
@@ -118,6 +126,11 @@ export default function PedidosPage() {
                 role={esCliente ? "cliente" : "vendedor"}
                 userName={esCliente ? user?.nombre || "Cliente" : "Vendedor"}
                 otherUserName={esCliente ? "Vendedor a Cargo" : pedidoSeleccionado?.cliente || "Cliente"}
+            />
+            <PagoModal 
+                isOpen={isPagoOpen}
+                onClose={() => setIsPagoOpen(false)}
+                pedido={pedidoSeleccionado}
             />
         </div>
     )

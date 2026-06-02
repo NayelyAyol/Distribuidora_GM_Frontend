@@ -1,10 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import StatusBadge from "@/features/shared/components/StatusBadge"
-import { FiEye, FiMessageCircle } from "react-icons/fi" // <-- Importamos el nuevo icono
+import { FiEye, FiMessageCircle } from "react-icons/fi" 
+import { MdPayment } from "react-icons/md"
 
 const columnHelper = createColumnHelper()
 
-export const pedidosClienteColumns = (onRevisar, onChat) => [
+export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
 
     columnHelper.accessor("fecha", {
         header: "Fecha"
@@ -37,27 +38,24 @@ export const pedidosClienteColumns = (onRevisar, onChat) => [
             const pedido = row.original
 
             return (
-                // Envolvemos en un flex para organizar ambos botones alineados
                 <div className="flex items-center justify-center gap-3">
                     
-                    {/* Botón Ver original */}
                     <button
                         onClick={() => onRevisar(pedido)}
                         className="
-                            px-3 py-1.5 rounded-lg
-                            bg-emerald-100
-                            hover:bg-emerald-200
-                            text-emerald-700
-                            text-sm
-                            flex items-center gap-2
-                            transition
+                            text-emerald-700 
+                            hover:text-emerald-900 
+                            p-1.5 
+                            rounded-full 
+                            hover:bg-emerald-200 
+                            transition 
+                            flex items-center justify-center
                         "
+                        title = "Revisar pedido"
                     >
-                        <FiEye />
-                        Ver
+                        <FiEye className="text-lg" />
                     </button>
 
-                    {/* Botón Chat igual al de vendedores */}
                     <button
                         onClick={() => onChat(pedido)}
                         className="
@@ -65,15 +63,32 @@ export const pedidosClienteColumns = (onRevisar, onChat) => [
                             hover:text-emerald-900 
                             p-1.5 
                             rounded-full 
-                            hover:bg-emerald-50 
+                            hover:bg-emerald-200 
                             transition 
                             flex items-center justify-center
                         "
-                        title="Abrir chat"
+                        title="Chat"
                     >
                         <FiMessageCircle className="text-lg" />
                     </button>
 
+                    {pedido.estado === "FINALIZADO" && (
+                    <button
+                        onClick={() => onPago(pedido)}
+                        className="
+                            text-emerald-700 
+                            hover:text-emerald-900 
+                            p-1.5 
+                            rounded-full 
+                            hover:bg-emerald-200 
+                            transition 
+                            flex items-center justify-center
+                        "
+                        title="Realizar pago"
+                    >
+                        <MdPayment className="text-lg" />
+                    </button>
+                    )}
                 </div>
             )
         }
