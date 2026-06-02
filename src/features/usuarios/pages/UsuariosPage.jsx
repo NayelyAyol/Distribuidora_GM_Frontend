@@ -116,7 +116,7 @@ export default function UsuariosPage() {
     const handleBuscar = async () => {
 
         if (!search.trim()) {
-
+            setSearch("")
             if (tab === "vendedores") {
 
                 filtro === "activos"
@@ -140,21 +140,27 @@ export default function UsuariosPage() {
         }
 
         try {
-
+            setLoading(true)
             if (tab === "vendedores") {
 
                 const data = await buscarVendedor(search)
-                setVendedores(data.usuarios || [data])
+                const resultados = data.usuarios || (data ? [data] : [])
+                if (resultados.length === 0) toast.info("No se encontró el vendedor")
+                setVendedores(resultados)
 
             } else {
 
                 const data = await buscarCliente(search)
-                setClientes(data.usuarios || [data])
+                const resultados = data.usuarios || (data ? [data] : [])
+                if (resultados.length === 0) toast.info("No se encontró el cliente")
+                setClientes(resultados)
 
             }
 
         } catch (error) {
             toast.error(error.message)
+        } finally {
+            setLoading(false)
         }
 
     }
@@ -251,18 +257,20 @@ export default function UsuariosPage() {
 
                             <Input
                                 type="text"
-                                placeholder="Buscar..."
+                                placeholder="Buscar por cédula..."
+                                maxlength={10}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value.replace(/\D/g, ""))}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") handleBuscar()
                                 }}
-                                className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1`}
+                                className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1 placeholder:text-sm`}
                             />
 
                             <button
                                 onClick={handleBuscar}
-                                className="rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition"
+                                disabled={loading}
+                                className={`rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
                                 <FiSearch className="text-emerald-900 text-xl" />
                             </button>
