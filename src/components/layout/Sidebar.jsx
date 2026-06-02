@@ -163,21 +163,13 @@ const Sidebar = ({ open, onClose }) => {
             <div className="flex flex-col items-center gap-3">
                 <div
                     className="w-24 h-24 rounded-full overflow-hidden cursor-pointer border-4 border-white/40"
-                    onClick={() => fileInputRef.current?.click()}
                 >
-                    {user?.avatar ? (
-                        <img src={user.avatar} className="w-full h-full object-cover" />
+                    {user?.fotoUrl ? (
+                        <img src={user.fotoUrl} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
                         <FaUserCircle className="w-full h-full text-emerald-900" />
                     )}
                 </div>
-
-                <input
-                    type="file"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleImageChange}
-                />
 
                 <p className="text-emerald-950 font-bold">
                     {[user?.nombre, user?.apellido].filter(Boolean).join(" ") ||
@@ -224,7 +216,6 @@ const Sidebar = ({ open, onClose }) => {
                 })}
             </div>
 
-            {/* LOGOUT */}
             <div className="pt-6 border-t border-gray-200">
                 <Button onClick={logout} className={buttonPrimaryClass}>
                     Cerrar sesión

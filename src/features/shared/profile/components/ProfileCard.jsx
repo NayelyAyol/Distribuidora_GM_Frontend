@@ -1,4 +1,29 @@
-export default function ProfileCard({ user }) {
+import { uploadProfileImage } from "../../../shared/profile/services/profileService";
+import { toast } from "react-toastify";
+import { Camera } from "lucide-react";
+
+export default function ProfileCard({ user, fotoUrl, setFotoUrl }) { 
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("imagen", file);
+
+        const loadingToast = toast.loading("Subiendo foto...");
+
+        try {
+            const data = await uploadProfileImage(formData); 
+            const nuevaUrl = data.imagen.url;
+            setFotoUrl(nuevaUrl);
+            toast.dismiss(loadingToast);
+            toast.success("Foto de perfil subida correctamente");            
+        } catch (error) {
+            toast.dismiss(loadingToast);
+            toast.error(error.message || "No fue posible subir la foto");
+        }
+    };
 
     if (!user) {
         return (
@@ -17,14 +42,19 @@ export default function ProfileCard({ user }) {
 
                 <div className="relative">
                     <img
-                        src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
+                        src={fotoUrl || "https://cdn-icons-png.flaticon.com/512/4715/4715329.png"}
                         alt="avatar"
-                        className="w-20 h-20 rounded-full border-2 border-emerald-200"
+                        className="w-20 h-20 rounded-full border-2 border-emerald-200 object-cover"
                     />
 
-                    <label className="absolute bottom-0 right-0 bg-emerald-600 text-white rounded-full p-1 text-xs cursor-pointer hover:scale-105 transition">
-                        📷
-                        <input type="file" className="hidden" />
+                    <label className="absolute bottom-0 right-0 bg-emerald-600 text-white rounded-full p-2 text-xs cursor-pointer hover:scale-105 transition">
+                        <Camera size={16} />
+                        <input 
+                            type="file" 
+                            className="hidden" 
+                            onChange={handleFileChange} 
+                            accept="image/*" 
+                        />
                     </label>
                 </div>
 
@@ -40,7 +70,6 @@ export default function ProfileCard({ user }) {
 
             </div>
 
-            {/* INFO */}
             <div className="flex flex-col gap-4 text-sm w-full">
 
                 <div className="bg-emerald-50/60 p-3 rounded-xl">

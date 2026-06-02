@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 import useAuthStore from "@/context/useAuthStore"
 import { loginRequest } from "../services/authService"
 import { toast } from "react-toastify"
+import { getProfile } from "../../shared/profile/services/profileService" 
 
 export default function LoginPage() {
 
@@ -26,6 +27,13 @@ export default function LoginPage() {
                     user: res.usuario,
                 })
 
+                setAuth({
+                    token: res.token,
+                    user: {
+                        ...res.usuario, 
+                        fotoUrl: res.usuario?.imagen?.url 
+                    }
+                })
                 toast.success("Bienvenido")
 
                 const rol = res.usuario?.rol?.toUpperCase()

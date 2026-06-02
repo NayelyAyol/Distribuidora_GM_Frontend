@@ -14,6 +14,10 @@ const useAuthStore = create(
             user,
         }),
 
+        setFoto: (url) => set((state) => ({
+            user: { ...state.user, fotoUrl: url }
+        })),
+
         logout: () =>
         set({
             token: null,

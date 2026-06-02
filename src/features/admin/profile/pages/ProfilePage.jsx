@@ -7,6 +7,7 @@ import useAuthStore from "@/context/useAuthStore"
 
 export default function ProfilePage() {
     const [user, setUser] = useState(null)
+    const authUser = useAuthStore((state) => state.user)
     const setAuth = useAuthStore((state) => state.setAuth)
     const token = useAuthStore((state) => state.token)
 
@@ -20,7 +21,8 @@ export default function ProfilePage() {
                 email: data.usuario?.email,
                 direccion: data.perfil?.direccion,
                 telefono: data.perfil?.telefono,
-                rol: data.usuario?.rol
+                rol: data.usuario?.rol,
+                fotoUrl: data.perfil?.imagen?.url || authUser?.fotoUrl
             }
 
             setUser(userData)
@@ -39,6 +41,17 @@ export default function ProfilePage() {
         }
     }
 
+    const handleSetFotoGlobal = (nuevaUrl) => {
+        setUser(prev => ({ ...prev, fotoUrl: nuevaUrl }));
+        setAuth({
+            token,
+            user: {
+                ...useAuthStore.getState().user,
+                fotoUrl: nuevaUrl
+            }
+        });
+    };
+
     useEffect(() => {
         fetchProfile()
     }, [])
@@ -56,7 +69,9 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 <div className="lg:col-span-1">
-                    <ProfileCard user={user} />
+                    <ProfileCard user={user} 
+                    fotoUrl={authUser?.fotoUrl}
+                    setFotoUrl={handleSetFotoGlobal} />
                 </div>
 
                 <div className="lg:col-span-2 space-y-6">
