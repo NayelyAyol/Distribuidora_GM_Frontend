@@ -46,9 +46,12 @@ export default function RecomendacionForm() {
                 placeholder="Escribe tu recomendación..."
                 className="w-full p-4 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={4}
+                maxLength={300}
             />
 
-            <Button className={`${buttonPrimaryClass} w-full`}>
+            <Button 
+            type="submit"
+            className={`${buttonPrimaryClass} w-full`}>
                 Enviar
             </Button>
 

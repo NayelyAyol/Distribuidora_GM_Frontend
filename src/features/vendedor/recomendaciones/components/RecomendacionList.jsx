@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button"
 import RecomendacionCard from "./RecomendacionCard"
 import { inputClass } from "@/utils/styles"
 
-export default function RecomendacionList() {
+export default function RecomendacionList({
+    placeholder = "Buscar recomendación..."
+}) {
 
     const [data] = useState([
         {
@@ -66,7 +68,7 @@ export default function RecomendacionList() {
 
                     <Input
                         type="text"
-                        placeholder="Buscar recomendación..."
+                        placeholder={placeholder}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className={`

@@ -12,7 +12,9 @@ export default function QuejasSugerenciasClientePage() {
             </div>
 
             <RecomendacionForm />
-            <RecomendacionList />
+            <RecomendacionList
+                placeholder="Buscar queja o sugerencia..."
+            />
 
         </div>
     )
