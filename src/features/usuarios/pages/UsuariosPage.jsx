@@ -2,10 +2,11 @@ import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { FiSearch } from "react-icons/fi"
 import { Input } from "@/components/ui/input"
-import { inputClass } from "@/utils/styles"
+import { inputClass, buttonOutlineClass, buttonPrimaryClass } from "@/utils/styles"
 import { Button } from "@/components/ui/button"
 import DataTable from "@/components/ui/DataTable"
 import { usuarioColumns } from "../columns/usuarioColumns"
+import { Card } from "@/components/ui/card"
 
 import {
     activarVendedor,
@@ -33,6 +34,7 @@ export default function UsuariosPage() {
     const [tab, setTab] = useState("vendedores")
     const [search, setSearch] = useState("")
     const [filtro, setFiltro] = useState("activos")
+    const [userToToggle, setUserToToggle] = useState(null)
 
     const user = useAuthStore((state) => state.user)
     const rol = user?.perfilId?.rol?.toUpperCase()
@@ -155,6 +157,29 @@ export default function UsuariosPage() {
             toast.error(error.message)
         }
 
+    }
+
+    const handleCloseToggle = () => {
+        setUserToToggle(null)
+    }
+
+    const handleConfirmToggle = async () => {
+        try {
+            const esTabVendedor = tab === "vendedores"
+            const esActivo = userToToggle.estado
+            
+            if (esTabVendedor) {
+                esActivo ? await desactivarVendedor(userToToggle._id) : await activarVendedor(userToToggle._id)
+            } else {
+                esActivo ? await desactivarCliente(userToToggle._id) : await activarCliente(userToToggle._id)
+            }
+            
+            toast.success(`Usuario ${esActivo ? "desactivado" : "activado"} correctamente`)
+            await refreshData()
+            handleCloseToggle()
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
     const refreshData = async () => {
@@ -304,37 +329,7 @@ export default function UsuariosPage() {
                                         ? vendedores
                                         : clientes
                             }
-                            columns={usuarioColumns(refreshData, async (usuario, estado) => {
-
-                                try {
-
-                                    const esTabVendedor = tab === "vendedores"
-
-                                    if (esTabVendedor) {
-
-                                        estado
-                                            ? await activarVendedor(usuario._id)
-                                            : await desactivarVendedor(usuario._id)
-
-                                    } else {
-
-                                        estado
-                                            ? await activarCliente(usuario._id)
-                                            : await desactivarCliente(usuario._id)
-
-                                    }
-
-                                    await refreshData()
-
-                                    toast.success(
-                                        `${esTabVendedor ? "Vendedor" : "Cliente"} ${estado ? "activado" : "desactivado"}`
-                                    )
-
-                                } catch (error) {
-                                    toast.error(error.message)
-                                }
-
-                            })}
+                            columns={usuarioColumns(refreshData, (usuario) => setUserToToggle(usuario))}
                         />
 
                     </div>
@@ -342,6 +337,39 @@ export default function UsuariosPage() {
                 </div>
 
             </div>
+
+            {userToToggle && (
+                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+                    <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
+                        <h2 className="text-lg font-bold text-gray-800 mb-2">
+                            Confirmar {userToToggle.estado ? "desactivación" : "activación"}
+                        </h2>
+
+                        <p className="text-[15px] text-gray-500 mb-4">
+                            ¿Está seguro que desea {userToToggle.estado ? "desactivar" : "activar"} al usuario{" "}
+                            <span className="font-semibold text-emerald-800">
+                                {userToToggle.perfilId?.nombre} {userToToggle.perfilId?.apellido}
+                            </span>?
+                        </p>
+
+                        <div className="flex justify-end gap-3">
+                            <Button
+                                variant="ghost"
+                                className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
+                                onClick={handleCloseToggle}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                onClick={handleConfirmToggle}
+                                className={`max-w-[100px] ${buttonPrimaryClass}`}
+                            >
+                                Aceptar
+                            </Button>
+                        </div>
+                    </Card>
+                </div>
+            )}
 
         </div>
     )
