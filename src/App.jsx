@@ -220,6 +220,33 @@ function App() {
           />
 
           <Route
+            path="/dashboard/mis-pedidos/pago"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <SeleccionMetodoPagoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mis-pedidos/pago/confirmar-pago"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <ConfirmacionPedidoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso"
+            element={
+              <ProtectedRoute roles={["CLIENTE"]}>
+                <PedidoExitosoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/dashboard/ventas"
             element={
               <ProtectedRoute roles={["VENDEDOR"]}>

@@ -1,15 +1,30 @@
 export default function ResumenPago({
-    productos = []
+    productos = [],
+    esPedidoFoto = false,
+    totalPedidoFoto = 0
 }) {
 
-    const subtotal = productos.reduce(
-        (acc, p) => acc + p.precio * p.cantidad,
-        0
-    )
+    let subtotal = 0
+    let iva = 0
+    let total = 0
 
-    const iva = subtotal * 0.15
+    if (esPedidoFoto) {
 
-    const total = subtotal + iva
+        total = totalPedidoFoto
+        subtotal = total / 1.15
+        iva = total - subtotal
+
+    } else {
+
+        subtotal = productos.reduce(
+            (acc, p) => acc + p.precio * p.cantidad,
+            0
+        )
+
+        iva = subtotal * 0.15
+        total = subtotal + iva
+
+    }
 
     return (
 

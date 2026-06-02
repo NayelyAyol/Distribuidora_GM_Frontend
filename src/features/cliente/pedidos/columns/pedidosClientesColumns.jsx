@@ -72,7 +72,9 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                         <FiMessageCircle className="text-lg" />
                     </button>
 
-                    {pedido.estado === "FINALIZADO" && (
+                    {pedido.estado === "FINALIZADO" && 
+                    pedido.esPedidoFoto &&
+                    (
                     <button
                         onClick={() => onPago(pedido)}
                         className="

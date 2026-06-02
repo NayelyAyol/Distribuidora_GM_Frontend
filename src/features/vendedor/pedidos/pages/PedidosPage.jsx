@@ -18,16 +18,15 @@ export default function PedidosPage() {
     const [filtro, setFiltro] = useState("pendientes")
     const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null)
     const [isChatOpen, setIsChatOpen] = useState(false)
-    const [isPagoOpen, setIsPagoOpen] = useState(false)
     
     const navigate = useNavigate()
     const user = useAuthStore((state) => state.user)
     const esCliente = user?.rol?.toUpperCase() === "CLIENTE"
 
     const pedidos = [
-        { id: 1, cliente: "Juan Pérez", cedula:"1111111", nombre: "Lista de utiles", fecha: "2026-05-10", estado: "PENDIENTE" },
-        { id: 2, cliente: "María López",cedula:"333333", nombre: "Maquillaje", fecha: "2026-05-08", estado: "FINALIZADO" },
-        { id: 3, cliente: "Carlos García",cedula:"555555", nombre: "Juguetes", fecha: "2026-05-09", estado: "PENDIENTE" }
+        { id: 1, cliente: "Juan Pérez", cedula:"1111111", nombre: "Lista de utiles", fecha: "2026-05-10", estado: "PENDIENTE", esPedidoFoto: false },
+        { id: 2, cliente: "María López",cedula:"333333", nombre: "Maquillaje", fecha: "2026-05-08", estado: "FINALIZADO", esPedidoFoto: true },
+        { id: 3, cliente: "Carlos García",cedula:"555555", nombre: "Juguetes", fecha: "2026-05-09", estado: "PENDIENTE", esPedidoFoto: false }
     ]
 
     const pedidosFiltrados = useMemo(() => {
@@ -44,8 +43,17 @@ export default function PedidosPage() {
     }
 
     const handleRealizarPago = (pedido) => {
-        setPedidoSeleccionado(pedido)
-        setIsPagoOpen(true)
+        const productosDelPedido = pedido.productos || [
+                { id: pedido.id, nombre: pedido.nombre, precio: 10.00, cantidad: 1 } 
+            ];
+
+            navigate("/dashboard/mis-pedidos/pago", { 
+                state: { 
+                    factura: productosDelPedido, 
+                    pedidoId: pedido.id,
+                    esPedidoFoto: pedido.esPedidoFoto || false
+                } 
+            });
     }
 
     return (
@@ -126,11 +134,6 @@ export default function PedidosPage() {
                 role={esCliente ? "cliente" : "vendedor"}
                 userName={esCliente ? user?.nombre || "Cliente" : "Vendedor"}
                 otherUserName={esCliente ? "Vendedor a Cargo" : pedidoSeleccionado?.cliente || "Cliente"}
-            />
-            <PagoModal 
-                isOpen={isPagoOpen}
-                onClose={() => setIsPagoOpen(false)}
-                pedido={pedidoSeleccionado}
             />
         </div>
     )

@@ -3,7 +3,7 @@ import MetodoPagoSelector from "../../../shared/pagos/components/MetodoPagoSelec
 import ResumenPago from "../../../shared/pagos/components/ResumenPago"
 import TransferenciaForm from "../../../shared/pagos/components/TransferenciaForm"
 import TarjetaForm from "../../../shared/pagos/components/TarjetaForm"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { FiArrowLeft } from "react-icons/fi"
 import {buttonPrimaryClass} from "@/utils/styles"
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 export default function SeleccionMetodoPagoPage() {
 
     const navigate = useNavigate()
-
+    const location = useLocation()
     const [metodoSeleccionado, setMetodoSeleccionado]
         = useState("")
 
@@ -29,6 +29,10 @@ export default function SeleccionMetodoPagoPage() {
             cantidad: 1
         }
     ]
+    const esPedidoFoto = location.state?.esPedidoFoto || false
+    const rutaConfirmacion = location.pathname.includes("/mis-pedidos")
+        ? "/dashboard/mis-pedidos/pago/confirmar-pago"
+        : "/dashboard/mi-carrito/pago/confirmar-pago"
 
     return (
 
@@ -99,14 +103,27 @@ export default function SeleccionMetodoPagoPage() {
 
                 <div className="flex flex-col gap-4">
 
-                    <ResumenPago carrito={carrito} />
+                    <ResumenPago
+                        productos={carrito}
+                        esPedidoFoto={esPedidoFoto}
+                        totalPedidoFoto={75}
+                    />
 
                     {
                         metodoSeleccionado && (
 
                             <Button
                                 className={buttonPrimaryClass}
-                                onClick={()=> navigate("/dashboard/mi-carrito/pago/confirmar-pago")}
+                                onClick={() =>
+                                    navigate(
+                                        rutaConfirmacion,
+                                        {
+                                            state: {
+                                                esPedidoFoto
+                                            }
+                                        }
+                                    )
+                                }
                             >
                                 Continuar
                             </Button>

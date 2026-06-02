@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { FiArrowLeft } from "react-icons/fi"
 import { FiCheckCircle } from "react-icons/fi"
 
@@ -26,16 +26,24 @@ export default function ConfirmacionPedidoPage() {
             nombre: "Producto A",
             precio: 10,
             cantidad: 2,
-            imagen: "https://placehold.co/100x100"
+            imagen: "https://placehold.co/100x100",
+            esPedidoFoto: false
         },
         {
             id: 2,
             nombre: "Producto B",
             precio: 20,
             cantidad: 1,
-            imagen: "https://placehold.co/100x100"
+            imagen: "https://placehold.co/100x100",
+            esPedidoFoto: true
         }
     ]
+
+    const location = useLocation()
+    const esPedidoFoto = location.state?.esPedidoFoto || false
+    const rutaExito = location.pathname.includes("/mis-pedidos")
+        ? "/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso"
+        : "/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso"
 
     return (
 
@@ -163,24 +171,28 @@ export default function ConfirmacionPedidoPage() {
 
                     </div>
 
-                    <div className="
-                        flex flex-col gap-4
-                    ">
+                    {!esPedidoFoto && (
+                        <div
+                            className="
+                                flex flex-col gap-4
+                            "
+                        >
+                            <h3
+                                className="
+                                    text-lg
+                                    font-bold
+                                    text-gray-800
+                                "
+                            >
+                                Productos del pedido
+                            </h3>
 
-                        <h3 className="
-                            text-lg
-                            font-bold
-                            text-gray-800
-                        ">
-                            Productos del pedido
-                        </h3>
-
-                        <CarritoList
-                            carrito={carrito}
-                            editable={false}
-                        />
-
-                    </div>
+                            <CarritoList
+                                carrito={carrito}
+                                editable={false}
+                            />
+                        </div>
+                    )}
 
                 </div>
 
@@ -188,11 +200,22 @@ export default function ConfirmacionPedidoPage() {
                     flex flex-col gap-4
                 ">
 
-                    <ResumenPago productos={carrito} />
+                    <ResumenPago
+                        productos={carrito}
+                        esPedidoFoto={esPedidoFoto}
+                        totalPedidoFoto={75}
+                    />
 
                     <Button
                         onClick={() =>
-                            navigate("/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso")
+                            navigate(
+                                rutaExito,
+                                {
+                                    state: {
+                                        esPedidoFoto
+                                    }
+                                }
+                            )
                         }
                         className={buttonPrimaryClass}
                     >

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 import {
     FiCheckCircle,
@@ -15,11 +15,54 @@ import {
 import { Button } from "@/components/ui/button"
 
 export default function PedidoExitosoPage() {
+
     const handlePrint = () => {
         window.print()
     }
-    const navigate = useNavigate()
 
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const esPedidoFoto = location.state?.esPedidoFoto || false
+    
+    const carrito = [
+        {
+            id: 1,
+            nombre: "Producto A",
+            precio: 10,
+            cantidad: 2
+        },
+        {
+            id: 2,
+            nombre: "Producto B",
+            precio: 20,
+            cantidad: 1
+        }
+    ]
+
+    const totalPedidoFoto = 50
+
+    let subtotal = 0
+    let iva = 0
+    let total = 0
+
+    if (esPedidoFoto) {
+
+        total = totalPedidoFoto
+        subtotal = total / 1.15
+        iva = total - subtotal
+
+    } else {
+
+        subtotal = carrito.reduce(
+            (acc, p) => acc + p.precio * p.cantidad,
+            0
+        )
+
+        iva = subtotal * 0.15
+        total = subtotal + iva
+
+    }
     return (
 
         <div className="
@@ -157,45 +200,52 @@ export default function PedidoExitosoPage() {
 
                     </div>
 
-                    <div className="w-full bg-white/60 border border-gray-200 rounded-2xl p-6 flex flex-col gap-3 text-left">
+                    {!esPedidoFoto && (
+                        <div className="w-full bg-white/60 border border-gray-200 rounded-2xl p-6 flex flex-col gap-3 text-left">
 
-                        <p className="text-sm text-gray-500">
-                            Productos vendidos
-                        </p>
+                            <p className="text-sm text-gray-500">
+                                Productos vendidos
+                            </p>
 
-                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2">
 
-                            <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                <span>Producto A</span>
-                                <span>x2</span>
+                                <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
+                                    <span>Producto A</span>
+                                    <span>x2</span>
+                                </div>
+
+                                <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
+                                    <span>Producto B</span>
+                                    <span>x1</span>
+                                </div>
+
+                                <div className="flex justify-between text-gray-800">
+                                    <span>Producto C</span>
+                                    <span>x3</span>
+                                </div>
+
                             </div>
 
-                            <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                <span>Producto B</span>
-                                <span>x1</span>
-                            </div>
-
-                            <div className="flex justify-between text-gray-800">
-                                <span>Producto C</span>
-                                <span>x3</span>
-                            </div>
                         </div>
-                    </div>
+                    )}
+
                     <div className="w-full bg-emerald-50 border border-emerald-100 rounded-2xl p-6 flex flex-col gap-2 text-left">
+
                         <div className="flex justify-between text-gray-800">
                             <span>Subtotal</span>
-                            <span>$25.00</span>
+                            <span>${subtotal.toFixed(2)}</span>
                         </div>
 
                         <div className="flex justify-between text-gray-800">
                             <span>IVA</span>
-                            <span>$2.00</span>
+                            <span>${iva.toFixed(2)}</span>
                         </div>
 
                         <div className="border-t border-emerald-200 pt-3 flex justify-between text-emerald-800 font-bold text-lg">
                             <span>Total</span>
-                            <span>$27.00</span>
+                            <span>${total.toFixed(2)}</span>
                         </div>
+
                     </div>
 
                     <div className="
@@ -231,11 +281,8 @@ export default function PedidoExitosoPage() {
                                 onClick={handlePrint}
                                 className={`${buttonOutlineClass} p-[22px]`}
                             >
-
                                 <FiPrinter size={20} />
-
                                 Imprimir factura
-
                             </Button>
                         </div>
                     </div>
