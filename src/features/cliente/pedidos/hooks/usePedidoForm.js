@@ -1,11 +1,12 @@
 import { useRef, useState } from "react"
 import { toast } from "react-toastify"
+import { crearPedido } from "../services/pedidoService"
 
 export default function usePedidoForm() {
 
     const [form, setForm] = useState({
         nombrePedido: "",
-        fecha: "",
+        fecha: new Date().toISOString().split('T')[0],
         direccion: "",
         referencia: "",
         telefono: "",

@@ -18,7 +18,7 @@ export default function PedidoDireccionForm({
                         font-semibold
                         text-gray-800
                     ">
-                        Datos del usuario
+                        Datos para facturación
                     </h2>
 
                 </div>

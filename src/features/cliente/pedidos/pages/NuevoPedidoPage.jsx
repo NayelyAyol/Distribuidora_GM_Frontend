@@ -6,7 +6,7 @@ import PedidoDatosForm from "../components/PedidoDatosForm"
 import PedidoObservacionesForm from "../components/PedidoObservacionesForm"
 import usePedidoForm from "../hooks/usePedidoForm"
 import PedidoEntregaForm from "../components/PedidoEntregaForm"
-import PedidoFacturacionForm from "../components/PedidoFacturacionForm"
+import ContactoAtencionCliente from "../components/ContactoAtencionCliente"
 import PedidoDireccionForm from "../components/PedidoDireccionForm"
 
 export default function NuevoPedidoPage() {
@@ -92,9 +92,8 @@ export default function NuevoPedidoPage() {
                     "
                 >
 
-                    <PedidoFacturacionForm
-                        form={form}
-                        handleChange={handleChange}
+                    <ContactoAtencionCliente
+                        className="h-full"
                     />
 
                     <div className="space-y-6">

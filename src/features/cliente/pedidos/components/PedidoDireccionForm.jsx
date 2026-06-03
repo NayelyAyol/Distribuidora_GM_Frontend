@@ -22,6 +22,14 @@ export default function PedidoDireccionForm({
             </h2>
 
             <Input
+                placeholder="Quito"
+                name="ciudad"
+                value={form.ciudad}
+                onChange={handleChange}
+                className="h-12 rounded-xl"
+            />
+
+            <Input
                 placeholder="Ubicación"
                 name="direccion"
                 value={form.direccion}
