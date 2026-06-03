@@ -1,28 +1,25 @@
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
-import MetodoPagoSelector from "../../../shared/pagos/components/MetodoPagoSelector"
-import TarjetaForm from "../../../shared/pagos/components/TarjetaForm"
-import TransferenciaForm from "../../../shared/pagos/components/TransferenciaForm"
 import PedidoInfoForm from "../components/PedidoInfoForm"
 import PedidoImagenForm from "../components/PedidoImagenForm"
 import PedidoDatosForm from "../components/PedidoDatosForm"
 import PedidoObservacionesForm from "../components/PedidoObservacionesForm"
 import usePedidoForm from "../hooks/usePedidoForm"
+import PedidoEntregaForm from "../components/PedidoEntregaForm"
+import PedidoFacturacionForm from "../components/PedidoFacturacionForm"
+import PedidoDireccionForm from "../components/PedidoDireccionForm"
 
 export default function NuevoPedidoPage() {
     const pedidoForm = usePedidoForm()
 
     const {
         form,
-        metodoPago,
-        setMetodoPago,
         preview,
         fileInputRef,
         handleChange,
         handleImagenChange,
         handleSubmit
     } = pedidoForm
-    const mostrarFormulariosPago = false
 
     return (
 
@@ -41,21 +38,25 @@ export default function NuevoPedidoPage() {
                     handleChange={handleChange}
                 />
 
-                <div className="
-                    bg-white/60
-                    backdrop-blur-xl
-                    rounded-3xl
-                    border border-white/20
-                    p-6
-                    space-y-8
-                ">
+                <div
+                    className="
+                        bg-white/60
+                        backdrop-blur-xl
+                        rounded-3xl
+                        border border-white/20
+                        p-6
+                        space-y-8
+                    "
+                >
 
-                    <div className="
-                        grid grid-cols-1
-                        xl:grid-cols-[1fr_340px]
-                        gap-6
-                        items-start
-                    ">
+                    <div
+                        className="
+                            grid grid-cols-1
+                            xl:grid-cols-[1fr_340px]
+                            gap-6
+                            items-start
+                        "
+                    >
 
                         <PedidoImagenForm
                             preview={preview}
@@ -81,69 +82,49 @@ export default function NuevoPedidoPage() {
 
                 </div>
 
-                <div className="
-                    bg-white/60
-                    backdrop-blur-xl
-                    rounded-3xl
-                    border border-white/20
-                    p-6
-                    space-y-6
-                ">
+                <div
+                    className="
+                        grid
+                        grid-cols-1
+                        lg:grid-cols-[1fr_400px]
+                        gap-6
+                        items-start
+                    "
+                >
 
-                    <div>
+                    <PedidoFacturacionForm
+                        form={form}
+                        handleChange={handleChange}
+                    />
 
-                        <h2 className="text-lg font-semibold text-gray-800">
-                            Método de pago
-                        </h2>
+                    <div className="space-y-6">
 
-                        <p className="text-sm text-gray-500">
-                            Selecciona cómo deseas pagar
-                        </p>
+                        <PedidoEntregaForm
+                            form={form}
+                            handleChange={handleChange}
+                        />
+
+                        {form.tipoEntrega === "envio" && (
+                            <PedidoDireccionForm
+                                form={form}
+                                handleChange={handleChange}
+                            />
+                        )}
 
                     </div>
 
-                    <MetodoPagoSelector
-                        metodoSeleccionado={metodoPago}
-                        setMetodoSeleccionado={setMetodoPago}
-                    />
-
-                    {mostrarFormulariosPago && metodoPago === "tarjeta" && (
-                        <div className="pt-4">
-                            <TarjetaForm />
-                        </div>
-                    )}
-
-                    {mostrarFormulariosPago && metodoPago === "transferencia" && (
-                        <div className="pt-4">
-                            <TransferenciaForm />
-                        </div>
-                    )}
-
-                    {metodoPago === "efectivo" && (
-                        <div className="
-                            mt-4
-                            rounded-2xl
-                            bg-emerald-50
-                            border
-                            border-emerald-100
-                            p-4
-                        ">
-                            <p className="text-sm text-emerald-800">
-                                El pago se realizará al momento de la entrega.
-                            </p>
-                        </div>
-                    )}
-
                 </div>
 
-                <div className="
-                    bg-white/60
-                    backdrop-blur-xl
-                    rounded-3xl
-                    border border-white/20
-                    p-6
-                    space-y-6
-                ">
+                <div
+                    className="
+                        bg-white/60
+                        backdrop-blur-xl
+                        rounded-3xl
+                        border border-white/20
+                        p-6
+                        space-y-6
+                    "
+                >
 
                     <Button
                         onClick={handleSubmit}
