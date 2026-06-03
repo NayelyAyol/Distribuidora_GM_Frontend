@@ -6,11 +6,19 @@ const columnHelper = createColumnHelper()
 export const pedidosDisponiblesColumns = (onToggle) => [
 
     columnHelper.accessor("cliente", {
-        header: "Cliente"
+        header: "Cliente",
+        cell: (info) => {
+            const perfil = info.getValue()?.perfilId;
+            return perfil ? `${perfil.nombre} ${perfil.apellido}` : "Sin nombre";
+        }
     }),
 
-    columnHelper.accessor("fecha", {
-        header: "Fecha"
+    columnHelper.accessor("createdAt", {
+        header: "Fecha",
+        cell: (info) => {
+            const fecha = info.getValue();
+            return fecha ? new Date(fecha).toLocaleDateString('es-EC') : "N/A";
+        }
     }),
 
     columnHelper.accessor("estado", {
@@ -27,8 +35,8 @@ export const pedidosDisponiblesColumns = (onToggle) => [
                     <StatusBadge
                         estado={pedido.estado}
                         onToggle={handleToggle}
-                        labelActivo="Tomado"
-                        labelInactivo="Disponible"
+                        labelActivo="Disponible"
+                        labelInactivo="Tomado"
                     />
                 </div>
             )

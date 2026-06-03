@@ -6,10 +6,14 @@ export default function usePedidoForm() {
 
     const [form, setForm] = useState({
         nombrePedido: "",
-        fecha: new Date().toISOString().split('T')[0],
+        nombreCompleto: "",
+        identificacion: "",
+        correo: "",
+        telefono: "",
+        tipoEntrega: "RETIRO_LOCAL", 
+        ciudad: "",
         direccion: "",
         referencia: "",
-        telefono: "",
         observaciones: ""
     })
 
@@ -28,6 +32,13 @@ export default function usePedidoForm() {
             if (!/^\d*$/.test(value)) return
 
             if (value.length > 10) return
+        }
+        
+        if (name === "identificacion") {
+
+            if (!/^\d*$/.test(value)) return
+
+            if (value.length > 13) return
         }
 
         setForm(prev => ({
@@ -79,10 +90,37 @@ export default function usePedidoForm() {
             return false
         }
 
-        if (!form.fecha) {
+        if (!form.nombreCompleto.trim()) {
 
             toast.error(
-                "Seleccione una fecha"
+                "Ingrese el nombre completo"
+            )
+
+            return false
+        }
+
+        if (!form.identificacion.trim()) {
+
+            toast.error(
+                "Ingrese el numero de cédula o RUC"
+            )
+
+            return false
+        }
+
+        if (!form.correo.trim()) {
+
+            toast.error(
+                "Ingrese el correo"
+            )
+
+            return false
+        }
+
+        if (!form.telefono.trim()) {
+
+            toast.error(
+                "Ingrese el teléfono"
             )
 
             return false
@@ -97,13 +135,37 @@ export default function usePedidoForm() {
             return false
         }
 
-        if (!form.direccion.trim()) {
+        if (form.tipoEntrega === "ENVIO_DOMICILIO" && !form.direccion.trim()) {
+                toast.error("Ingrese una dirección para el envío");
+                return false;
+            }
 
-            toast.error(
-                "Ingrese una dirección"
-            )
+        if (form.tipoEntrega === "ENVIO_DOMICILIO" && !form.ciudad.trim()) {
+                toast.error("Ingrese una ciudad para el envío");
+                return false;
+            }
+        
+        if (form.tipoEntrega === "ENVIO_DOMICILIO" && !form.referencia.trim()) {
+                toast.error("Ingrese una referencia para el envío");
+                return false;
+            }
 
-            return false
+        const id = form.identificacion.trim();
+
+        if (!/^\d+$/.test(id)) {
+            toast.error("La identificación solo debe contener números");
+            return false;
+        }
+
+        if (id.length !== 10 && id.length !== 13) {
+            toast.error("La identificación debe tener 10 (cédula) o 13 (RUC) dígitos");
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(form.correo)) {
+            toast.error("Ingrese un correo electrónico válido");
+            return false;
         }
 
         if (!/^\d{10}$/.test(form.telefono)) {
@@ -115,27 +177,36 @@ export default function usePedidoForm() {
             return false
         }
 
-        if (!metodoPago) {
-
-            toast.error(
-                "Seleccione un método de pago"
-            )
-
-            return false
-        }
-
         return true
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (!validarFormulario()) return;
 
-        const valido = validarFormulario()
+        const formData = new FormData();
 
-        if (!valido) return
+        formData.append("nombrePedido", form.nombrePedido);
+        formData.append("tipoEntrega", form.tipoEntrega);
+        formData.append("observaciones", form.observaciones);
+        formData.append("imagen", imagen);
 
-        toast.success(
-            "Pedido enviado correctamente"
-        )
+        formData.append("nombreCompleto", form.nombreCompleto);
+        formData.append("identificacion", form.identificacion);
+        formData.append("correo", form.correo);
+        formData.append("telefono", form.telefono);
+
+        if (form.tipoEntrega === "ENVIO_DOMICILIO") {
+            formData.append("ciudad", form.ciudad);
+            formData.append("direccion", form.direccion);
+            formData.append("referencia", form.referencia);
+        }
+
+        try {
+            await crearPedido(formData);
+            toast.success("Pedido enviado correctamente");
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
 
     return {

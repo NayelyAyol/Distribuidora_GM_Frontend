@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input"
 
-export default function PedidoDireccionForm({
+export default function PedidoDatosForm({
     form,
     handleChange
 }) {
@@ -27,9 +27,10 @@ export default function PedidoDireccionForm({
 
                     <Input
                         placeholder="Nombre"
-                        name="direccion"
-                        value={form.direccion}
+                        name="nombreCompleto"
+                        value={form.nombreCompleto}
                         onChange={handleChange}
+                        maxLength={50}
                         className="
                             h-12
                             rounded-xl
@@ -37,10 +38,12 @@ export default function PedidoDireccionForm({
                     />
 
                     <Input
-                        placeholder="Cédula"
-                        name="referencia"
-                        value={form.referencia}
+                        id="identificacion"
+                        placeholder="Cédula o RUC"
+                        name="identificacion"
+                        value={form.identificacion}
                         onChange={handleChange}
+                        maxLength={13}
                         className="
                             h-12
                             rounded-xl
@@ -48,10 +51,13 @@ export default function PedidoDireccionForm({
                     />
 
                     <Input
+                        type="email"
+                        id="correo"
                         placeholder="Correo"
-                        name="referencia"
-                        value={form.referencia}
+                        name="correo"
+                        value={form.correo}
                         onChange={handleChange}
+                        maxLength={100}
                         className="
                             h-12
                             rounded-xl
@@ -59,10 +65,12 @@ export default function PedidoDireccionForm({
                     />
 
                     <Input
+                        id="telefono"
                         placeholder="Teléfono de respaldo"
                         name="telefono"
                         value={form.telefono}
                         onChange={handleChange}
+                        maxLength={10}
                         className="
                             h-12
                             rounded-xl

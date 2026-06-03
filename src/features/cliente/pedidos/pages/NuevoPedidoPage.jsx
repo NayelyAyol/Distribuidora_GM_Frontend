@@ -103,7 +103,7 @@ export default function NuevoPedidoPage() {
                             handleChange={handleChange}
                         />
 
-                        {form.tipoEntrega === "envio" && (
+                        {form.tipoEntrega === "ENVIO_DOMICILIO" && (
                             <PedidoDireccionForm
                                 form={form}
                                 handleChange={handleChange}
@@ -126,6 +126,7 @@ export default function NuevoPedidoPage() {
                 >
 
                     <Button
+                        type="submit"
                         onClick={handleSubmit}
                         className={buttonPrimaryClass}
                     >

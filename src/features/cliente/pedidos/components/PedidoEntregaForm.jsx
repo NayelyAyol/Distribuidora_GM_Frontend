@@ -24,8 +24,8 @@ export default function PedidoEntregaForm({
                     <input
                         type="radio"
                         name="tipoEntrega"
-                        value="retiro"
-                        checked={form.tipoEntrega === "retiro"}
+                        value="RETIRO_LOCAL"
+                        checked={form.tipoEntrega === "RETIRO_LOCAL"}
                         onChange={handleChange}
                     />
                     Retirar en local
@@ -35,8 +35,8 @@ export default function PedidoEntregaForm({
                     <input
                         type="radio"
                         name="tipoEntrega"
-                        value="envio"
-                        checked={form.tipoEntrega === "envio"}
+                        value="ENVIO_DOMICILIO"
+                        checked={form.tipoEntrega === "ENVIO_DOMICILIO"}
                         onChange={handleChange}
                     />
                     Envío a domicilio
