@@ -5,10 +5,22 @@ import { inputClass, labelClass, buttonPrimaryClass, buttonOutlineClass } from "
 import { MdFileUpload } from "react-icons/md"
 import { FiEdit2 } from "react-icons/fi"
 import { useProductoForm } from "../hooks/useProductoForm"
+import { listarCategoriasActivas } from "../../../admin/categorias/services/categoriaService"
+import { useEffect, useState } from "react"
 
 export default function ProductoForm({ selectedProduct, setSelectedProduct, onClose, onSave }) {
     const { form, preview, handleChange, handleImagen, submitForm, fileInputRef } = 
         useProductoForm(selectedProduct, onSave, onClose, setSelectedProduct);
+
+    const [categorias, setCategorias] = useState([])
+
+    useEffect(() => {
+        const cargarCategorias = async () => {
+            const data = await listarCategoriasActivas();
+            setCategorias(data || []);
+        };
+        cargarCategorias();
+    }, []);
 
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto items-start">
@@ -46,13 +58,23 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                 maxlength={8}/></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><Label className={`${labelClass} mb-3`}>Código Barras</Label><Input name="codigoBarras" value={form.codigoBarras} onChange={handleChange} className={inputClass} /></div>
-                    <div><Label className={`${labelClass} mb-3`}>Categoría ID *</Label>
-                    <Input name="categoria" 
-                    value={form.categoria} 
-                    onChange={handleChange} 
-                    className={inputClass} 
-                    /></div>
+                    {/*<div><Label className={`${labelClass} mb-3`}>Código</Label><Input name="codigoBarras" value={form.codigoBarras} onChange={handleChange} className={inputClass} /></div>*/}
+                    <Label className={`${labelClass} mb-3`}>Categoría *</Label>
+                                    <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm w-full">
+                                        <select
+                                            name="categoria"
+                                            value={form.categoria}
+                                            onChange={handleChange}
+                                            className="bg-transparent text-sm text-gray-700 focus:outline-none cursor-pointer w-full"
+                                        >
+                                            <option value="">Seleccione una categoría</option>
+                                            {categorias.map((cat) => (
+                                                <option key={cat._id} value={cat._id}>
+                                                    {cat.nombre}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
