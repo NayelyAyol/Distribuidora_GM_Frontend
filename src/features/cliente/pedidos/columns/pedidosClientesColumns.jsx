@@ -7,13 +7,14 @@ const columnHelper = createColumnHelper()
 
 export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
 
-    columnHelper.accessor("fecha", {
-        header: "Fecha"
+    columnHelper.accessor("nombrePedido", {
+        header: "Nombre del Pedido",
+        cell: ({ row }) => row.original.nombrePedido || "Sin nombre"
     }),
 
-    columnHelper.accessor("nombre", {
-        header: "Nombre",
-        cell: ({ row }) => row.original.nombre
+    columnHelper.accessor("fecha", {
+        header: "Fecha",
+        cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
     }),
 
     columnHelper.accessor("estado", {
@@ -21,13 +22,19 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
         cell: ({ row }) => {
             const pedido = row.original
 
+            const labels = {
+                PENDIENTE: "Pendiente",
+                EN_PROCESO: "En Proceso",
+                FINALIZADO: "Finalizado",
+                CANCELADO: "Cancelado"
+            };
+
             return (
                 <StatusBadge
-                    estado={pedido.estado === "FINALIZADO"}
-                    labelActivo="Finalizado"
-                    labelInactivo="Pendiente"
+                    isActivo={pedido.estado === "FINALIZADO"}
+                    label={labels[pedido.estado] || pedido.estado}
                 />
-            )
+            );
         }
     }),
 

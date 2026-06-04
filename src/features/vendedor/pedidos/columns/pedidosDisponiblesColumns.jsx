@@ -30,16 +30,16 @@ export const pedidosDisponiblesColumns = (onToggle) => [
                 await onToggle(pedido, nuevoEstado)
             }
 
+
             return (
                 <div className="flex justify-center">
                     <StatusBadge
-                        estado={pedido.estado}
-                        onToggle={handleToggle}
-                        labelActivo="Disponible"
-                        labelInactivo="Tomado"
+                        isActivo={pedido.estado === "PENDIENTE"}
+                        label={pedido.estado === "PENDIENTE" ? "Disponible" : "Tomado"}
+                        onToggle={() => handleToggle(pedido.estado === "PENDIENTE" ? "TOMADO" : "PENDIENTE")}
                     />
                 </div>
-            )
+            );
         }
     })
 ]

@@ -49,7 +49,7 @@ export default function ChatModal({
                         <p className="text-emerald-800 mt-1 text-lg">
                             <span className="font-bold text-emerald-950">{otherUserName}</span>
                             {" — "}
-                            <span className="text-gray-500 font-medium">Pedido #{pedidoId}</span>
+                            <span className="text-gray-500 font-medium">{pedidoId}</span>
                         </p>
                     </div>
                     
@@ -83,7 +83,6 @@ export default function ChatModal({
                     ))}
                 </div>
 
-                {/* Input de Envío */}
                 <div className="border-t border-gray-200 bg-white p-4 md:p-6">
                     <div className="flex flex-col sm:flex-row gap-4">
                         <input

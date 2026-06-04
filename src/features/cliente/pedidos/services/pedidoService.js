@@ -10,3 +10,14 @@ export const crearPedido = async (formdata) => {
     }
 
 }
+
+export const obtenerMisPedidos = async (params = {}) => {
+    try {
+        const query = new URLSearchParams(params).toString();
+        const response = await api.get(`/pedidos/mis-pedidos?${query}`)
+        return response.data
+    } catch (error) {
+        console.error("Error obteniendo pedidos del cliente:", error)
+        throw new Error(error.response?.data?.msg || "Error al obtener los pedidos")
+    }
+}

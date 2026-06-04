@@ -1,7 +1,7 @@
-// pages/PedidosPage.jsx
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { FiSearch, FiPlus } from "react-icons/fi"
 import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
 
 import DataTable from "@/components/ui/DataTable"
 import { pedidosSeleccionadosColumns } from "../columns/pedidosSeleccionadosColumns"
@@ -10,81 +10,54 @@ import { pedidosClienteColumns } from "@/features/cliente/pedidos/columns/pedido
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import ChatModal from "../../../shared/chat/components/ChatModal" // Importamos el modal refactorizado
+import { toast } from "react-toastify"
 
 import { inputClass } from "@/utils/styles"
 import useAuthStore from "@/context/useAuthStore"
+import { obtenerMisPedidos } from "../../../cliente/pedidos/services/pedidoService"
 
 export default function PedidosPage() {
     const [filtro, setFiltro] = useState("pendientes")
     const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null)
     const [isChatOpen, setIsChatOpen] = useState(false)
-    
+    const [pedidos, setPedidos] = useState([])
+    const [loading, setLoading] = useState(false)
+
     const navigate = useNavigate()
     const user = useAuthStore((state) => state.user)
     const esCliente = user?.rol?.toUpperCase() === "CLIENTE"
 
-const pedidos = [
-    {
-        id: 1,
-        cliente: "Juan Pérez",
-        cedula: "1111111",
-        nombre: "Lista de utiles",
-        fecha: "2026-05-10",
-        estado: "PENDIENTE",
-        esPedidoFoto: false
-    },
-    {
-        id: 2,
-        cliente: "María López",
-        cedula: "333333",
-        nombre: "Maquillaje",
-        fecha: "2026-05-08",
-        estado: "FINALIZADO",
-        esPedidoFoto: true
-    },
-    {
-        id: 3,
-        cliente: "Carlos García",
-        cedula: "555555",
-        nombre: "Juguetes",
-        fecha: "2026-05-09",
-        estado: "PENDIENTE",
-        esPedidoFoto: false
-    },
-    {
-        id: 4,
-        cliente: "Ana Torres",
-        cedula: "777777",
-        nombre: "Cuadernos",
-        fecha: "2026-05-11",
-        estado: "CANCELADO",
-        esPedidoFoto: false
-    }
-]
+    const cargarPedidos = async () => {
+        setLoading(true);
+        try {
+            const estadoMap = {
+                pendientes: "PENDIENTE",
+                enProceso: "EN_PROCESO",
+                finalizados: "FINALIZADO",
+                cancelados: "CANCELADO"
+            };
 
-    const pedidosFiltrados = useMemo(() => {
+            const params = {
+                estado: estadoMap[filtro] || "PENDIENTE"
+            };
 
-        if (filtro === "pendientes") {
-            return pedidos.filter(
-                (pedido) => pedido.estado === "PENDIENTE"
-            )
+            const data = await obtenerMisPedidos(params);
+            setPedidos(data.pedidos || []);
+        } catch (error) {
+            toast.error(error.message || "Error al cargar los pedidos");
+        } finally {
+            setLoading(false);
         }
+    };
 
-        if (filtro === "finalizados") {
-            return pedidos.filter(
-                (pedido) => pedido.estado === "FINALIZADO"
-            )
+    useEffect(() => {
+        if (!esCliente && filtro === "pendientes") {
+            setFiltro("enProceso");
+            return; 
         }
-
-        if (filtro === "cancelados") {
-            return pedidos.filter(
-                (pedido) => pedido.estado === "CANCELADO"
-            )
-        }
-
-        return pedidos
-
-    }, [pedidos, filtro])
+        
+        cargarPedidos();
+    }, [filtro, esCliente]);
 
     const handleAbrirChat = (pedido) => {
         setPedidoSeleccionado(pedido)
@@ -93,16 +66,16 @@ const pedidos = [
 
     const handleRealizarPago = (pedido) => {
         const productosDelPedido = pedido.productos || [
-                { id: pedido.id, nombre: pedido.nombre, precio: 10.00, cantidad: 1 } 
-            ];
+            { id: pedido.id, nombre: pedido.nombre, precio: 10.00, cantidad: 1 } 
+        ];
 
-            navigate("/dashboard/mis-pedidos/pago", { 
-                state: { 
-                    factura: productosDelPedido, 
-                    pedidoId: pedido.id,
-                    esPedidoFoto: pedido.esPedidoFoto || false
-                } 
-            });
+        navigate("/dashboard/mis-pedidos/pago", { 
+            state: { 
+                factura: productosDelPedido, 
+                pedidoId: pedido.id,
+                esPedidoFoto: pedido.esPedidoFoto || false
+            } 
+        });
     }
 
     return (
@@ -129,12 +102,21 @@ const pedidos = [
                             </button>
                         </div>
 
-                        <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                        <div className="flex flex-wrap gap-2">
+                            {esCliente && (
+                                    <Button
+                                        onClick={() => setFiltro("pendientes")}
+                                        className={filtro === "pendientes" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
+                                    >
+                                        Pendientes
+                                    </Button>
+                                )}
                             <Button
-                                onClick={() => setFiltro("pendientes")}
-                                className={filtro === "pendientes" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
+                                onClick={() => setFiltro("enProceso")}
+                                className={filtro === "enProceso" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
                             >
-                                Pendientes
+                                En Proceso
                             </Button>
                             <Button
                                 onClick={() => setFiltro("finalizados")}
@@ -153,6 +135,7 @@ const pedidos = [
                             </Button>
 
                             {esCliente && (
+                                <div className="sm:ml-auto">
                                 <Button
                                     onClick={() => navigate("/dashboard/mis-pedidos/nuevo-pedido")}
                                     className="px-3 py-1.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-sm flex items-center transition"
@@ -160,13 +143,15 @@ const pedidos = [
                                     <FiPlus />
                                     Nuevo pedido
                                 </Button>
+                                </div>
                             )}
+                            </div>
                         </div>
                     </div>
 
                     <div className="w-full overflow-x-auto">
                         <DataTable
-                            data={pedidosFiltrados}
+                            data={pedidos}
                             columns={
                                 esCliente
                                     ? pedidosClienteColumns(
@@ -188,10 +173,18 @@ const pedidos = [
             <ChatModal 
                 isOpen={isChatOpen}
                 onClose={() => setIsChatOpen(false)}
-                pedidoId={pedidoSeleccionado?.id}
+                pedidoId={pedidoSeleccionado?.nombrePedido}
                 role={esCliente ? "cliente" : "vendedor"}
                 userName={esCliente ? user?.nombre || "Cliente" : "Vendedor"}
-                otherUserName={esCliente ? "Vendedor a Cargo" : pedidoSeleccionado?.cliente || "Cliente"}
+                otherUserName={
+                    esCliente 
+                        ? (pedidoSeleccionado?.vendedor?.perfilId 
+                            ? `${pedidoSeleccionado.vendedor.perfilId.nombre} ${pedidoSeleccionado.vendedor.perfilId.apellido}` 
+                            : "Vendedor")
+                        : (pedidoSeleccionado?.cliente?.perfilId 
+                            ? `${pedidoSeleccionado.cliente.perfilId.nombre} ${pedidoSeleccionado.cliente.perfilId.apellido}` 
+                            : "Cliente")
+                }
             />
         </div>
     )

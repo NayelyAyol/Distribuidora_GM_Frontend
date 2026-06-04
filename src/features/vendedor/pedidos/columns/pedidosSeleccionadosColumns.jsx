@@ -11,36 +11,57 @@ export const pedidosSeleccionadosColumns = (
 ) => {
 
     const columnas = [
-        columnHelper.accessor("cliente", { header: "Cliente" }),
-        columnHelper.accessor("cedula", { header: "Cédula" }),
-        columnHelper.accessor("fecha", { header: "Fecha" }),
+        columnHelper.accessor("cliente", 
+            { header: "Cliente",
+                cell: (info) => {
+                    const perfil = info.getValue()?.perfilId;
+                    return perfil ? `${perfil.nombre} ${perfil.apellido}` : "Sin nombre";
+                }
+            }),
+        
+        columnHelper.accessor("tipoPedido", 
+            { 
+                header: "Tipo de Pedido",
+                cell: (info) => {
+                    const tipo = info.getValue();
+                    return tipo || "N/A";
+                }
+            }),
+        columnHelper.accessor("createdAt", { 
+            header: "Fecha",
+            cell: (info) => {
+                const fecha = info.getValue();
+                return fecha ? new Date(fecha).toLocaleDateString('es-EC') : "N/A";
+            }
+        }),
 
         columnHelper.accessor("estado", {
             header: "Estado",
             cell: ({ row }) => {
-                const pedido = row.original
+                const pedido = row.original;
+
+                const labels = {
+                    EN_PROCESO: "En Proceso",
+                    FINALIZADO: "Finalizado",
+                    CANCELADO: "Cancelado"
+                };
+
+                const isActivo = pedido.estado === "FINALIZADO";
 
                 if (pedido.estado === "CANCELADO") {
                     return (
-                        <span className="
-                            px-3 py-1
-                            rounded-full
-                            text-xs font-medium
-                            bg-red-100
-                            text-red-700
-                        ">
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
                             Cancelado
                         </span>
-                    )
+                    );
                 }
 
                 return (
                     <StatusBadge
-                        estado={pedido.estado === "FINALIZADO"}
-                        labelActivo="Finalizado"
-                        labelInactivo="Pendiente"
+                        isActivo={isActivo}
+                        label={labels[pedido.estado] || pedido.estado}
                     />
-                )
+                );
             }
         })
     ]
