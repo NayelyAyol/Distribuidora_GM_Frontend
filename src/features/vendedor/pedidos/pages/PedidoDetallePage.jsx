@@ -3,79 +3,58 @@ import { Button } from "@/components/ui/button"
 
 import {
     FiArrowLeft,
-    FiMapPin,
-    FiPhone,
-    FiCreditCard
+    FiMapPin
 } from "react-icons/fi"
 
 import { useNavigate, useParams } from "react-router-dom"
-
+import { useEffect, useState } from "react";
 import useAuthStore from "@/context/useAuthStore"
+import { obtenerDetallesPedido, cambiarEstadoPedido } from "../services/pedidosSeleccionadosService";
 
 export default function PedidoDetallePage() {
 
     const navigate = useNavigate()
-
     const { id } = useParams()
-
     const user = useAuthStore((state) => state.user)
 
     const esCliente =
         user?.rol?.toUpperCase() === "CLIENTE"
 
-    const pedido = {
+    const [pedido, setPedido] = useState(null)
+    const [loading, setLoading] = useState(true)
 
-        id,
+    useEffect(() => {
+            const cargarDetalle = async () => {
+                try {
+                    const data = await obtenerDetallesPedido(id); 
+                    setPedido(data.pedido);
+                } catch (error) {
+                    console.error("Error al cargar:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            cargarDetalle();
+        }, [id]);
 
-        tipo: "LISTA",
+    const handleFinalizar = async () => {
+        try {
+            await cambiarEstadoPedido(id,'FINALIZADO');
+            navigate("dashboard/mis-pedidos"); 
+        } catch (error) {
+            console.error("Error al finalizar:", error);
+        }
+    };
 
-        cliente: "Juan Pérez",
+    if (loading) return <div>Cargando...</div>;
+    
+    const esVendedor = user?.rol?.toUpperCase() === "VENDEDOR";
+    const esPedidoEnProceso = pedido?.estado === "EN_PROCESO";
 
-        fecha: "2026-05-10",
+    const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
+    const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
 
-        estado: "EN_PROCESO",
-
-        direccion: "Quito - Ecuador",
-
-        referencia: "Frente al parque central",
-
-        telefono: "0999999999",
-
-        metodoPago: "Transferencia",
-
-        observacion:
-            "Entregar en horario de la tarde",
-
-        imagen:
-            "https://placehold.co/900x1200/png",
-
-        productos: [
-            {
-                id: 1,
-                nombre: "Laptop",
-                cantidad: 1,
-                precio: 850
-            },
-            {
-                id: 2,
-                nombre: "Mouse Gamer",
-                cantidad: 2,
-                precio: 25
-            }
-        ]
-    }
-
-    const esPedidoLista =
-        pedido.tipo === "LISTA"
-
-    const esPedidoCarrito =
-        pedido.tipo === "CARRITO"
-
-    const total = pedido.productos.reduce(
-        (acc, item) =>
-            acc + item.precio * item.cantidad,
-        0
-    )
+    const total = pedido?.productos?.reduce((acc, item) => acc + (item.precio * item.cantidad), 0) || 0;
 
     return (
 
@@ -100,7 +79,7 @@ export default function PedidoDetallePage() {
                         font-bold
                         text-gray-800
                     ">
-                        Pedido #{pedido.id}
+                        Pedido - {pedido?.nombrePedido || pedido?._id}
                     </h1>
 
                     <p className="text-gray-500">
@@ -151,7 +130,7 @@ export default function PedidoDetallePage() {
                         </p>
 
                         <p className="font-medium">
-                            {pedido.cliente}
+                            {pedido?.datosFacturacion?.nombreCompleto || "Sin nombre"}
                         </p>
 
                     </div>
@@ -166,7 +145,13 @@ export default function PedidoDetallePage() {
                         </p>
 
                         <p className="font-medium">
-                            {pedido.fecha}
+                            {pedido?.createdAt
+                                ? new Date(pedido.createdAt).toLocaleDateString("es-ES", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric"
+                                })
+                                : "Sin fecha"}
                         </p>
 
                     </div>
@@ -181,113 +166,10 @@ export default function PedidoDetallePage() {
                         </p>
 
                         <p className="font-medium text-emerald-700">
-                            {pedido.estado}
+                            {pedido?.estado || "Sin estado"}
                         </p>
 
                     </div>
-
-                    <div>
-
-                        <p className="
-                            text-sm
-                            text-gray-500
-                        ">
-                            Método de pago
-                        </p>
-
-                        <div className="
-                            flex items-center gap-2
-                            font-medium
-                        ">
-
-                            <FiCreditCard />
-
-                            {pedido.metodoPago}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </Card>
-
-            <Card className="
-                p-6
-                rounded-3xl
-                border border-white/20
-                shadow-sm
-                bg-white/60
-                backdrop-blur-xl
-                space-y-5
-            ">
-
-                <div>
-
-                    <h2 className="
-                        text-lg
-                        font-semibold
-                        text-gray-800
-                    ">
-                        Dirección de entrega
-                    </h2>
-
-                    <p className="text-sm text-gray-500">
-                        Información de entrega del pedido
-                    </p>
-
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-5">
-
-                    <div className="flex gap-3">
-
-                        <div className="
-                            w-11 h-11
-                            rounded-xl
-                            bg-emerald-100
-                            flex items-center justify-center
-                            shrink-0
-                        ">
-
-                            <FiMapPin className="text-emerald-700" />
-
-                        </div>
-
-                        <div>
-
-                            <p className="
-                                text-sm
-                                text-gray-500
-                            ">
-                                Dirección
-                            </p>
-
-                            <p className="font-medium text-gray-800">
-                                {pedido.direccion}
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-                                {pedido.referencia}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div className="flex gap-3">
-
-                        <div className="
-                            w-11 h-11
-                            rounded-xl
-                            bg-emerald-100
-                            flex items-center justify-center
-                            shrink-0
-                        ">
-
-                            <FiPhone className="text-emerald-700" />
-
-                        </div>
 
                         <div>
 
@@ -299,16 +181,39 @@ export default function PedidoDetallePage() {
                             </p>
 
                             <p className="font-medium text-gray-800">
-                                {pedido.telefono}
+                                {pedido?.datosFacturacion?.telefono || "Sin teléfono"}
                             </p>
 
                         </div>
 
-                    </div>
-
                 </div>
 
             </Card>
+
+            {(pedido?.direccion || pedido?.referencia) && (
+            <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl space-y-5">
+                <div>
+                    <h2 className="text-lg font-semibold text-gray-800">Dirección de entrega</h2>
+                    <p className="text-sm text-gray-500">Información de entrega del pedido</p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-5">
+                    {pedido?.direccion && (
+                        <div className="flex gap-3">
+                            <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                                <FiMapPin className="text-emerald-700" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">Dirección</p>
+                                <p className="font-medium text-gray-800">{pedido.direccion}</p>
+                                <p className="text-sm text-gray-500">{pedido.referencia}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    </div>
+                </Card>
+            )}
 
             {
                 esPedidoLista && (
@@ -347,7 +252,7 @@ export default function PedidoDetallePage() {
                         ">
 
                             <img
-                                src={pedido.imagen}
+                                src={pedido?.listaCliente?.url || "/public/notFound/notFound.webp"}
                                 alt="Lista de útiles"
                                 className="
                                     w-full
@@ -487,7 +392,7 @@ export default function PedidoDetallePage() {
                     </h2>
 
                     <p className="text-gray-600 leading-relaxed">
-                        {pedido.observacion}
+                        {pedido.observaciones || "No hay observaciones adicionales"}
                     </p>
 
                 </div>
@@ -511,33 +416,20 @@ export default function PedidoDetallePage() {
                             justify-end
                         ">
 
-                            <Button
-                                className="
-                                    bg-amber-100
-                                    text-amber-700
-                                    hover:bg-amber-200
-                                "
-                            >
-                                Marcar en proceso
-                            </Button>
-
-                            <Button
-                                className="
-                                    bg-emerald-600
-                                    hover:bg-emerald-700
-                                "
-                            >
-                                Finalizar pedido
-                            </Button>
-
+                        {esVendedor && esPedidoEnProceso && (
+                                        <div className="flex justify-end">
+                                            <Button 
+                                                onClick={handleFinalizar}
+                                                className="bg-emerald-600 hover:bg-emerald-700"
+                                            >
+                                                Finalizar pedido
+                                            </Button>
+                                        </div>
+                                    )}
                         </div>
-
                     </Card>
-
                 )
             }
-
         </div>
-
     )
 }

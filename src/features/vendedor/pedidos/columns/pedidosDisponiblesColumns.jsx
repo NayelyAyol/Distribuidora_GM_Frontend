@@ -5,11 +5,19 @@ const columnHelper = createColumnHelper()
 
 export const pedidosDisponiblesColumns = (onToggle) => [
 
-    columnHelper.accessor("cliente", {
+    columnHelper.accessor((row) => row, { 
+        id: "cliente", 
         header: "Cliente",
         cell: (info) => {
-            const perfil = info.getValue()?.perfilId;
-            return perfil ? `${perfil.nombre} ${perfil.apellido}` : "Sin nombre";
+            const pedido = info.getValue();
+            return pedido.datosFacturacion?.nombreCompleto || "Sin nombre";
+        }
+    }),
+
+    columnHelper.accessor("nombrePedido", {
+        header: "Nombre del Pedido",
+        cell: (info) => {
+            return info.getValue() || "Sin nombre";
         }
     }),
 

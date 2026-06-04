@@ -155,12 +155,12 @@ export default function PedidosPage() {
                             columns={
                                 esCliente
                                     ? pedidosClienteColumns(
-                                        (pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`),
+                                        (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
                                         handleAbrirChat,
                                         handleRealizarPago
                                     )
                                     : pedidosSeleccionadosColumns(
-                                        (pedido) => navigate(`/dashboard/mis-pedidos/${pedido.id}`),
+                                        (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
                                         handleAbrirChat,
                                         filtro !== "cancelados"
                                     )
