@@ -23,13 +23,19 @@ export const recomendacionColumns = (onResponder, onToggleEstado) => [
         cell: ({ row }) => {
 
             const rec = row.original
+            const isActivo = rec.estado === "FINALIZADA";
+            const label = isActivo ? "Finalizada" : "Pendiente";
+
+            const handleToggle = async () => {
+                const nuevoEstado = isActivo ? "PENDIENTE" : "FINALIZADA";
+                await onToggleEstado(rec, nuevoEstado);
+            };
 
             return (
                 <StatusBadge
-                    estado={rec.estado}
-                    onToggle={(estado) => onToggleEstado(rec, estado)}
-                    labelActivo="Finalizada"
-                    labelInactivo="Pendiente"
+                    label={label}
+                    isActivo={isActivo}
+                    onToggle={handleToggle}
                 />
             )
         }

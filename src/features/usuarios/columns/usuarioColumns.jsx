@@ -35,14 +35,19 @@ export const usuarioColumns = (onRefresh, onToggleEstado) => [
         cell: ({ row }) => {
             const usuario = row.original
 
-            const handleToggle = async (estado) => {
-                await onToggleEstado(usuario, estado)
+            const isActivo = usuario.estado === true || usuario.estado === "ACTIVO"
+            const label = isActivo ? "Activo" : "Inactivo"
+
+            const handleToggle = async () => {
+                const nuevoEstado = isActivo ? "INACTIVO" : "ACTIVO";
+                await onToggleEstado(usuario, nuevoEstado)
                 await onRefresh()
             }
 
             return (
                 <StatusBadge
-                    estado={usuario.estado}
+                    label={label}
+                    isActivo={isActivo}
                     onToggle={handleToggle}
                 />
             )
