@@ -27,6 +27,10 @@ export default function usePedidoForm() {
 
         const { name, value } = e.target
 
+        if (name === "nombreCompleto") {
+            if (!/^[a-zA-Z\s]*$/.test(value)) return
+        }
+
         if (name === "telefono") {
 
             if (!/^\d*$/.test(value)) return
@@ -180,6 +184,24 @@ export default function usePedidoForm() {
         return true
     }
 
+    const resetForm = () => {
+        setForm({
+            nombrePedido: "",
+            nombreCompleto: "",
+            identificacion: "",
+            correo: "",
+            telefono: "",
+            tipoEntrega: "RETIRO_LOCAL",
+            ciudad: "",
+            direccion: "",
+            referencia: "",
+            observaciones: ""
+        });
+        setMetodoPago("");
+        setImagen(null);
+        setPreview(null);
+    };
+
     const handleSubmit = async () => {
         if (!validarFormulario()) return;
 
@@ -204,8 +226,11 @@ export default function usePedidoForm() {
         try {
             await crearPedido(formData);
             toast.success("Pedido enviado correctamente");
+            resetForm();
+            return true
         } catch (error) {
             toast.error(error.message);
+            return false
         }
     }
 

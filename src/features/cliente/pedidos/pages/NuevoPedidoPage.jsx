@@ -8,9 +8,11 @@ import usePedidoForm from "../hooks/usePedidoForm"
 import PedidoEntregaForm from "../components/PedidoEntregaForm"
 import ContactoAtencionCliente from "../components/ContactoAtencionCliente"
 import PedidoDireccionForm from "../components/PedidoDireccionForm"
+import { useNavigate } from "react-router-dom"
 
 export default function NuevoPedidoPage() {
     const pedidoForm = usePedidoForm()
+    const navigate = useNavigate()
 
     const {
         form,
@@ -20,6 +22,13 @@ export default function NuevoPedidoPage() {
         handleImagenChange,
         handleSubmit
     } = pedidoForm
+
+    const handleEnviarFormulario = async () => {
+        const esExitoso = await handleSubmit()
+        if (esExitoso) {
+            navigate(-1)
+        }
+    }
 
     return (
 
@@ -126,8 +135,8 @@ export default function NuevoPedidoPage() {
                 >
 
                     <Button
-                        type="submit"
-                        onClick={handleSubmit}
+                        type="button"
+                        onClick={handleEnviarFormulario}
                         className={buttonPrimaryClass}
                     >
                         Enviar

@@ -32,6 +32,7 @@ export default function PedidoObservacionesForm({
                 value={form.observaciones}
                 onChange={handleChange}
                 placeholder="Ejemplo: Necesito entrega urgente..."
+                maxLength={150}
                 className="
                     w-full
                     rounded-2xl

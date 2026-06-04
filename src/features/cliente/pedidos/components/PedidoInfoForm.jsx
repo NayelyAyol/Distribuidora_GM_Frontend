@@ -30,6 +30,7 @@ export default function PedidoInfoForm({ form, handleChange }) {
                         name="nombrePedido"
                         value={form.nombrePedido}
                         onChange={handleChange}
+                        maxLength={30}
                         className="h-12 rounded-xl"
                     />
 
