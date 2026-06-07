@@ -1,4 +1,6 @@
-import { FiTrash2 } from "react-icons/fi"
+import { useState } from "react";
+import { FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export default function CarritoItem({
     producto,
@@ -7,24 +9,82 @@ export default function CarritoItem({
     editable = true
 }) {
 
+    const [cantidadLocal, setCantidadLocal] = useState(producto.cantidad);
+
+    const handleCantidadChange = async (e) => {
+
+        const valorTexto = e.target.value;
+
+        if (valorTexto === "") {
+            setCantidadLocal("");
+            return;
+        }
+
+        let valor = Number(valorTexto);
+
+        if (valor < 1) {
+
+            toast.warning(
+                "La cantidad mínima es 1",
+                {
+                    toastId: "cantidad-minima"
+                }
+            );
+
+            valor = 1;
+        }
+
+        if (valor > producto.stock) {
+
+            toast.warning(
+                `Stock disponible: ${producto.stock}`,
+                {
+                    toastId: "stock-maximo"
+                }
+            );
+
+            valor = producto.stock;
+        }
+
+        setCantidadLocal(valor);
+
+        try {
+            await onCantidadChange(
+                producto.producto,
+                valor
+            );
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
 
-        <div className="
-            flex items-center justify-between
-            bg-white
-            p-4
-            rounded-xl
-            shadow-sm
-            hover:shadow-md
-            transition
-        ">
+        <div
+            className="
+                flex items-center justify-between
+                bg-white
+                p-4
+                rounded-xl
+                shadow-sm
+                hover:shadow-md
+                transition
+            "
+        >
 
             <div className="flex items-center gap-3">
 
                 <img
-                    src={producto.imagen?.url || "/images/categories/default.webp"}
-                    alt={producto.nombre}
-                    className="w-16 h-16 rounded-lg object-cover"
+                    src={
+                        producto.imagen?.url ||
+                        "/images/categories/default.webp"
+                    }
+                    alt={producto.nombreProducto}
+                    className="
+                        w-16 h-16
+                        rounded-lg
+                        object-cover
+                    "
                 />
 
                 <div>
@@ -39,12 +99,8 @@ export default function CarritoItem({
 
                     {
                         !editable && (
-                            <p className="
-                                text-sm text-gray-500
-                            ">
-                                Cantidad:
-                                {" "}
-                                {producto.cantidad}
+                            <p className="text-sm text-gray-500">
+                                Cantidad: {producto.cantidad}
                             </p>
                         )
                     }
@@ -58,37 +114,37 @@ export default function CarritoItem({
                 {
                     editable && (
 
-                        <div className="flex items-center gap-2">
-
-                            <input
-                                type="number"
-                                min="1"
-                                value={producto.cantidad}
-                                onChange={(e) =>
-                                    onCantidadChange(
-                                        producto.producto,
-                                        Number(e.target.value)
-                                    )
-                                }
-                                className="
-                                    w-16 border rounded-lg
-                                    px-2 py-1 text-sm
-                                "
-                            />
-
-                        </div>
+                        <input
+                            type="number"
+                            min="1"
+                            max={producto.stock}
+                            value={cantidadLocal}
+                            onChange={handleCantidadChange}
+                            className="
+                                w-20
+                                border
+                                rounded-lg
+                                px-2
+                                py-1
+                                text-sm
+                            "
+                        />
 
                     )
                 }
 
-                <div className="
-                    w-20
-                    text-right
-                    font-bold
-                ">
+                <div
+                    className="
+                        w-20
+                        text-right
+                        font-bold
+                    "
+                >
                     $
-                    {(producto.precioUnitario * producto.cantidad)
-                        .toFixed(2)}
+                    {(
+                        producto.precioUnitario *
+                        cantidadLocal
+                    ).toFixed(2)}
                 </div>
 
                 {
@@ -110,5 +166,5 @@ export default function CarritoItem({
             </div>
 
         </div>
-    )
+    );
 }

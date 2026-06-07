@@ -29,9 +29,10 @@ export default function CarritoPage() {
         try {
             const data = await actualizarCantidadCarrito(id, { cantidad });
             setCarrito(data.carrito);
-            toast.success("Cantidad actualizada");
         } catch (error) {
-            toast.error(error.message);
+            toast.error(error.message, {
+                toastId: "cantidad-error"
+            });        
         }
     };
 
@@ -41,7 +42,9 @@ export default function CarritoPage() {
             setCarrito(data.carrito);
             toast.success("Producto eliminado del carrito");
         } catch (error) {
-            toast.error(error.message);
+            toast.error(error.message, {
+                toastId: "cantidad-error"
+            });
         }
     };
 
