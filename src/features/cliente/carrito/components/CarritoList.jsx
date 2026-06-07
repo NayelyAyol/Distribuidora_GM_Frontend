@@ -12,7 +12,7 @@ export default function CarritoList({
 
             {carrito.map((producto) => (
                 <CarritoItem
-                    key={producto.id}
+                    key={producto.producto}
                     producto={producto}
                     onCantidadChange={onCantidadChange}
                     onRemove={onRemove}

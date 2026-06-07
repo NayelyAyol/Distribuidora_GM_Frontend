@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { FiArrowLeft } from "react-icons/fi"
 
 import ProductoForm from "../components/ProductosForm"
+import { crearProducto } from "../services/productoService"
 
 export default function CrearProductoPage() {
 
@@ -14,7 +15,12 @@ export default function CrearProductoPage() {
     const handleSave = async (data) => {
 
         console.log(data)
-        navigate(-1)
+        try {
+            await crearProducto(data);
+            navigate(-1)
+        } catch (error) {
+            console.error("Error al crear producto", error);
+        }
     }
 
     return (
@@ -57,7 +63,6 @@ export default function CrearProductoPage() {
                 </div>
 
                 <ProductoForm
-                    onSave={handleSave}
                     onClose={() => navigate(-1)}
                 />
 

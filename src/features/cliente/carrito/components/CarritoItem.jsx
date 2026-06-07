@@ -22,7 +22,7 @@ export default function CarritoItem({
             <div className="flex items-center gap-3">
 
                 <img
-                    src={producto.imagen}
+                    src={producto.imagen?.url || "/images/categories/default.webp"}
                     alt={producto.nombre}
                     className="w-16 h-16 rounded-lg object-cover"
                 />
@@ -30,11 +30,11 @@ export default function CarritoItem({
                 <div>
 
                     <h3 className="font-semibold text-gray-800">
-                        {producto.nombre}
+                        {producto.nombreProducto}
                     </h3>
 
                     <p className="text-sm text-gray-500">
-                        ${producto.precio}
+                        ${producto.precioUnitario.toFixed(2)} c/u
                     </p>
 
                     {
@@ -66,7 +66,7 @@ export default function CarritoItem({
                                 value={producto.cantidad}
                                 onChange={(e) =>
                                     onCantidadChange(
-                                        producto.id,
+                                        producto.producto,
                                         Number(e.target.value)
                                     )
                                 }
@@ -87,7 +87,7 @@ export default function CarritoItem({
                     font-bold
                 ">
                     $
-                    {(producto.precio * producto.cantidad)
+                    {(producto.precioUnitario * producto.cantidad)
                         .toFixed(2)}
                 </div>
 
@@ -95,7 +95,7 @@ export default function CarritoItem({
                     editable && (
                         <button
                             onClick={() =>
-                                onRemove(producto.id)
+                                onRemove(producto.producto)
                             }
                             className="
                                 text-red-500

@@ -7,6 +7,8 @@ import { FiArrowLeft } from "react-icons/fi"
 import useAuthStore from "@/context/useAuthStore"
 import { Explorar } from "@/features/catalogo/services/catalogoService"
 import { useLocation } from "react-router-dom"
+import { agregarAlCarrito } from "../../cliente/carrito/services/carritoService"
+import { toast } from "react-toastify"
 
 export default function ProductoDetallePage() {
     const user = useAuthStore((state) => state.user)
@@ -23,6 +25,27 @@ export default function ProductoDetallePage() {
         : "/catalogo"
 
     const from = location.state?.from || basePath
+
+
+    const handleAgregarAlCarrito = async () => {
+        if (!user) {
+            navigate("/registro");
+            return;
+        }
+
+        try {
+            // Usamos el ID del producto (que ya tienes por useParams) y la cantidad del estado
+            const respuesta = await agregarAlCarrito(id, cantidad);
+            
+            console.log("Respuesta del servidor:", respuesta);
+            toast.success(respuesta.msg || "Producto agregado al carrito");
+            
+            // Opcional: navegar al carrito o limpiar cantidad
+            // navigate("/carrito"); 
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
 
     useEffect(() => {
 
@@ -221,13 +244,7 @@ export default function ProductoDetallePage() {
                     />
 
                     <button
-                        onClick={() => {
-                            if (!user) {
-                                navigate("/registro")
-                                return
-                            }
-                            console.log("Agregar carrito")
-                        }}
+                        onClick={handleAgregarAlCarrito}
                         className="
                             mt-4
                             w-full

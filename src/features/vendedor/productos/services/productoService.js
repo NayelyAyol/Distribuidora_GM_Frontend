@@ -2,13 +2,23 @@ import api from "@/utils/api"
 
 export const crearProducto = async (formData) => {
     try {
+        console.log("Enviando petición...");
         const res = await api.post("/productos/crear", formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
-        return res.data;
+        
+        // Verifica si res.data existe o si es el objeto completo
+        console.log("Estructura completa de respuesta:", res); 
+        
+        if (!res.data) {
+            console.warn("La respuesta del servidor no tiene 'data'");
+            return res; // Retorna el objeto completo por si el dato está en otro nivel
+        }
+        
+        return res.data; 
     } catch (error) {
-        console.error("Error al crear producto", error);
-        throw new Error(error.response?.data?.msg || "Error al crear producto");
+        console.error("Error en la petición:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.msg || "Error desconocido al crear el producto");
     }
 }
 

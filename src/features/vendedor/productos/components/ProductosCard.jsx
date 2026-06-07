@@ -56,7 +56,7 @@ export default function ProductoCard({
                     <button
                         onClick={(e) => {
                             e.stopPropagation()
-                            onAddCart(producto)
+                            onAddCart({ productoId: producto._id, cantidad: 1 })
                         }}
                         className="
                             w-[60px]

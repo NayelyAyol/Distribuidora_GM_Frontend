@@ -1,50 +1,73 @@
-import CarritoList from "../components/CarritoList"
-import { useState } from "react"
-import CarritoResumen from "../components/CarritoResumen"
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import CarritoList from "../components/CarritoList";
+import CarritoResumen from "../components/CarritoResumen";
+import { obtenerCarrito } from "../services/carritoService";
+import { actualizarCantidadCarrito, eliminarDelCarrito } from "../services/carritoService"; // Asegúrate de tener este servicio
 
 export default function CarritoPage() {
-    const [carrito, setCarrito] = useState([
-        { id: 1, nombre: "Producto A", precio: 10, cantidad: 2 },
-        { id: 2, nombre: "Producto B", precio: 20, cantidad: 1 },
-    ])
+    const [carrito, setCarrito] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-
-    const onCantidadChange = (id, cantidad) => {
-        setCarrito(prev =>
-            prev.map(p =>
-                p.id === id ? { ...p, cantidad } : p
-            )
-        );
+    const cargarCarrito = async () => {
+        try {
+            setLoading(true);
+            const data = await obtenerCarrito();
+            setCarrito(data.carrito); 
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const removeProducto = (id) => {
-        setCarrito(prev => prev.filter(p => p.id !== id));
+    useEffect(() => {
+        cargarCarrito();
+    }, []);
+
+    const onCantidadChange = async (id, cantidad) => {
+        try {
+            const data = await actualizarCantidadCarrito(id, { cantidad });
+            setCarrito(data.carrito);
+            toast.success("Cantidad actualizada");
+        } catch (error) {
+            toast.error(error.message);
+        }
     };
+
+    const removeProducto = async (id) => {
+        try {
+            const data = await eliminarDelCarrito(id);
+            setCarrito(data.carrito);
+            toast.success("Producto eliminado del carrito");
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
+
+    if (loading) return <p className="p-6">Cargando carrito...</p>;
 
     return (
-
         <div className="p-6 flex flex-col gap-6">
-
             <div>
                 <p className="text-gray-500">
                     Este módulo te permite visualizar productos en tu carrito
                 </p>
             </div>
 
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
                 <div className="lg:col-span-2">
                     <CarritoList
-                        carrito={carrito}
+                        carrito={carrito?.articulos || []}
                         onCantidadChange={onCantidadChange}
                         onRemove={removeProducto}
                     />
                 </div>
 
-                <CarritoResumen carrito={carrito} />
-
+                <CarritoResumen 
+                    carrito={carrito} 
+                />
             </div>
         </div>
-    )
+    );
 }

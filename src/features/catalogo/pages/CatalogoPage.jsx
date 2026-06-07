@@ -107,7 +107,6 @@ export default function CatalogoPage() {
             <div className="min-h-screen bg-white/60 rounded-xl">
                 <div className="p-6 flex flex-col gap-6">
 
-                    {/* BARRA DE ACCIONES Y FILTROS COMPACTA */}
                     <div className="flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
                         
                         <div className="flex flex-col md:flex-row gap-3 w-full lg:w-auto items-center">

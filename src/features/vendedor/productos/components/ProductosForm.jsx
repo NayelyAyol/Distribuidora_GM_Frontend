@@ -48,38 +48,68 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                 value={form.nombre} 
                 onChange={handleChange} 
                 className={inputClass}
-                maxlength={20}
+                maxLength={40}
                 /></div>
                 <div><Label className={`${labelClass} mb-3`}>Código Interno *</Label>
                 <Input name="codigo" 
                 value={form.codigo} 
                 onChange={handleChange} 
                 className={inputClass} 
-                maxlength={8}/></div>
+                maxLength={10}/></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/*<div><Label className={`${labelClass} mb-3`}>Código</Label><Input name="codigoBarras" value={form.codigoBarras} onChange={handleChange} className={inputClass} /></div>*/}
-                    <Label className={`${labelClass} mb-3`}>Categoría *</Label>
-                                    <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm w-full">
-                                        <select
-                                            name="categoria"
-                                            value={form.categoria}
-                                            onChange={handleChange}
-                                            className="bg-transparent text-sm text-gray-700 focus:outline-none cursor-pointer w-full"
-                                        >
-                                            <option value="">Seleccione una categoría</option>
-                                            {categorias.map((cat) => (
-                                                <option key={cat._id} value={cat._id}>
-                                                    {cat.nombre}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                    <div>
+                        <Label className={`${labelClass} mb-3`}>Tipo de IVA *</Label>
+                        <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm w-full">
+                            <select
+                                name="tipoIVA" 
+                                value={form.tipoIVA}
+                                onChange={handleChange}
+                                className="w-full bg-transparent text-sm text-gray-700 focus:outline-none cursor-pointer"
+                            >
+                                <option value="">Seleccione IVA</option>
+                                <option value="0%">0%</option>
+                                <option value="15%">15%</option>
+                                <option value="Exento">Exento</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <Label className={`${labelClass} mb-3`}>Categoría *</Label>
+                        <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm w-full">
+                            <select
+                                name="categoria"
+                                value={form.categoria}
+                                onChange={handleChange}
+                                className="w-full bg-transparent text-sm text-gray-700 focus:outline-none cursor-pointer"
+                            >
+                                <option value="">Seleccione una categoría</option>
+                                {categorias.map((cat) => (
+                                    <option key={cat._id} value={cat._id}>
+                                        {cat.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><Label className={`${labelClass} mb-3`}>Proveedor *</Label><Input name="proveedor" value={form.proveedor} onChange={handleChange} className={inputClass} /></div>
-                    <div><Label className={`${labelClass} mb-3`}>Marca *</Label><Input name="marca" value={form.marca} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Proveedor *</Label>
+                    <Input name="proveedor" 
+                    value={form.proveedor} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    maxLength={30}
+                    /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Marca *</Label>
+                    <Input name="marca" 
+                    value={form.marca} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    maxLength={25}
+                    /></div>
                 </div>
 
                 <div><Label className={`${labelClass} mb-3`}>Descripción</Label>
@@ -87,16 +117,32 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                 value={form.descripcion} 
                 onChange={handleChange} 
                 className={`${inputClass} min-h-[80px] resize-none`}
-                maxlength={100}/></div>
+                maxLength={80}/></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><Label className={`${labelClass} mb-3`}>Color</Label><Input name="color" value={form.color} onChange={handleChange} className={inputClass} /></div>
-                    <div><Label className={`${labelClass} mb-3`}>Material</Label><Input name="material" value={form.material} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label 
+                    className={`${labelClass} mb-3`}>Color</Label>
+                    <Input name="color" 
+                    value={form.color} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    maxLength={20}/></div>
+                    <div><Label className={`${labelClass} mb-3`}>Material</Label>
+                    <Input name="material" 
+                    value={form.material} 
+                    onChange={handleChange} 
+                    className={inputClass}
+                    maxLength={30}
+                    /></div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><Label className={`${labelClass} mb-3`}>Presentación</Label><Input name="presentacion" value={form.presentacion} onChange={handleChange} className={inputClass} /></div>
-                    <div><Label className={`${labelClass} mb-3`}>Unidad Medida *</Label><Input name="unidadMedida" value={form.unidadMedida} onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Presentación</Label>
+                    <Input name="presentacion" value={form.presentacion} 
+                    maxLength={20}
+                    onChange={handleChange} className={inputClass} /></div>
+                    <div><Label className={`${labelClass} mb-3`}>Unidad Medida *</Label>
+                    <Input name="unidadMedida" value={form.unidadMedida} onChange={handleChange} className={inputClass} maxLength={10} /></div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -107,11 +153,16 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                     onChange={handleChange} 
                     className={inputClass} 
                     min="0"
+                    max="999999999"
                     onKeyDown={(e) => {
-                    if (e.key === "-" || e.key === "e") {
+                        if (e.key === "-" || e.key === "e") {
                         e.preventDefault();
                     }
-                    }}/></div>
+                    }}
+                    onInput={(e) => {
+                        if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9);
+                    }}
+                    /></div>
                     <div><Label className={`${labelClass} mb-3`}>Precio Venta *</Label>
                     <Input type="number" 
                     name="precioVenta" 
@@ -119,12 +170,38 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                     onChange={handleChange} 
                     className={inputClass}
                     min="0"
+                    max="999999999"
                     onKeyDown={(e) => {
                     if (e.key === "-" || e.key === "e") {
                         e.preventDefault();
                     }
-                    }}/></div>
+                    }}
+                    onInput={(e) => {
+                        if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9);
+                    }}
+                    /></div>
                 </div>
+
+                <div>
+                    <Label className={`${labelClass} mb-3`}>Precio Mayorista</Label>
+                    <Input type="number" 
+                    name="precioMayorista" 
+                    value={form.precioMayorista} 
+                    onChange={handleChange} 
+                    className={inputClass} 
+                    min="0"
+                    max="999999999"
+                    onKeyDown={(e) => {
+                        if (e.key === "-" || e.key === "e") {
+                            e.preventDefault();
+                        }
+                    }}
+                    onInput={(e) => {
+                        if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9);
+                    }}
+                    />
+                </div>
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><Label className={`${labelClass} mb-3`}>Stock *</Label>
@@ -134,6 +211,9 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                     onChange={handleChange} 
                     className={inputClass} 
                     min="0"
+                    onInput={(e) => {
+                        if (e.target.value.length > 6) e.target.value = e.target.value.slice(0, 6);
+                    }}
                     onKeyDown={(e) => {
                     if (e.key === "-" || e.key === "e") {
                         e.preventDefault();
@@ -146,6 +226,9 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                     onChange={handleChange} 
                     className={inputClass} 
                     min="0"
+                    onInput={(e) => {
+                        if (e.target.value.length > 5) e.target.value = e.target.value.slice(0, 5);
+                    }}
                     onKeyDown={(e) => {
                     if (e.key === "-" || e.key === "e") {
                         e.preventDefault();
