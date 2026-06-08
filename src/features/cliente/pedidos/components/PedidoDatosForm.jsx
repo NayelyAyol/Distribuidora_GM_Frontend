@@ -18,7 +18,7 @@ export default function PedidoDatosForm({
                         font-semibold
                         text-gray-800
                     ">
-                        Datos para facturación
+                        Datos del usuario para facturación
                     </h2>
 
                 </div>
@@ -26,7 +26,7 @@ export default function PedidoDatosForm({
                 <div className="grid gap-4">
 
                     <Input
-                        placeholder="Nombre"
+                        placeholder="Nombre completo"
                         name="nombreCompleto"
                         value={form.nombreCompleto}
                         onChange={handleChange}

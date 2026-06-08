@@ -23,46 +23,22 @@ export default function PedidoExitosoPage() {
     const navigate = useNavigate()
     const location = useLocation()
 
-    const esPedidoFoto = location.state?.esPedidoFoto || false
-    
-    const carrito = [
-        {
-            id: 1,
-            nombre: "Producto A",
-            precio: 10,
-            cantidad: 2
-        },
-        {
-            id: 2,
-            nombre: "Producto B",
-            precio: 20,
-            cantidad: 1
-        }
-    ]
+    const esPedidoFoto = location.state?.esPedidoFoto || false;
 
-    const totalPedidoFoto = 50
+    const pedido = location.state?.pedido || null;
 
-    let subtotal = 0
-    let iva = 0
-    let total = 0
+    const subtotal =
+        pedido?.resumenPago?.subtotalProductos || 0;
 
-    if (esPedidoFoto) {
+    const iva =
+        pedido?.resumenPago?.ivaProductos || 0;
 
-        total = totalPedidoFoto
-        subtotal = total / 1.15
-        iva = total - subtotal
+    const envio =
+        pedido?.resumenPago?.costoEnvio || 0;
 
-    } else {
+    const total =
+        pedido?.resumenPago?.totalPagar || 0;
 
-        subtotal = carrito.reduce(
-            (acc, p) => acc + p.precio * p.cantidad,
-            0
-        )
-
-        iva = subtotal * 0.15
-        total = subtotal + iva
-
-    }
     return (
 
         <div className="
@@ -152,7 +128,7 @@ export default function PedidoExitosoPage() {
                             text-sm
                             text-gray-500
                         ">
-                                Número de pedido
+                                Nombre de pedido
                             </p>
 
                             <p className="
@@ -160,7 +136,7 @@ export default function PedidoExitosoPage() {
                             font-bold
                             text-emerald-800
                         ">
-                                #PED-2026-001
+                                {pedido?.nombrePedido || "Sin nombre"}
                             </p>
 
                         </div>
@@ -181,7 +157,7 @@ export default function PedidoExitosoPage() {
                             font-bold
                             text-emerald-800
                         ">
-                                Confirmado
+                                {pedido?.estado || "PENDIENTE"}
                             </p>
 
                         </div>
@@ -209,20 +185,30 @@ export default function PedidoExitosoPage() {
 
                             <div className="flex flex-col gap-2">
 
-                                <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                    <span>Producto A</span>
-                                    <span>x2</span>
-                                </div>
+                                {pedido?.articulos?.map((item) => (
 
-                                <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                    <span>Producto B</span>
-                                    <span>x1</span>
-                                </div>
+                                    <div
+                                        key={item.producto}
+                                        className="
+                                            flex justify-between
+                                            text-gray-800
+                                            border-b
+                                            border-gray-200
+                                            pb-2
+                                        "
+                                    >
 
-                                <div className="flex justify-between text-gray-800">
-                                    <span>Producto C</span>
-                                    <span>x3</span>
-                                </div>
+                                        <span>
+                                            {item.nombreProducto}
+                                        </span>
+
+                                        <span>
+                                            x{item.cantidad}
+                                        </span>
+
+                                    </div>
+
+                                ))}
 
                             </div>
 
@@ -240,6 +226,22 @@ export default function PedidoExitosoPage() {
                             <span>IVA</span>
                             <span>${iva.toFixed(2)}</span>
                         </div>
+
+                        {envio > 0 && (
+
+                            <div className="flex justify-between text-gray-800">
+
+                                <span>
+                                    Envío
+                                </span>
+
+                                <span>
+                                    ${envio.toFixed(2)}
+                                </span>
+
+                            </div>
+
+                        )}
 
                         <div className="border-t border-emerald-200 pt-3 flex justify-between text-emerald-800 font-bold text-lg">
                             <span>Total</span>

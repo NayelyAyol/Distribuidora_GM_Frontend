@@ -21,19 +21,18 @@ export default function PedidoDireccionForm({
                 Dirección de entrega
             </h2>
 
-            <Input
-                placeholder="Quito"
-                name="ciudad"
-                value={form.ciudad}
-                onChange={handleChange}
-                className="h-12 rounded-xl"
-            />
+            <div>
+                <label className="text-green-900 font-medium">
+                    Costo de envio: $3.50
+                </label>
+            </div>
 
             <Input
                 placeholder="Ubicación"
                 name="direccion"
                 value={form.direccion}
                 onChange={handleChange}
+                maxLength={30}
                 className="h-12 rounded-xl"
             />
 
@@ -42,6 +41,7 @@ export default function PedidoDireccionForm({
                 name="referencia"
                 value={form.referencia}
                 onChange={handleChange}
+                maxLength={30}
                 className="h-12 rounded-xl"
             />
 

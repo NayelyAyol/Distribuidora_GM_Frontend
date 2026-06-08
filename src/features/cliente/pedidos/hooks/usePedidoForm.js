@@ -11,7 +11,6 @@ export default function usePedidoForm() {
         correo: "",
         telefono: "",
         tipoEntrega: "RETIRO_LOCAL", 
-        ciudad: "",
         direccion: "",
         referencia: "",
         observaciones: ""
@@ -28,7 +27,11 @@ export default function usePedidoForm() {
         const { name, value } = e.target
 
         if (name === "nombreCompleto") {
-            if (!/^[a-zA-Z\s]*$/.test(value)) return
+
+            if (!/^[\p{L}\s]*$/u.test(value)) {
+                return;
+            }
+
         }
 
         if (name === "telefono") {
@@ -143,11 +146,6 @@ export default function usePedidoForm() {
                 toast.error("Ingrese una dirección para el envío");
                 return false;
             }
-
-        if (form.tipoEntrega === "ENVIO_DOMICILIO" && !form.ciudad.trim()) {
-                toast.error("Ingrese una ciudad para el envío");
-                return false;
-            }
         
         if (form.tipoEntrega === "ENVIO_DOMICILIO" && !form.referencia.trim()) {
                 toast.error("Ingrese una referencia para el envío");
@@ -192,7 +190,6 @@ export default function usePedidoForm() {
             correo: "",
             telefono: "",
             tipoEntrega: "RETIRO_LOCAL",
-            ciudad: "",
             direccion: "",
             referencia: "",
             observaciones: ""
@@ -218,7 +215,6 @@ export default function usePedidoForm() {
         formData.append("telefono", form.telefono);
 
         if (form.tipoEntrega === "ENVIO_DOMICILIO") {
-            formData.append("ciudad", form.ciudad);
             formData.append("direccion", form.direccion);
             formData.append("referencia", form.referencia);
         }

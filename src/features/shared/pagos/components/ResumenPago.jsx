@@ -1,87 +1,69 @@
 export default function ResumenPago({
-    productos = [],
-    esPedidoFoto = false,
-    totalPedidoFoto = 0
+    carrito,
+    esPedidoFoto,
+    totalPedidoFoto,
+    tipoEntrega
 }) {
 
-    let subtotal = 0
-    let iva = 0
-    let total = 0
-
-    if (esPedidoFoto) {
-
-        total = totalPedidoFoto
-        subtotal = total / 1.15
-        iva = total - subtotal
-
-    } else {
-
-        subtotal = productos.reduce(
-            (acc, p) => acc + p.precio * p.cantidad,
-            0
-        )
-
-        iva = subtotal * 0.15
-        total = subtotal + iva
-
+    if (!carrito && !esPedidoFoto) {
+        return <p>Cargando resumen...</p>;
     }
 
-    return (
+    const costoEnvio =
+    tipoEntrega === "domicilio"
+        ? 3.50
+        : 0;
 
-        <div className="
-            bg-white
-            rounded-2xl
-            shadow-sm
-            p-6
-            flex flex-col gap-4
-            h-fit
-        ">
+    const esDomicilio =
+        tipoEntrega === "domicilio";
+
+    const subtotal = esPedidoFoto
+        ? totalPedidoFoto / 1.15
+        : carrito?.subtotalGeneral || 0;
+
+    const iva = esPedidoFoto
+        ? totalPedidoFoto - subtotal
+        : carrito?.ivaGeneral || 0;
+
+    const totalBase = esPedidoFoto
+        ? totalPedidoFoto
+        : carrito?.totalGeneral || 0;
+
+    const totalFinal = esDomicilio
+        ? totalBase + costoEnvio
+        : totalBase;
+
+    return (
+        <div className="bg-white rounded-2xl shadow-sm p-6 flex flex-col gap-4">
 
             <h2 className="text-xl font-bold">
                 Resumen
             </h2>
 
             <div className="flex justify-between">
-
-                <span>
-                    Subtotal
-                </span>
-
-                <span>
-                    ${subtotal.toFixed(2)}
-                </span>
-
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)}</span>
             </div>
 
             <div className="flex justify-between">
-
-                <span>
-                    IVA
-                </span>
-
-                <span>
-                    ${iva.toFixed(2)}
-                </span>
-
+                <span>IVA (15%)</span>
+                <span>${iva.toFixed(2)}</span>
             </div>
 
-            <div className="
-                flex justify-between
-                text-lg
-                font-bold
-                text-emerald-700
-            ">
+            {esDomicilio && (
+                <div className="flex justify-between text-gray-600">
+                    <span>Comisión de envío</span>
+                    <span>
+                        ${costoEnvio.toFixed(2)}
+                    </span>
+                </div>
+            )}
 
-                <span>
-                    Total
-                </span>
-
-                <span>
-                    ${total.toFixed(2)}
-                </span>
-
+            <div className="flex justify-between text-lg font-bold text-emerald-700 border-t pt-3">
+                <span>Total</span>
+                <span>${totalFinal.toFixed(2)}</span>
             </div>
 
         </div>
-    )
+    );
 }

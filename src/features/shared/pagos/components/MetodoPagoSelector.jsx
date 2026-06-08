@@ -2,6 +2,7 @@ import {
     FiCreditCard,
     FiDollarSign,
 } from "react-icons/fi"
+import { MdPayments } from "react-icons/md";
 
 import MetodoPagoCard from "./MetodoPagoCard"
 
@@ -36,6 +37,19 @@ export default function MetodoPagoSelector({
                     <FiDollarSign
                         size={24}
                         className="text-blue-700"
+                    />
+                }
+            />
+
+            <MetodoPagoCard
+                titulo="Efectivo"
+                descripcion="Paga al retirar tu pedido o al recibirlo en tu domicilio"
+                seleccionado={metodoSeleccionado === "efectivo"}
+                onClick={() => setMetodoSeleccionado("efectivo")}
+                icono={
+                    <MdPayments
+                        size={24}
+                        className="text-green-700"
                     />
                 }
             />

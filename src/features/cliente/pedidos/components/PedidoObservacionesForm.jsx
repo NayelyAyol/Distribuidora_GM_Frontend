@@ -45,6 +45,8 @@ export default function PedidoObservacionesForm({
                     focus:ring-emerald-200
                 "
             />
+            <p className="text-xs text-gray-400 text-right mt-1">{form.observaciones.length}/150</p>
+
 
         </div>
     )

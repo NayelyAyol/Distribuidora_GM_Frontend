@@ -8,6 +8,7 @@ import { actualizarCantidadCarrito, eliminarDelCarrito } from "../services/carri
 export default function CarritoPage() {
     const [carrito, setCarrito] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [tipoEntrega, setTipoEntrega] = useState("local");
 
     const cargarCarrito = async () => {
         try {
@@ -69,6 +70,8 @@ export default function CarritoPage() {
 
                 <CarritoResumen 
                     carrito={carrito} 
+                    tipoEntrega={tipoEntrega}
+                    setTipoEntrega={setTipoEntrega}
                 />
             </div>
         </div>

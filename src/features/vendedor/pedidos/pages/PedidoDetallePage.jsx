@@ -23,38 +23,48 @@ export default function PedidoDetallePage() {
     const [pedido, setPedido] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const subtotal =
+    pedido?.resumenPago?.subtotalProductos || 0;
+
+    const iva =
+        pedido?.resumenPago?.ivaProductos || 0;
+
+    const envio =
+        pedido?.resumenPago?.costoEnvio || 0;
+
+    const total =
+        pedido?.resumenPago?.totalPagar || 0;
+
     useEffect(() => {
-            const cargarDetalle = async () => {
-                try {
-                    const data = await obtenerDetallesPedido(id); 
-                    setPedido(data.pedido);
-                } catch (error) {
-                    console.error("Error al cargar:", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            cargarDetalle();
-        }, [id]);
+        const cargarDetalle = async () => {
+            try {
+                const data = await obtenerDetallesPedido(id);
+                setPedido(data.pedido);
+            } catch (error) {
+                console.error("Error al cargar:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        cargarDetalle();
+    }, [id]);
 
     const handleFinalizar = async () => {
         try {
-            await cambiarEstadoPedido(id,'FINALIZADO');
-            navigate("dashboard/mis-pedidos"); 
+            await cambiarEstadoPedido(id, 'FINALIZADO');
+            navigate("dashboard/mis-pedidos");
         } catch (error) {
             console.error("Error al finalizar:", error);
         }
     };
 
     if (loading) return <div>Cargando...</div>;
-    
+
     const esVendedor = user?.rol?.toUpperCase() === "VENDEDOR";
     const esPedidoEnProceso = pedido?.estado === "EN_PROCESO";
 
     const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
     const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
-
-    const total = pedido?.productos?.reduce((acc, item) => acc + (item.precio * item.cantidad), 0) || 0;
 
     return (
 
@@ -171,45 +181,64 @@ export default function PedidoDetallePage() {
 
                     </div>
 
-                        <div>
+                    <div>
 
-                            <p className="
+                        <p className="
                                 text-sm
                                 text-gray-500
                             ">
-                                Teléfono
-                            </p>
+                            Teléfono
+                        </p>
 
-                            <p className="font-medium text-gray-800">
-                                {pedido?.datosFacturacion?.telefono || "Sin teléfono"}
-                            </p>
+                        <p className="font-medium text-gray-800">
+                            {pedido?.datosFacturacion?.telefono || "Sin teléfono"}
+                        </p>
 
-                        </div>
+                    </div>
 
                 </div>
 
             </Card>
 
-            {(pedido?.direccion || pedido?.referencia) && (
-            <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl space-y-5">
-                <div>
-                    <h2 className="text-lg font-semibold text-gray-800">Dirección de entrega</h2>
-                    <p className="text-sm text-gray-500">Información de entrega del pedido</p>
-                </div>
+            {pedido?.direccionEntrega && (
+                <Card
+                    className="
+            p-5
+            rounded-3xl
+            border border-white/20
+            shadow-sm
+            bg-white/60
+            backdrop-blur-xl
+        "
+                >
+                    <div className="flex items-start gap-4">
 
-                <div className="grid md:grid-cols-2 gap-5">
-                    {pedido?.direccion && (
-                        <div className="flex gap-3">
-                            <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-                                <FiMapPin className="text-emerald-700" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Dirección</p>
-                                <p className="font-medium text-gray-800">{pedido.direccion}</p>
-                                <p className="text-sm text-gray-500">{pedido.referencia}</p>
-                            </div>
+                        <div
+                            className="
+                    w-12 h-12
+                    rounded-2xl
+                    bg-emerald-100
+                    flex items-center
+                    justify-center
+                    shrink-0
+                "
+                        >
+                            <FiMapPin className="text-emerald-700 text-xl" />
                         </div>
-                    )}
+
+                        <div className="flex-1">
+
+                            <p className="text-sm text-gray-500">
+                                Dirección de entrega: <span className="font-semibold text-gray-800">{pedido.direccionEntrega.direccion}</span>
+                            </p>
+
+                            {pedido.direccionEntrega.referencia && (
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Referencia: <span className="font-semibold text-gray-800">{pedido.direccionEntrega.referencia}</span>
+                                </p>
+                            )}
+
+                        </div>
 
                     </div>
                 </Card>
@@ -299,7 +328,7 @@ export default function PedidoDetallePage() {
                         <div className="space-y-4">
 
                             {
-                                pedido.productos.map((producto) => (
+                                pedido?.articulos?.map((producto) => (
 
                                     <div
                                         key={producto.id}
@@ -312,14 +341,13 @@ export default function PedidoDetallePage() {
                                             bg-white
                                         "
                                     >
-
                                         <div>
 
                                             <p className="
                                                 font-medium
                                                 text-gray-800
                                             ">
-                                                {producto.nombre}
+                                                {producto.nombreProducto}
                                             </p>
 
                                             <p className="
@@ -338,7 +366,7 @@ export default function PedidoDetallePage() {
                                             $
                                             {
                                                 (
-                                                    producto.precio *
+                                                    producto.precioUnitario *
                                                     producto.cantidad
                                                 ).toFixed(2)
                                             }
@@ -352,16 +380,43 @@ export default function PedidoDetallePage() {
                         </div>
 
                         <div className="
-                            flex justify-end
                             mt-6
+                            ml-auto
+                            w-full
+                            max-w-sm
+                            border-t
+                            border-gray-200
+                            pt-4
+                            space-y-2
                         ">
 
+                            <div className="flex justify-between">
+                                <span>Subtotal</span>
+                                <span>${subtotal.toFixed(2)}</span>
+                            </div>
+
+                            <div className="flex justify-between">
+                                <span>IVA</span>
+                                <span>${iva.toFixed(2)}</span>
+                            </div>
+
+                            {envio > 0 && (
+                                <div className="flex justify-between">
+                                    <span>Envío</span>
+                                    <span>${envio.toFixed(2)}</span>
+                                </div>
+                            )}
+
                             <div className="
-                                text-xl
+                                flex justify-between
                                 font-bold
+                                text-lg
                                 text-emerald-700
+                                border-t
+                                pt-2
                             ">
-                                Total: ${total.toFixed(2)}
+                                <span>Total</span>
+                                <span>${total.toFixed(2)}</span>
                             </div>
 
                         </div>
@@ -416,16 +471,16 @@ export default function PedidoDetallePage() {
                             justify-end
                         ">
 
-                        {esVendedor && esPedidoEnProceso && (
-                                        <div className="flex justify-end">
-                                            <Button 
-                                                onClick={handleFinalizar}
-                                                className="bg-emerald-600 hover:bg-emerald-700"
-                                            >
-                                                Finalizar pedido
-                                            </Button>
-                                        </div>
-                                    )}
+                            {esVendedor && esPedidoEnProceso && (
+                                <div className="flex justify-end">
+                                    <Button
+                                        onClick={handleFinalizar}
+                                        className="bg-emerald-600 hover:bg-emerald-700"
+                                    >
+                                        Finalizar pedido
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </Card>
                 )
