@@ -1,12 +1,18 @@
 import IngresoProducto from "./IngresoProducto"
 import FacturaPanel from "./Factura"
+import SeleccionPedido from "./SeleccionPedido"
 
 export default function VentaLayout({
     factura,
     agregarProducto,
     cambiarCantidad,
     eliminarProducto,
-    limpiarFactura
+    limpiarFactura,
+    pedidoSeleccionado,
+    setPedidoSeleccionado,
+    setMetodoPago,
+    setDatosFacturacion,
+    setFactura
 }) {
 
     return (
@@ -14,13 +20,20 @@ export default function VentaLayout({
 
             <div>
                 <p className="text-gray-500">
-                    Este módulo te permite escanear o ingresar productos para generar la venta
+                    Este módulo te permite ingresar productos para generar una venta
                 </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div>
+                <div className="space-y-6">
+                        <SeleccionPedido
+                            pedidoSeleccionado={pedidoSeleccionado}
+                            onSelect={setPedidoSeleccionado}
+                            setMetodoPago={setMetodoPago}
+                            setDatosFacturacion={setDatosFacturacion}
+                            setFactura={setFactura}
+                        />
                     <IngresoProducto onAdd={agregarProducto} />
                 </div>
                 <FacturaPanel
@@ -28,6 +41,8 @@ export default function VentaLayout({
                     cambiarCantidad={cambiarCantidad}
                     eliminarProducto={eliminarProducto}
                     limpiarFactura={limpiarFactura}
+                    pedidoSeleccionado={pedidoSeleccionado}
+                    limpiarPedido={() => setPedidoSeleccionado(null)}
                 />
 
             </div>

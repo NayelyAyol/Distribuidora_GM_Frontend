@@ -142,8 +142,8 @@ export default function SeleccionMetodoPagoPage() {
                             setMetodoSeleccionado={setMetodoPago} 
                         />
                         <div className="mt-6">
-                            {metodoPago === "transferencia" && <TransferenciaForm />}
-                            {metodoPago === "tarjeta" && <TarjetaForm />}
+                            {metodoPago === "TRANSFERENCIA" && <TransferenciaForm />}
+                            {metodoPago === "TARJETA" && <TarjetaForm />}
                         </div>
                     </div>
                 </div>

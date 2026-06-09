@@ -71,7 +71,7 @@ export default function PedidosDisponiblesPage() {
                         <p className="text-[15px] text-gray-500 mb-4">
                             ¿Estás seguro de que deseas tomar el pedido del cliente 
                             <span className="font-semibold text-emerald-800">
-                                {" "}{pedidoToConfirm.cliente?.perfilId?.nombre} {pedidoToConfirm.cliente?.perfilId?.apellido || "Sin apellido"}
+                                {" "}{pedidoToConfirm.datosFacturacion?.nombreCompleto || "Sin nombre"}
                             </span>?
                         </p>
 

@@ -211,7 +211,7 @@ return (
                             ? `${pedidoSeleccionado.vendedor.perfilId.nombre} ${pedidoSeleccionado.vendedor.perfilId.apellido}` 
                             : "Vendedor")
                         : (pedidoSeleccionado?.cliente?.perfilId 
-                            ? `${pedidoSeleccionado.cliente.perfilId.nombre} ${pedidoSeleccionado.cliente.perfilId.apellido}` 
+                            ? `${pedidoSeleccionado.datosFacturacion?.nombreCompleto} ${pedidoSeleccionado.cliente.perfilId.apellido}` 
                             : "Cliente")
                 }
             />

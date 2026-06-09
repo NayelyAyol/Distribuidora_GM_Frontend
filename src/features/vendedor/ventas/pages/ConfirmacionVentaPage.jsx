@@ -11,14 +11,65 @@ import {
 } from "@/utils/styles"
 
 import { Button } from "@/components/ui/button"
+import { ventaDirecta, ventaDesdePedido } from "../services/ventaService"
+import { toast } from "react-toastify"
+import { calcularFactura } from "@/utils/calcularFactura"
+import useVentaStore from "../context/useVentaStore"
 
 export default function ConfirmacionVentaPage() {
 
     const navigate = useNavigate()
     const location = useLocation()
 
-    const factura = location.state?.factura || []
-    const metodoPago = location.state?.metodoPago || "No especificado"
+    const {
+        factura,
+        pedidoSeleccionado,
+        metodoPago,
+        datosFacturacion,
+        limpiarVenta
+    } = useVentaStore();
+
+
+    const handleConfirmarVenta = async () => {
+        try {
+            const productosSinStock = factura.filter(p => p.cantidad > p.stock);
+            if (productosSinStock.length > 0) {
+                toast.error(`Stock insuficiente para ${productosSinStock[0].nombre}`);
+                return;
+            }
+
+            const datosVenta = {
+                metodoPago,
+                datosFacturacion,
+                articulos: factura.map(p => ({
+                    producto: p.id,
+                    cantidad: p.cantidad
+                }))
+            };
+
+            let response;
+            if (pedidoSeleccionado?._id) {
+                response = await ventaDesdePedido(pedidoSeleccionado._id, datosVenta);
+            } else {
+                response = await ventaDirecta(datosVenta);
+            }
+
+            limpiarVenta(); 
+
+            navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", {
+                state: { venta: response.venta }
+            });
+
+        } catch (error) {
+            console.error("ERROR API:", error.response?.data || error.message);
+            toast.error("Error al procesar la venta. Inténtalo de nuevo.");
+        }
+    }
+
+    const { subtotal, iva, envio, total } = calcularFactura(
+        factura,
+        pedidoSeleccionado?.tipoEntrega
+    )
 
     return (
         <div className="
@@ -110,14 +161,30 @@ export default function ConfirmacionVentaPage() {
                                     text-sm
                                     text-gray-500
                                 ">
+                                    Nombre del pedido
+                                </p>
+                                <p className="
+                                    font-semibold
+                                    text-gray-800
+                                ">
+                                    {pedidoSeleccionado?.nombrePedido}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="
+                                    text-sm
+                                    text-gray-500
+                                ">
                                     Cliente
                                 </p>
                                 <p className="
                                     font-semibold
                                     text-gray-800
                                 ">
-                                    Consumidor Final
+                                    {datosFacturacion?.nombreCompleto}
                                 </p>
+                    
                             </div>
                         </div>
                     </div>
@@ -233,24 +300,14 @@ export default function ConfirmacionVentaPage() {
                                     font-black
                                     text-emerald-700
                                 ">
-                                    $
-                                    {(
-                                        factura.reduce(
-                                            (acc, p) => acc + (p.precio * p.cantidad),
-                                            0
-                                        ) * 1.15
-                                    ).toFixed(2)}
+                                    ${total.toFixed(2)}
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     <Button
-                        onClick={() =>
-                            navigate(
-                                "/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa"
-                            )
-                        }
+                        onClick={handleConfirmarVenta}
                         className={buttonPrimaryClass}
                     >
                         Confirmar

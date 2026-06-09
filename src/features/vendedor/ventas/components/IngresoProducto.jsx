@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { inputClass, buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
+import { inputClass, buttonPrimaryClass } from "@/utils/styles"
 import { FiSearch } from "react-icons/fi"
 import { Html5QrcodeScanner } from "html5-qrcode"
-
+import { Explorar } from "../../../catalogo/services/catalogoService"
 
 export default function IngresoProducto({ onAdd }) {
 
     const [codigo, setCodigo] = useState("")
     const [scannerOpen, setScannerOpen] = useState(false)
+
+    const [productos, setProductos] = useState([])
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
 
@@ -20,15 +23,32 @@ export default function IngresoProducto({ onAdd }) {
             { fps: 10, qrbox: 250 }
         )
 
-        scanner.render((decodedText) => {
+        scanner.render(async (decodedText) => {
 
-            const producto = {
-                id: decodedText,
-                nombre: "Producto " + decodedText,
-                precio: 10
+            try {
+
+                const data = await Explorar({
+                    buscar: decodedText,
+                    page: 1,
+                    limit: 20
+                })
+
+                const productoEncontrado = data?.productos?.[0]
+
+                if (productoEncontrado) {
+
+                onAdd({
+                    id: productoEncontrado._id,
+                    nombre: productoEncontrado.nombre,
+                    precio: productoEncontrado.precioVenta,
+                    stock: productoEncontrado.stock
+                })
+                }
+
+            } catch (error) {
+                console.error(error)
             }
 
-            onAdd(producto)
             setScannerOpen(false)
 
             scanner.clear()
@@ -40,18 +60,67 @@ export default function IngresoProducto({ onAdd }) {
 
     }, [scannerOpen])
 
-    const handleAgregar = () => {
+    useEffect(() => {
 
-        if (!codigo.trim()) return
+        const buscarProductos = async () => {
 
-        const producto = {
-            id: codigo,
-            nombre: "Producto " + codigo,
-            precio: 10
+            const texto = codigo.trim()
+
+            if (texto.length < 2) {
+                setProductos([])
+                return
+            }
+
+            try {
+
+                setLoading(true)
+
+                const data = await Explorar({
+                    buscar: texto,
+                    page: 1,
+                    limit: 20
+                })
+
+                setProductos(data?.productos || [])
+
+            } catch (error) {
+
+                console.error(error)
+                setProductos([])
+
+            } finally {
+
+                setLoading(false)
+
+            }
         }
 
-        onAdd(producto)
+        const delay = setTimeout(() => {
+            buscarProductos()
+        }, 400)
+
+        return () => clearTimeout(delay)
+
+    }, [codigo])
+
+    const seleccionarProducto = (producto) => {
+
+    onAdd({
+        id: producto._id,
+        nombre: producto.nombre,
+        precio: producto.precioVenta,
+        stock: producto.stock
+    })
+
         setCodigo("")
+        setProductos([])
+    }
+
+    const handleAgregar = () => {
+
+        if (productos.length === 1) {
+            seleccionarProducto(productos[0])
+        }
     }
 
     return (
@@ -61,18 +130,14 @@ export default function IngresoProducto({ onAdd }) {
                 Ingreso de producto
             </h2>
 
-            <p className="text-sm text-gray-500">
-                Escanea o ingresa el código manualmente
-            </p>
-
             <div className="flex items-center bg-white rounded-full border border-gray-100 shadow-sm">
 
                 <Input
                     value={codigo}
-                    onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
+                    onChange={(e) => setCodigo(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleAgregar()}
-                    placeholder="Código de barras o manual"
-                    className={`${inputClass} bg-transparent border-0 focus:ring-0`}
+                    placeholder="Buscar producto por nombre..."
+                    className={`${inputClass} bg-transparent border-0 focus:ring-0 placeholder:text-sm`}
                 />
 
                 <button
@@ -83,19 +148,70 @@ export default function IngresoProducto({ onAdd }) {
                 </button>
 
             </div>
+
+            {productos.length > 0 && (
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm max-h-64 overflow-y-auto">
+
+                    {productos.map((producto) => (
+
+                        <button
+                            key={producto._id}
+                            onClick={() => seleccionarProducto(producto)}
+                            className="w-full text-left p-3 hover:bg-emerald-50 border-b transition"
+                        >
+                            <div className="flex items-center gap-3">
+
+                                <img
+                                    src={
+                                        producto.imagen?.url ||
+                                        "https://via.placeholder.com/60"
+                                    }
+                                    alt={producto.nombre}
+                                    className="w-14 h-14 rounded-lg object-cover border"
+                                />
+
+                                <div>
+                                    <p className="font-medium text-gray-800">
+                                        {producto.nombre}
+                                    </p>
+
+                                    <p className="text-sm text-gray-500">
+                                        ${producto.precioVenta}
+                                    </p>
+
+                                    <p className="text-xs text-gray-400">
+                                        Stock: {producto.stock}
+                                    </p>
+                                </div>
+
+                            </div>
+                        </button>
+
+                    ))}
+
+                </div>
+            )}
+
+            {loading && (
+                <p className="text-sm text-gray-500">
+                    Buscando productos...
+                </p>
+            )}
+
             {/*
             <Button
                 onClick={() => setScannerOpen(true)}
                 className={`${buttonOutlineClass} py-5`}
             >
                 Escanear con cámara
-            </Button>*/}
+            </Button>
+            */}
 
             <Button
                 onClick={handleAgregar}
                 className={buttonPrimaryClass}
             >
-                Agregar producto
+                Agregar
             </Button>
 
             {scannerOpen && (

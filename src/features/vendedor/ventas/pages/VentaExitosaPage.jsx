@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 import {
     FiCheckCircle,
@@ -18,7 +18,13 @@ export default function VentaExitosaPage() {
         window.print()
     }
     const navigate = useNavigate()
+    const location = useLocation()
+    const venta = location.state?.venta
 
+    if (!venta) {
+        return <div className="p-6">Error: No se encontraron datos de la venta.</div>
+    }
+    
     return (
         <div className="p-6 flex flex-col gap-6">
 
@@ -84,27 +90,19 @@ export default function VentaExitosaPage() {
 
                         <div className="flex flex-col gap-2">
 
-                            <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                <span>Producto A</span>
-                                <span>x2</span>
-                            </div>
-
-                            <div className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                <span>Producto B</span>
-                                <span>x1</span>
-                            </div>
-
-                            <div className="flex justify-between text-gray-800">
-                                <span>Producto C</span>
-                                <span>x3</span>
-                            </div>
+                            {venta.articulos.map((item, index) => (
+                                <div key={index} className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
+                                    <span>{item.producto.nombre}</span> {/* Ajusta según la estructura de tu respuesta API */}
+                                    <span>x{item.cantidad}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
                     <div className="w-full bg-emerald-50 border border-emerald-100 rounded-2xl p-6 flex flex-col gap-2 text-left">
                         <div className="flex justify-between text-gray-800">
                             <span>Subtotal</span>
-                            <span>$25.00</span>
+                            <span>${venta.subtotal.toFixed(2)}</span>
                         </div>
 
                         <div className="flex justify-between text-gray-800">
@@ -112,9 +110,9 @@ export default function VentaExitosaPage() {
                             <span>$2.00</span>
                         </div>
 
-                        <div className="border-t border-emerald-200 pt-3 flex justify-between text-emerald-800 font-bold text-lg">
+                        <div className="flex justify-between text-emerald-800 font-bold text-lg">
                             <span>Total</span>
-                            <span>$27.00</span>
+                            <span>${venta.total.toFixed(2)}</span>
                         </div>
                     </div>
 

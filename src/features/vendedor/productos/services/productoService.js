@@ -7,12 +7,11 @@ export const crearProducto = async (formData) => {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
         
-        // Verifica si res.data existe o si es el objeto completo
         console.log("Estructura completa de respuesta:", res); 
         
         if (!res.data) {
             console.warn("La respuesta del servidor no tiene 'data'");
-            return res; // Retorna el objeto completo por si el dato está en otro nivel
+            return res; 
         }
         
         return res.data; 

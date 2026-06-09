@@ -18,8 +18,8 @@ export default function MetodoPagoSelector({
             <MetodoPagoCard
                 titulo="Tarjeta"
                 descripcion="Crédito o débito"
-                seleccionado={metodoSeleccionado === "tarjeta"}
-                onClick={() => setMetodoSeleccionado("tarjeta")}
+                seleccionado={metodoSeleccionado === "TARJETA"}
+                onClick={() => setMetodoSeleccionado("TARJETA")}
                 icono={
                     <FiCreditCard
                         size={24}
@@ -31,8 +31,8 @@ export default function MetodoPagoSelector({
             <MetodoPagoCard
                 titulo="Transferencia"
                 descripcion="Banco Pichincha o Produbanco"
-                seleccionado={metodoSeleccionado === "transferencia"}
-                onClick={() => setMetodoSeleccionado("transferencia")}
+                seleccionado={metodoSeleccionado === "TRANSFERENCIA"}
+                onClick={() => setMetodoSeleccionado("TRANSFERENCIA")}
                 icono={
                     <FiDollarSign
                         size={24}
@@ -44,8 +44,8 @@ export default function MetodoPagoSelector({
             <MetodoPagoCard
                 titulo="Efectivo"
                 descripcion="Paga al retirar tu pedido o al recibirlo en tu domicilio"
-                seleccionado={metodoSeleccionado === "efectivo"}
-                onClick={() => setMetodoSeleccionado("efectivo")}
+                seleccionado={metodoSeleccionado === "EFECTIVO"}
+                onClick={() => setMetodoSeleccionado("EFECTIVO")}
                 icono={
                     <MdPayments
                         size={24}

@@ -7,11 +7,11 @@ export default function FacturaPanel({
     factura,
     eliminarProducto,
     limpiarFactura,
-    cambiarCantidad
+    cambiarCantidad,
+    pedidoSeleccionado,
+    limpiarPedido
 }) {
     const navigate = useNavigate()
-
-    
 
     const subtotal = factura.reduce(
         (acc, p) => acc + p.precio * p.cantidad,
@@ -19,9 +19,27 @@ export default function FacturaPanel({
     )
 
     const iva = subtotal * 0.15
+    const esDomicilio =
+        pedidoSeleccionado?.tipoEntrega === "ENVIO_DOMICILIO"
 
+    const costoEnvio = esDomicilio
+        ? Number(pedidoSeleccionado?.resumenPago?.costoEnvio || 0)
+        : 0
 
-    const total = subtotal + iva
+    const total = subtotal + iva + costoEnvio
+
+    const productosSinStock = factura.some(
+        p => p.cantidad > p.stock
+    )
+
+    const pedidoConDatosCompletos =
+        pedidoSeleccionado &&
+        (
+            pedidoSeleccionado.tipoPedido === "CARRITO" ||
+            pedidoSeleccionado.tipoPedido === "FOTO_LISTA"
+        ) &&
+        pedidoSeleccionado.metodoPago &&
+        pedidoSeleccionado.datosFacturacion;
 
     return (
         <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg flex flex-col">
@@ -49,7 +67,32 @@ export default function FacturaPanel({
 
             </div>
 
-            <div className="border-t pt-4 mt-4 space-y-3">
+            <div className="border-t border-b py-4">
+
+                <p className="font-medium mb-2">
+                    Tipo de entrega
+                </p>
+
+                <span
+                    className="
+                        inline-flex
+                        px-3
+                        py-1
+                        rounded-full
+                        text-sm
+                        bg-emerald-100
+                        text-emerald-700
+                        font-medium
+                    "
+                >
+                    {pedidoSeleccionado
+                        ? pedidoSeleccionado.tipoEntrega
+                        : "RETIRO_LOCAL"}
+                </span>
+
+            </div>
+
+            <div className="pt-4 mt-4 space-y-3">
 
                 <h3 className="text-lg font-semibold text-emerald-900">
                     Subtotal: ${subtotal.toFixed(2)}
@@ -57,21 +100,66 @@ export default function FacturaPanel({
                 <h3 className="text-lg font-semibold text-emerald-900">
                     IVA: ${iva.toFixed(2)}
                 </h3>
+                {costoEnvio > 0 && (
+                    <h3 className="text-lg font-semibold text-emerald-900">
+                        Envío: ${costoEnvio.toFixed(2)}
+                    </h3>
+                )}
                 <h3 className="text-lg font-semibold text-emerald-900">
                     Total: ${total.toFixed(2)}
                 </h3>
 
+                {
+                    productosSinStock && (
+                        <div
+                            className="
+                                bg-red-50
+                                border
+                                border-red-200
+                                rounded-xl
+                                p-3
+                                text-red-700
+                                text-sm
+                            "
+                        >
+                            Existen productos con stock insuficiente.
+                        </div>
+                    )
+                }
+
+
                 <Button
-                    onClick={limpiarFactura}
+                    onClick={() => {
+                        limpiarFactura()
+                        limpiarPedido()
+                    }}
                     className={`${buttonOutlineClass} py-5`}
                 >
                     Limpiar
                 </Button>
 
                 <Button
-                    onClick={() =>
-                        navigate("/dashboard/ventas/cobro")
+                    disabled={
+                        factura.length === 0 ||
+                        productosSinStock
                     }
+                    onClick={() => {
+                        if (pedidoConDatosCompletos) {
+                            navigate(
+                                "/dashboard/ventas/cobro/confirmacion-venta"
+                            );
+                            return;
+                        }
+                        navigate(
+                            "/dashboard/ventas/cobro",
+                            {
+                                state: {
+                                    factura,
+                                    pedidoSeleccionado
+                                }
+                            }
+                        );
+                    }}
                     className={buttonPrimaryClass}
                 >
                     Cobrar
