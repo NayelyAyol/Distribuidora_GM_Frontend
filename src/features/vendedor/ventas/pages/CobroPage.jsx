@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 
@@ -26,6 +26,12 @@ export default function CobroPage() {
         datosFacturacion,
         setDatosFacturacion
     } = useVentaStore();
+
+    useEffect(() => {
+        if (!factura || factura.length === 0) {
+            navigate("/dashboard/ventas");
+        }
+    }, []);
 
     const [metodoSeleccionado, setMetodoSeleccionado] = useState(metodoPago || "");
 

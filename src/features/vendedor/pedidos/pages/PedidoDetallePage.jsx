@@ -10,8 +10,15 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react";
 import useAuthStore from "@/context/useAuthStore"
 import { obtenerDetallesPedido, cambiarEstadoPedido } from "../services/pedidosSeleccionadosService";
+import useVentaStore from "../../ventas/context/useVentaStore"
 
 export default function PedidoDetallePage() {
+
+    const {
+        setPedidoSeleccionado,
+        setFactura,
+        resetVentaCompleta
+    } = useVentaStore();
 
     const navigate = useNavigate()
     const { id } = useParams()
@@ -57,6 +64,28 @@ export default function PedidoDetallePage() {
             console.error("Error al finalizar:", error);
         }
     };
+
+
+const handleIniciarVenta = () => {
+    resetVentaCompleta();
+    setPedidoSeleccionado(pedido);
+
+    if (pedido?.tipoPedido === "CARRITO") {
+        // AQUÍ ESTÁ LA CLAVE: 
+        // Convertimos el array crudo de la API al formato que el componente espera
+        const productosNormalizados = pedido.articulos.map(item => ({
+            id: item.producto || item._id,
+            nombre: item.nombreProducto || "Sin nombre",
+            precio: item.precioUnitario || 0,
+            stock: item.stock ?? 999, // Si no viene stock, el componente usará 999
+            cantidad: item.cantidad || 1
+        }));
+        
+        setFactura(productosNormalizados);
+    }
+
+    navigate("/dashboard/ventas");
+};
 
     if (loading) return <div>Cargando...</div>;
 
@@ -331,7 +360,7 @@ export default function PedidoDetallePage() {
                                 pedido?.articulos?.map((producto) => (
 
                                     <div
-                                        key={producto.id}
+                                        key={producto._id || producto.id}
                                         className="
                                             flex items-center
                                             justify-between
@@ -470,6 +499,13 @@ export default function PedidoDetallePage() {
                             flex flex-wrap gap-4
                             justify-end
                         ">
+
+                            <Button
+                                onClick={handleIniciarVenta}
+                                className="bg-emerald-600 hover:bg-emerald-700"
+                            >
+                                Iniciar venta
+                            </Button>
 
                             {esVendedor && esPedidoEnProceso && (
                                 <div className="flex justify-end">

@@ -22,7 +22,17 @@ export default function VentaExitosaPage() {
     const venta = location.state?.venta
 
     if (!venta) {
-        return <div className="p-6">Error: No se encontraron datos de la venta.</div>
+        return (
+            <div className="p-6 flex flex-col gap-4">
+                <p className="text-red-600 font-semibold">
+                    No se encontraron datos de la venta.
+                </p>
+
+                <Button onClick={() => navigate("/dashboard/ventas")}>
+                    Volver a ventas
+                </Button>
+            </div>
+        );
     }
     
     return (

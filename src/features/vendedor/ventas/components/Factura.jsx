@@ -2,6 +2,7 @@ import ProductoItemFactura from "./ProductoItemFactura"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
+import useVentaStore from "../../ventas/context/useVentaStore"
 
 export default function FacturaPanel({
     factura,
@@ -12,11 +13,13 @@ export default function FacturaPanel({
     limpiarPedido
 }) {
     const navigate = useNavigate()
+    const metodoPago = useVentaStore(state => state.metodoPago ?? null);
+    const datosFacturacion = useVentaStore(state => state.datosFacturacion ?? {});
 
     const subtotal = factura.reduce(
-        (acc, p) => acc + p.precio * p.cantidad,
+        (acc, p) => acc + (p.precio * p.cantidad),
         0
-    )
+    );
 
     const iva = subtotal * 0.15
     const esDomicilio =
@@ -32,14 +35,16 @@ export default function FacturaPanel({
         p => p.cantidad > p.stock
     )
 
-    const pedidoConDatosCompletos =
+    const puedeIrConfirmacion =
         pedidoSeleccionado &&
-        (
-            pedidoSeleccionado.tipoPedido === "CARRITO" ||
-            pedidoSeleccionado.tipoPedido === "FOTO_LISTA"
-        ) &&
-        pedidoSeleccionado.metodoPago &&
-        pedidoSeleccionado.datosFacturacion;
+        metodoPago &&
+        datosFacturacion?.nombreCompleto &&
+        datosFacturacion?.correo;
+
+    const pedidoConDatosCompletos =
+        pedidoSeleccionado?.tipoPedido === "CARRITO" &&
+        metodoPago &&
+        datosFacturacion?.nombreCompleto;
 
     return (
         <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg flex flex-col">
@@ -57,7 +62,7 @@ export default function FacturaPanel({
                 ) : (
                     factura.map(p => (
                         <ProductoItemFactura
-                            key={p.id}
+                            key={p.id || p._id}
                             producto={p}
                             onDelete={eliminarProducto}
                             onCantidadChange={cambiarCantidad}
@@ -144,21 +149,13 @@ export default function FacturaPanel({
                         productosSinStock
                     }
                     onClick={() => {
-                        if (pedidoConDatosCompletos) {
-                            navigate(
-                                "/dashboard/ventas/cobro/confirmacion-venta"
-                            );
+
+                        if (puedeIrConfirmacion) {
+                            navigate("/dashboard/ventas/cobro/confirmacion-venta");
                             return;
                         }
-                        navigate(
-                            "/dashboard/ventas/cobro",
-                            {
-                                state: {
-                                    factura,
-                                    pedidoSeleccionado
-                                }
-                            }
-                        );
+
+                        navigate("/dashboard/ventas/cobro");
                     }}
                     className={buttonPrimaryClass}
                 >

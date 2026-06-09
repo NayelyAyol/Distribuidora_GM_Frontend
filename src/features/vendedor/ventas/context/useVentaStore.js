@@ -13,9 +13,7 @@ const useVentaStore = create(
 
             setPedidoSeleccionado: (pedido) =>
                 set({
-                    pedidoSeleccionado: pedido,
-                    metodoPago: pedido?.metodoPago || null,
-                    datosFacturacion: pedido?.datosFacturacion || {}
+                    pedidoSeleccionado: pedido
                 }),
 
             agregarProducto: (producto) => {
@@ -108,11 +106,18 @@ const useVentaStore = create(
             limpiarVenta: () =>
                 set({
                     factura: [],
-                    pedidoSeleccionado: null,
                     metodoPago: null,
                     datosFacturacion: {},
                 }),
             
+            resetVentaCompleta: () =>
+                set({
+                    factura: [],
+                    pedidoSeleccionado: null,
+                    metodoPago: null,
+                    datosFacturacion: {},
+                }),
+
             setFactura: (productos) =>
                 set({
                     factura: productos

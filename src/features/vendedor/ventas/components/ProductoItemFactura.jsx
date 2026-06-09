@@ -36,6 +36,8 @@ export default function ProductoItemFactura({
             producto.cantidad - 1
         );
     };
+    const nombreMostrado = producto.nombre || producto.nombreProducto || "Sin nombre";
+    const precioMostrado = producto.precio ?? producto.precioUnitario ?? 0;
 
     console.log("PRODUCTO FACTURA:", producto);
     return (
@@ -55,15 +57,17 @@ export default function ProductoItemFactura({
             <div>
 
                 <p className="font-semibold text-emerald-900">
-                    {producto.nombre}
+                    {nombreMostrado}
                 </p>
 
-                <p className="text-sm text-gray-500">
-                    Stock: {producto.stock}
-                </p>
+                {(producto.stock !== undefined && producto.stock !== null) && (
+                    <p className="text-sm text-gray-500">
+                        Stock: {producto.stock}
+                    </p>
+                )}
 
                 <p className="text-sm text-gray-500">
-                    ${producto.precio}
+                    ${precioMostrado}
                 </p>
 
             </div>

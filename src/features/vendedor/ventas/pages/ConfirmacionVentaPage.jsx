@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom" // Importamos useLocation
+import { useNavigate } from "react-router-dom" 
 
 import {
     FiArrowLeft,
@@ -19,14 +19,13 @@ import useVentaStore from "../context/useVentaStore"
 export default function ConfirmacionVentaPage() {
 
     const navigate = useNavigate()
-    const location = useLocation()
 
     const {
         factura,
         pedidoSeleccionado,
         metodoPago,
         datosFacturacion,
-        limpiarVenta
+        resetVentaCompleta
     } = useVentaStore();
 
 
@@ -54,7 +53,7 @@ export default function ConfirmacionVentaPage() {
                 response = await ventaDirecta(datosVenta);
             }
 
-            limpiarVenta(); 
+            resetVentaCompleta(); 
 
             navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", {
                 state: { venta: response.venta }

@@ -1,5 +1,6 @@
 import useVentaStore from "../context/useVentaStore";
 import VentaLayout from "../components/VentaLayout";
+import { useEffect } from "react";
 
 export default function VentaPage() {
 
@@ -15,6 +16,17 @@ export default function VentaPage() {
         setDatosFacturacion,
         setFactura
     } = useVentaStore();
+
+
+    useEffect(() => {
+        if (pedidoSeleccionado?.tipoPedido === "FOTO_LISTA") {
+            setFactura([]);
+        }
+
+        if (pedidoSeleccionado?.tipoPedido === "CARRITO") {
+            setFactura(pedidoSeleccionado.articulos || []);
+        }
+    }, [pedidoSeleccionado]);
 
     return (
         <VentaLayout
