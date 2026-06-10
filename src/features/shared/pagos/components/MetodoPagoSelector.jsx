@@ -8,26 +8,28 @@ import MetodoPagoCard from "./MetodoPagoCard"
 
 export default function MetodoPagoSelector({
     metodoSeleccionado,
-    setMetodoSeleccionado
+    setMetodoSeleccionado,
+    esVentaDirecta
 }) {
 
     return (
 
         <div className="flex flex-col gap-4">
 
-            <MetodoPagoCard
-                titulo="Tarjeta"
-                descripcion="Crédito o débito"
-                seleccionado={metodoSeleccionado === "TARJETA"}
-                onClick={() => setMetodoSeleccionado("TARJETA")}
-                icono={
-                    <FiCreditCard
-                        size={24}
-                        className="text-emerald-700"
-                    />
-                }
-            />
-
+            {!esVentaDirecta && (
+                <MetodoPagoCard
+                    titulo="Tarjeta"
+                    descripcion="Crédito o débito"
+                    seleccionado={metodoSeleccionado === "TARJETA"}
+                    onClick={() => setMetodoSeleccionado("TARJETA")}
+                    icono={
+                        <FiCreditCard
+                            size={24}
+                            className="text-emerald-700"
+                        />
+                    }
+                />
+            )}
             <MetodoPagoCard
                 titulo="Transferencia"
                 descripcion="Banco Pichincha o Produbanco"

@@ -79,7 +79,7 @@ export default function ProductoCard({
 
                     <div className="flex flex-col items-center gap-4 w-full">
 
-                        <div className="flex items-center gap-6 justify-center w-full">
+                        {/*<div className="flex items-center gap-6 justify-center w-full">
 
                             <button
                                 onClick={() => onDecrease(producto._id)}
@@ -110,7 +110,7 @@ export default function ProductoCard({
                             </button>
 
                         </div>
-
+                        */}
                     </div>
 
                 )}

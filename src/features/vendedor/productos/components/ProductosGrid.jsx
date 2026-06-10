@@ -2,6 +2,7 @@ import ProductoCard from "./ProductosCard"
 
 export default function ProductosGrid({
     productos,
+    onAddCart,
     onIncrease,
     onDecrease,
     onEdit,
@@ -20,6 +21,7 @@ export default function ProductosGrid({
                 <ProductoCard
                     key={producto._id}
                     producto={producto}
+                    onAddCart={onAddCart}
                     onIncrease={onIncrease}
                     onDecrease={onDecrease}
                     onEdit={onEdit}

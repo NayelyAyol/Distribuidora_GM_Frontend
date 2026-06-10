@@ -55,6 +55,22 @@ export default function PedidosPage() {
                 params.buscar = busqueda.trim();
             }
 
+            if (filtro === "pagosPendientes") {
+                params.estado = "EN_PROCESO";
+                params.estadoPago = "PENDIENTE";
+            } else {
+                const estadoMap = {
+                    pendientes: "PENDIENTE",
+                    enProceso: "EN_PROCESO",
+                    finalizados: "FINALIZADO",
+                    cancelados: "CANCELADO"
+                };
+                params.estado = estadoMap[filtro] || "PENDIENTE";
+            }
+
+            if (tipoPedido && tipoPedido !== "") params.tipoPedido = tipoPedido;
+            if (busqueda && busqueda.trim() !== "") params.buscar = busqueda.trim();
+
             const query = new URLSearchParams(params).toString();
             const data = await obtenerMisPedidos(query);
             setPedidos(data.pedidos || []);
@@ -173,6 +189,12 @@ return (
                         </Button>
                         <Button onClick={() => setFiltro("cancelados")} className={filtro === "cancelados" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}>
                             Cancelados
+                        </Button>
+                        <Button 
+                            onClick={() => setFiltro("pagosPendientes")} 
+                            className={filtro === "pagosPendientes" ? "bg-emerald-100 text-emerald-700": "bg-gray-200 text-gray-600"}
+                        >
+                            Pago Pendiente
                         </Button>
                     </div>
 

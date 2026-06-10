@@ -40,6 +40,8 @@ import QuejasSugerenciasClientePage from "./features/cliente/quejasysugerencias/
 import CatalogoPage from "./features/catalogo/pages/CatalogoPage"
 import ProductoDetallePage from "./features/producto/pages/ProductoDetallePage"
 import PublicLayout from "./layouts/PublicLayout"
+import MisVentasPage from "./features/vendedor/ventas/pages/MisVentasPage"
+import VentaDetallePage from "./features/vendedor/ventas/pages/VentaDetallePage"
 
 function App() {
   return (
@@ -251,6 +253,24 @@ function App() {
             element={
               <ProtectedRoute roles={["VENDEDOR"]}>
                 <VentaPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mis-ventas"
+            element={
+              <ProtectedRoute roles={["VENDEDOR"]}>
+                <MisVentasPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mis-ventas/detalle/:id"
+            element={
+              <ProtectedRoute roles={["VENDEDOR"]}>
+                <VentaDetallePage />
               </ProtectedRoute>
             }
           />

@@ -15,7 +15,7 @@ import { HiX } from "react-icons/hi";
 import useAuthStore from "@/context/useAuthStore";
 import { MdLightbulbOutline, MdFeedback, MdInventory } from "react-icons/md";
 import { MdAddShoppingCart } from "react-icons/md"
-import { FiMessageSquare, FiGrid, FiMessageCircle } from "react-icons/fi"
+import { FiMessageSquare, FiGrid, FiMessageCircle, FiDollarSign  } from "react-icons/fi"
 
 const Sidebar = ({ open, onClose }) => {
     const navigate = useNavigate();
@@ -89,6 +89,12 @@ const Sidebar = ({ open, onClose }) => {
             label: "Ventas",
             path: "/dashboard/ventas",
             icon: FaMoneyBillWave,
+            roles: ["VENDEDOR"],
+        },
+        {
+            label: "Mis ventas",
+            path: "/dashboard/mis-ventas",
+            icon: FiDollarSign,
             roles: ["VENDEDOR"],
         },
         {

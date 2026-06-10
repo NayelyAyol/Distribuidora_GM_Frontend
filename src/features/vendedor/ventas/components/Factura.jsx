@@ -16,10 +16,12 @@ export default function FacturaPanel({
     const metodoPago = useVentaStore(state => state.metodoPago ?? null);
     const datosFacturacion = useVentaStore(state => state.datosFacturacion ?? {});
 
-    const subtotal = factura.reduce(
-        (acc, p) => acc + (p.precio * p.cantidad),
-        0
-    );
+    console.log("Estado de la factura para calcular:", factura);
+    const subtotal = factura.reduce((acc, p) => {
+        const precio = Number(p.precioUnitario ?? p.precio ?? 0);
+        const cantidad = Number(p.cantidad || 0);
+        return acc + (precio * cantidad);
+    }, 0);
 
     const iva = subtotal * 0.15
     const esDomicilio =
@@ -45,6 +47,27 @@ export default function FacturaPanel({
         pedidoSeleccionado?.tipoPedido === "CARRITO" &&
         metodoPago &&
         datosFacturacion?.nombreCompleto;
+
+    const esVentaDirecta = !pedidoSeleccionado;
+
+
+    const handleCobrar = () => {
+        const esPedidoCarritoCompleto = 
+            pedidoSeleccionado?.tipoPedido === "CARRITO" && 
+            pedidoSeleccionado?.cliente?.email; 
+
+        if (esVentaDirecta) {
+            navigate("/dashboard/ventas/cobro"); 
+        } 
+        else if (esPedidoCarritoCompleto) {
+            navigate("/dashboard/ventas/cobro/confirmacion-venta");
+        }
+        else if (puedeIrConfirmacion) {
+            navigate("/dashboard/ventas/cobro/confirmacion-venta");
+        } else {
+            navigate("/dashboard/ventas/cobro");
+        }
+    }
 
     return (
         <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg flex flex-col">
@@ -148,15 +171,7 @@ export default function FacturaPanel({
                         factura.length === 0 ||
                         productosSinStock
                     }
-                    onClick={() => {
-
-                        if (puedeIrConfirmacion) {
-                            navigate("/dashboard/ventas/cobro/confirmacion-venta");
-                            return;
-                        }
-
-                        navigate("/dashboard/ventas/cobro");
-                    }}
+                    onClick={handleCobrar}
                     className={buttonPrimaryClass}
                 >
                     Cobrar

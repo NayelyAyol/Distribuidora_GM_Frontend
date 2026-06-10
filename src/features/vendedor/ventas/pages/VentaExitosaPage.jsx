@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom"
+import { calcularFactura } from "@/utils/calcularFactura"
 
 import {
     FiCheckCircle,
@@ -21,6 +22,9 @@ export default function VentaExitosaPage() {
     const location = useLocation()
     const venta = location.state?.venta
 
+    console.log("Estructura completa de la venta:", venta);
+    console.log("Estructura del primer artículo:", venta?.articulos?.[0]);
+
     if (!venta) {
         return (
             <div className="p-6 flex flex-col gap-4">
@@ -34,7 +38,9 @@ export default function VentaExitosaPage() {
             </div>
         );
     }
-    
+
+    const { subtotal, iva, total } = calcularFactura(venta.articulos, null);
+
     return (
         <div className="p-6 flex flex-col gap-6">
 
@@ -65,16 +71,16 @@ export default function VentaExitosaPage() {
                     <div className="w-full bg-emerald-50 border border-emerald-100 rounded-2xl p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <div className="flex flex-col gap-2">
-                            <p className="text-sm text-gray-500">Número de factura</p>
+                            <p className="text-sm text-gray-500">Origen de venta</p>
                             <p className="text-xl font-bold text-emerald-800">
-                                #FAC-2026-001
+                                {venta.origen}
                             </p>
                         </div>
 
                         <div className="flex flex-col gap-2">
                             <p className="text-sm text-gray-500">Estado</p>
                             <p className="text-xl font-bold text-emerald-800">
-                                Pagada
+                                {venta.estado}
                             </p>
                         </div>
 
@@ -102,7 +108,7 @@ export default function VentaExitosaPage() {
 
                             {venta.articulos.map((item, index) => (
                                 <div key={index} className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                    <span>{item.producto.nombre}</span> {/* Ajusta según la estructura de tu respuesta API */}
+                                    <span>{item.producto.nombre || item.nombreProducto}</span> 
                                     <span>x{item.cantidad}</span>
                                 </div>
                             ))}
@@ -112,17 +118,16 @@ export default function VentaExitosaPage() {
                     <div className="w-full bg-emerald-50 border border-emerald-100 rounded-2xl p-6 flex flex-col gap-2 text-left">
                         <div className="flex justify-between text-gray-800">
                             <span>Subtotal</span>
-                            <span>${venta.subtotal.toFixed(2)}</span>
-                        </div>
+                            <span>${(venta.resumenPago?.subtotal || venta.resumenPago?.subtotalProductos || 0).toFixed(2)}</span>                        </div>
 
                         <div className="flex justify-between text-gray-800">
                             <span>IVA</span>
-                            <span>$2.00</span>
+                            <span>${(venta.resumenPago?.iva || venta.resumenPago?.ivaProductos || 0).toFixed(2)}</span>
                         </div>
 
                         <div className="flex justify-between text-emerald-800 font-bold text-lg">
                             <span>Total</span>
-                            <span>${venta.total.toFixed(2)}</span>
+                            <span>${(venta.total || venta.resumenPago?.totalPagar || 0).toFixed(2)}</span>
                         </div>
                     </div>
 

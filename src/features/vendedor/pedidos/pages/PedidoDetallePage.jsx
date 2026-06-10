@@ -9,8 +9,10 @@ import {
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react";
 import useAuthStore from "@/context/useAuthStore"
-import { obtenerDetallesPedido, cambiarEstadoPedido } from "../services/pedidosSeleccionadosService";
+import { obtenerDetallesPedido } from "../services/pedidosSeleccionadosService";
 import useVentaStore from "../../ventas/context/useVentaStore"
+import { ventaDesdePedido } from "../../ventas/services/ventaService";
+import { toast } from "react-toastify";
 
 export default function PedidoDetallePage() {
 
@@ -56,41 +58,36 @@ export default function PedidoDetallePage() {
         cargarDetalle();
     }, [id]);
 
-    const handleFinalizar = async () => {
+
+    const handleIniciarVenta = async () => {
+        if (!pedido) return;
+
         try {
-            await cambiarEstadoPedido(id, 'FINALIZADO');
-            navigate("dashboard/mis-pedidos");
+            setLoading(true);
+            const data = await ventaDesdePedido(id, { observaciones: pedido.observaciones });
+            
+            const esPagoTarjeta = data.venta.metodoPago === 'TARJETA';
+            const urlPago = data.venta.stripe?.urlPago;
+
+            if (esPagoTarjeta && urlPago) {
+                window.location.href = urlPago;
+            } else {
+                resetVentaCompleta();
+                setPedidoSeleccionado(pedido);
+                setFactura(data.venta.articulos);
+                toast.success("Venta iniciada correctamente");
+                navigate("/dashboard/ventas");
+            }
         } catch (error) {
-            console.error("Error al finalizar:", error);
+            console.log("ERROR DETALLADO:", error.message);
+            toast.error(error.message || "Ocurrió un error inesperado al iniciar la venta");
+        } finally {
+            setLoading(false);
         }
     };
 
-
-const handleIniciarVenta = () => {
-    resetVentaCompleta();
-    setPedidoSeleccionado(pedido);
-
-    if (pedido?.tipoPedido === "CARRITO") {
-        // AQUÍ ESTÁ LA CLAVE: 
-        // Convertimos el array crudo de la API al formato que el componente espera
-        const productosNormalizados = pedido.articulos.map(item => ({
-            id: item.producto || item._id,
-            nombre: item.nombreProducto || "Sin nombre",
-            precio: item.precioUnitario || 0,
-            stock: item.stock ?? 999, // Si no viene stock, el componente usará 999
-            cantidad: item.cantidad || 1
-        }));
-        
-        setFactura(productosNormalizados);
-    }
-
-    navigate("/dashboard/ventas");
-};
-
     if (loading) return <div>Cargando...</div>;
 
-    const esVendedor = user?.rol?.toUpperCase() === "VENDEDOR";
-    const esPedidoEnProceso = pedido?.estado === "EN_PROCESO";
 
     const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
     const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
@@ -502,21 +499,11 @@ const handleIniciarVenta = () => {
 
                             <Button
                                 onClick={handleIniciarVenta}
+                                disabled={loading}
                                 className="bg-emerald-600 hover:bg-emerald-700"
                             >
                                 Iniciar venta
                             </Button>
-
-                            {esVendedor && esPedidoEnProceso && (
-                                <div className="flex justify-end">
-                                    <Button
-                                        onClick={handleFinalizar}
-                                        className="bg-emerald-600 hover:bg-emerald-700"
-                                    >
-                                        Finalizar pedido
-                                    </Button>
-                                </div>
-                            )}
                         </div>
                     </Card>
                 )

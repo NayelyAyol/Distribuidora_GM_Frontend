@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom" 
+import { useNavigate } from "react-router-dom"
 
 import {
     FiArrowLeft,
@@ -11,14 +11,16 @@ import {
 } from "@/utils/styles"
 
 import { Button } from "@/components/ui/button"
-import { ventaDirecta, ventaDesdePedido } from "../services/ventaService"
 import { toast } from "react-toastify"
 import { calcularFactura } from "@/utils/calcularFactura"
 import useVentaStore from "../context/useVentaStore"
+import { ventaDirecta, ventaDesdePedido, pagarCarritoConTarjeta, confirmarTransferencia } from "../services/ventaService";
+import { useState } from "react"
 
 export default function ConfirmacionVentaPage() {
-
+    const [isConfirming, setIsConfirming] = useState(false);
     const navigate = useNavigate()
+    const [referencia, setReferencia] = useState("");
 
     const {
         factura,
@@ -30,6 +32,7 @@ export default function ConfirmacionVentaPage() {
 
 
     const handleConfirmarVenta = async () => {
+        setIsConfirming(true);
         try {
             const productosSinStock = factura.filter(p => p.cantidad > p.stock);
             if (productosSinStock.length > 0) {
@@ -50,20 +53,46 @@ export default function ConfirmacionVentaPage() {
             if (pedidoSeleccionado?._id) {
                 response = await ventaDesdePedido(pedidoSeleccionado._id, datosVenta);
             } else {
-                response = await ventaDirecta(datosVenta);
+                const payloadDirecta = {
+                    ...datosVenta,
+                    referenciaPago: metodoPago === 'TRANSFERENCIA' ? referencia : null
+                };
+                response = await ventaDirecta(payloadDirecta);
             }
 
-            resetVentaCompleta(); 
+            const venta = response.venta;
+            const ventaId = venta.id;
 
-            navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", {
-                state: { venta: response.venta }
-            });
+            if (metodoPago === 'EFECTIVO') {
+                resetVentaCompleta();
+                navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", { state: { venta } });
+            }
+            else if (metodoPago === 'TRANSFERENCIA') {
+                if (pedidoSeleccionado?._id) {
+                    await confirmarTransferencia(ventaId, referencia);
+                }
+                resetVentaCompleta();
+                navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", { state: { venta } });
+            }
+            else if (metodoPago === 'TARJETA') {
+                const pagoData = await pagarCarritoConTarjeta({
+                    ventaId,
+                    ...datosVenta
+                });
 
+                if (pagoData.url) {
+                    window.location.href = pagoData.url;
+                } else {
+                    throw new Error("No se pudo obtener la URL de pago");
+                }
+            }
         } catch (error) {
             console.error("ERROR API:", error.response?.data || error.message);
-            toast.error("Error al procesar la venta. Inténtalo de nuevo.");
+            toast.error(error.response?.data?.msg || "Error al procesar la venta.");
+        } finally {
+            setIsConfirming(false);
         }
-    }
+    };
 
     const { subtotal, iva, envio, total } = calcularFactura(
         factura,
@@ -183,7 +212,7 @@ export default function ConfirmacionVentaPage() {
                                 ">
                                     {datosFacturacion?.nombreCompleto}
                                 </p>
-                    
+
                             </div>
                         </div>
                     </div>
@@ -204,7 +233,7 @@ export default function ConfirmacionVentaPage() {
                         ">
                             Productos facturados
                         </h3>
-
+{console.log("Estructura de factura:", factura)}
                         {factura.map((producto, index) => (
                             <div
                                 key={producto.id || index}
@@ -220,7 +249,7 @@ export default function ConfirmacionVentaPage() {
                                         font-semibold
                                         text-gray-800
                                     ">
-                                        {producto.nombre}
+                                        {producto.nombreProducto || producto.nombre}
                                     </p>
                                     <p className="
                                         text-sm
@@ -232,13 +261,9 @@ export default function ConfirmacionVentaPage() {
                                     </p>
                                 </div>
 
-                                <p className="
-                                    font-bold
-                                    text-emerald-700
-                                ">
-                                    $
-                                    {(
-                                        producto.precio * producto.cantidad
+                                <p className="font-bold text-emerald-700">
+                                    $ {(
+                                        Number(producto.precioUnitario ?? producto.precio ?? 0) * Number(producto.cantidad || 0)
                                     ).toFixed(2)}
                                 </p>
                             </div>
@@ -265,6 +290,21 @@ export default function ConfirmacionVentaPage() {
                         ">
                             Total cobrado
                         </h3>
+                        
+                        {/*{metodoPago === 'TRANSFERENCIA' && (
+                            <div className="bg-white p-4 rounded-xl border border-gray-200 mt-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Referencia de transferencia (opcional)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={referencia}
+                                    onChange={(e) => setReferencia(e.target.value)}
+                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                                    placeholder="Ej: 12345678"
+                                />
+                            </div>
+                        )}*/}
 
                         <div className="
                             flex justify-between
@@ -307,9 +347,10 @@ export default function ConfirmacionVentaPage() {
 
                     <Button
                         onClick={handleConfirmarVenta}
+                        disabled={isConfirming}
                         className={buttonPrimaryClass}
                     >
-                        Confirmar
+                        {isConfirming ? "Procesando..." : "Confirmar"}
                     </Button>
 
                     <Button

@@ -11,7 +11,7 @@ import {
 } from "@/utils/styles";
 
 import { Button } from "@/components/ui/button";
-import { crearPedidoCarrito } from "../../carrito/services/carritoService";
+import { crearPedidoCarrito, pagarCarritoTarjeta } from "../../carrito/services/carritoService";
 
 export default function ConfirmacionPedidoPage() {
 
@@ -40,11 +40,9 @@ export default function ConfirmacionPedidoPage() {
             : "/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso";
 
     const handleConfirmar = async () => {
-
+        setLoading(true);
         try {
-
-            setLoading(true);
-
+            let respuesta;
             const payload = {
                 nombrePedido:
                     datosPedido.nombrePedido,
@@ -85,7 +83,14 @@ export default function ConfirmacionPedidoPage() {
                     datosPedido.referencia;
             }
 console.log("Payload enviado:", payload);
-            const respuesta = await crearPedidoCarrito(payload);
+
+            if (metodoPago === "TARJETA") {
+                payload.paymentMethodId = location.state?.paymentMethodId; 
+                respuesta = await pagarCarritoTarjeta(payload);
+            } else {
+                respuesta = await crearPedidoCarrito(payload);
+            }
+
 
             toast.success(
                 "Pedido creado correctamente"

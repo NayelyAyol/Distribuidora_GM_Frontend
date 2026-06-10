@@ -8,12 +8,7 @@ export const crearProducto = async (formData) => {
         });
         
         console.log("Estructura completa de respuesta:", res); 
-        
-        if (!res.data) {
-            console.warn("La respuesta del servidor no tiene 'data'");
-            return res; 
-        }
-        
+    
         return res.data; 
     } catch (error) {
         console.error("Error en la petición:", error.response?.data || error.message);

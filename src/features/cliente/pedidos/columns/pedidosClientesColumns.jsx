@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import StatusBadge from "@/features/shared/components/StatusBadge"
-import { FiEye, FiMessageCircle } from "react-icons/fi" 
+import { FiEye, FiMessageCircle } from "react-icons/fi"
 import { MdPayment } from "react-icons/md"
 
 const columnHelper = createColumnHelper()
@@ -16,6 +16,15 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
         header: "Fecha",
         cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
     }),
+
+    columnHelper.accessor("tipoPedido",
+        {
+            header: "Tipo de Pedido",
+            cell: (info) => {
+                const tipo = info.getValue();
+                return tipo || "N/A";
+            }
+        }),
 
     columnHelper.accessor("estado", {
         header: "Estado",
@@ -46,7 +55,7 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
 
             return (
                 <div className="flex items-center justify-center gap-3">
-                    
+
                     <button
                         onClick={() => onRevisar(pedido)}
                         className="
@@ -58,7 +67,7 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                             transition 
                             flex items-center justify-center
                         "
-                        title = "Revisar pedido"
+                        title="Revisar pedido"
                     >
                         <FiEye className="text-lg" />
                     </button>
@@ -79,12 +88,12 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                         <FiMessageCircle className="text-lg" />
                     </button>
 
-                    {pedido.estado === "FINALIZADO" && 
-                    pedido.esPedidoFoto &&
-                    (
-                    <button
-                        onClick={() => onPago(pedido)}
-                        className="
+                    {pedido.estado === "FINALIZADO" &&
+                        pedido.esPedidoFoto &&
+                        (
+                            <button
+                                onClick={() => onPago(pedido)}
+                                className="
                             text-emerald-700 
                             hover:text-emerald-900 
                             p-1.5 
@@ -93,11 +102,11 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                             transition 
                             flex items-center justify-center
                         "
-                        title="Realizar pago"
-                    >
-                        <MdPayment className="text-lg" />
-                    </button>
-                    )}
+                                title="Realizar pago"
+                            >
+                                <MdPayment className="text-lg" />
+                            </button>
+                        )}
                 </div>
             )
         }

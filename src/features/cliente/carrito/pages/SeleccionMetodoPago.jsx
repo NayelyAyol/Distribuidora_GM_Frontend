@@ -1,6 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FiArrowLeft } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { buttonPrimaryClass } from "@/utils/styles";
 import MetodoPagoSelector from "../../../shared/pagos/components/MetodoPagoSelector";
@@ -11,10 +10,17 @@ import PedidoDireccionForm from "../../../cliente/pedidos/components/PedidoDirec
 import PedidoDatosForm from "../../../cliente/pedidos/components/PedidoDatosForm";
 import ResumenPago from "@/features/shared/pagos/components/ResumenPago";
 import usePedidoForm from "../../../cliente/pedidos/hooks/usePedidoForm";
+import { useState } from "react";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import { pagarCarritoTarjeta } from "../services/carritoService"
 
 export default function SeleccionMetodoPagoPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const [datosTarjeta, setDatosTarjeta] = useState({ numero: "", mmAA: "", cvv: "" });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const stripe = useStripe();
+    const elements = useElements();
 
     const {
         form,
@@ -48,27 +54,23 @@ export default function SeleccionMetodoPagoPage() {
         }
 
         if (!form.nombreCompleto.trim()) { toast.error("Ingrese el nombre completo"); return false; }
-        
+
         if (!form.identificacion.trim()) { toast.error("Ingrese la identificación"); return false; }
-        
+
         if (!/^\d+$/.test(form.identificacion)) { toast.error("La identificación solo debe contener números"); return false; }
-        
+
         if (form.identificacion.length !== 10 && form.identificacion.length !== 13) {
             toast.error("La identificación debe tener 10 si es una cédula o 13 dígitos si es un RUC");
             return false;
         }
-        if (!form.correo.trim()) 
-            { toast.error("Ingrese el correo"); return false; }
+        if (!form.correo.trim()) { toast.error("Ingrese el correo"); return false; }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if (!emailRegex.test(form.correo)) 
-            { toast.error("Ingrese un correo válido"); return false; }
-        
-        if (!form.telefono.trim()) 
-            { toast.error("Ingrese el teléfono"); return false; }
-        
-        if (!/^\d{10}$/.test(form.telefono)) 
-            { toast.error("El teléfono debe tener 10 dígitos"); return false; }
+
+        if (!emailRegex.test(form.correo)) { toast.error("Ingrese un correo válido"); return false; }
+
+        if (!form.telefono.trim()) { toast.error("Ingrese el teléfono"); return false; }
+
+        if (!/^\d{10}$/.test(form.telefono)) { toast.error("El teléfono debe tener 10 dígitos"); return false; }
 
         if (tipoEntrega === "domicilio") {
             if (!form.direccion.trim()) { toast.error("Ingrese la dirección"); return false; }
@@ -76,27 +78,103 @@ export default function SeleccionMetodoPagoPage() {
         }
 
         if (!metodoPago) { toast.error("Seleccione un método de pago"); return false; }
+
+        if (metodoPago === "TARJETA") {
+            if (datosTarjeta.numero.length !== 16) {
+                toast.error("El número de tarjeta debe tener 16 dígitos");
+                return false;
+            }
+            if (!/^\d{2}\/\d{2}$/.test(datosTarjeta.mmAA)) {
+                    toast.error("Formato de fecha inválido. Use MM/AA (ej: 11/26)");
+                    return false;
+                }
+
+            if (datosTarjeta.mmAA.length !== 5) {
+                toast.error("Ingrese 4 dígitos para la fecha (MM + AA)");
+                return false;
+            }
+
+            const mes = parseInt(datosTarjeta.mmAA.substring(0, 2));
+            if (mes < 1 || mes > 12) {
+                toast.error("El mes debe ser entre 01 y 12");
+                return false;
+            }
+
+            if (datosTarjeta.cvv.length !== 3) {
+                toast.error("El CVV debe tener 3 dígitos");
+                return false;
+            }
+        }
         return true;
     };
 
     const handleContinuar = () => {
         if (!validarFormulario()) return;
-        navigate(rutaConfirmacion, {
-            state: { esPedidoFoto, tipoEntrega, metodoPago, datosPedido: form, carrito }
+        setIsSubmitting(true);
+    try {
+            navigate(rutaConfirmacion, {
+                state: { esPedidoFoto, tipoEntrega, metodoPago, datosPedido: form, carrito }
+            });
+        } catch (error) {
+            toast.error( "Ocurrió un error al procesar la solicitud");
+            setIsSubmitting(false); 
+        }
+    };
+
+    const handleConfirmarPago = async () => {
+        if (!stripe || !elements) return;
+
+        setIsSubmitting(true);
+
+        const cardElement = elements.getElement(CardElement);
+
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
         });
+
+        if (error) {
+            toast.error(error.message);
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
+            const payload = {
+                ...datosPedido, 
+                paymentMethodId: paymentMethod.id, 
+                carrito: carrito
+            };
+
+            const resultado = await pagarCarritoTarjeta(payload);
+            toast.success("Pago realizado con éxito");
+            navigate("/dashboard/gracias");
+        } catch (err) {
+            toast.error(err.message || "Error al procesar el pago");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleAccionBoton = () => {
+        if (metodoPago === "TARJETA") {
+            handleConfirmarPago(); 
+        } else {
+            handleContinuar(); 
+        }
     };
 
     return (
         <div className="p-4 md:p-6 max-w-7xl mx-auto flex flex-col gap-6">
-                <div>
+            <div>
 
-                    <p className="text-gray-500">
-                        Este módulo te permite completar los datos de facturación y seleccionar un método de pago
-                    </p>
+                <p className="text-gray-500">
+                    Este módulo te permite completar los datos de facturación y seleccionar un método de pago
+                </p>
 
-                </div>
+            </div>
 
-{/*
+            {/*
             <button
                 onClick={() => navigate(-1)}
                 className="flex items-center gap-2 text-gray-600 hover:text-emerald-700 transition font-medium w-fit"
@@ -105,10 +183,10 @@ export default function SeleccionMetodoPagoPage() {
                 Volver al carrito
             </button>
 */}
-                <PedidoInfoForm
-                    form={form}
-                    handleChange={handleChange}
-                />
+            <PedidoInfoForm
+                form={form}
+                handleChange={handleChange}
+            />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
                 <div className="lg:col-span-2 flex flex-col gap-6">
@@ -137,13 +215,15 @@ export default function SeleccionMetodoPagoPage() {
                     </div>
 
                     <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/20 p-6 shadow-sm">
-                        <MetodoPagoSelector 
-                            metodoSeleccionado={metodoPago} 
-                            setMetodoSeleccionado={setMetodoPago} 
+                        <MetodoPagoSelector
+                            metodoSeleccionado={metodoPago}
+                            setMetodoSeleccionado={setMetodoPago}
                         />
                         <div className="mt-6">
                             {metodoPago === "TRANSFERENCIA" && <TransferenciaForm />}
-                            {metodoPago === "TARJETA" && <TarjetaForm />}
+                            {metodoPago === "TARJETA" && (
+                                <TarjetaForm onUpdate={(data) => setDatosTarjeta(data)} />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -155,10 +235,18 @@ export default function SeleccionMetodoPagoPage() {
                         tipoEntrega={tipoEntrega}
                     />
                     <Button
-                        className={`${buttonPrimaryClass} w-full h-12 text-base`}
-                        onClick={handleContinuar}
+                        className={`${buttonPrimaryClass} w-full h-12 text-base flex items-center justify-center gap-2`}
+                        onClick={handleAccionBoton}
+                        disabled={isSubmitting}
                     >
-                        Continuar
+                        {isSubmitting ? (
+                            <>
+                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                Procesando...
+                            </>
+                        ) : (
+                            "Continuar"
+                        )}
                     </Button>
                 </div>
             </div>

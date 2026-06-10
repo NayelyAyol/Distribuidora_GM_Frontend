@@ -9,6 +9,7 @@ import MejoresProductos from "../components/MejoresProductos"
 import useAuthStore from "@/context/useAuthStore"
 import { Explorar } from "../services/catalogoService"
 import { toast } from "react-toastify"
+import { agregarAlCarrito } from "@/features/cliente/carrito/services/carritoService"
 
 export default function CatalogoPage() {
     const navigate = useNavigate()
@@ -88,13 +89,19 @@ export default function CatalogoPage() {
         )
     ].sort()
 
-    const handleAddCart = (producto) => {
+    const handleAddCart = async (data) => { 
         if (!user) {
-            navigate("/registro")
-            return
+            navigate("/registro");
+            return;
         }
-        console.log("Agregar al carrito:", producto)
-    }
+
+        try {
+            const respuesta = await agregarAlCarrito(data.productoId, data.cantidad);
+            toast.success(respuesta.msg || "Producto agregado al carrito");
+        } catch (error) {
+            toast.error(error.message || "Error al agregar al carrito");
+        }
+    };
 
     return (
         <div className="p-6 flex flex-col gap-6">
@@ -127,6 +134,7 @@ export default function CatalogoPage() {
                         <MejoresProductos
                             productos={destacados}
                             showHeader={false}
+                            onAddCart={handleAddCart}
                             onSelectProducto={(p) => navigate(`${basePath}/${p._id}`)}
                         />
                     )}

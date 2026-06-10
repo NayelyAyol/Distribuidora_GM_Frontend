@@ -80,13 +80,18 @@ export default function CobroPage() {
     };
 
     const handleContinuar = () => {
-
         if (!validarDatos()) return;
 
         setMetodoPago(metodoSeleccionado);
 
-        navigate("/dashboard/ventas/cobro/confirmacion-venta");
+        if (!pedidoSeleccionado) {
+            navigate("/dashboard/ventas/cobro/confirmacion-venta");
+        } else {
+            navigate("/dashboard/ventas/cobro/confirmacion-venta");
+        }
     };
+
+    const esVentaDirecta = !pedidoSeleccionado;
 
     return (
         <div className="p-6 flex flex-col gap-6">
@@ -117,6 +122,7 @@ export default function CobroPage() {
                     <MetodoPagoSelector
                         metodoSeleccionado={metodoSeleccionado}
                         setMetodoSeleccionado={setMetodoSeleccionado}
+                        esVentaDirecta={esVentaDirecta}
                     />
 
                     {metodoSeleccionado === "TRANSFERENCIA" && <TransferenciaForm />}

@@ -64,13 +64,6 @@ export const useProductoForm = (selectedProduct, onSave, onClose, setSelectedPro
     };
 
     const submitForm = async () => {
-        if (Number(form.precioVenta) <= Number(form.precioCompra)) {
-            return toast.error("El precio de venta debe ser mayor al de compra");
-        }
-        
-        if (Number(form.stock) < 0 || Number(form.stockMinimo) < 0) {
-            return toast.error("Los valores de stock no pueden ser negativos");
-        }
 
         const camposRequeridos = [
             'nombre', 'codigo', 'precioCompra', 'precioVenta', 'stock', 
@@ -85,9 +78,15 @@ export const useProductoForm = (selectedProduct, onSave, onClose, setSelectedPro
         if (faltanCampos) {
             return toast.error("Por favor, completa todos los campos obligatorios");
         }
+        if (Number(form.precioVenta) <= Number(form.precioCompra)) {
+            return toast.error("El precio de venta debe ser mayor al de compra");
+        }
         
+        if (Number(form.stock) < 0 || Number(form.stockMinimo) < 0) {
+            return toast.error("Los valores de stock no pueden ser negativos");
+        }
+
         try {
-// ... dentro de submitForm, después de crear el formData
 const formData = new FormData();
 Object.entries(form).forEach(([key, val]) => {
     if (key === 'imagen' && val instanceof File) {
@@ -97,22 +96,19 @@ Object.entries(form).forEach(([key, val]) => {
     }
 });
 
-// AÑADE ESTO PARA DEPURAR:
 console.log("--- CONTENIDO DEL FORMDATA ---");
 for (let pair of formData.entries()) {
     console.log(pair[0] + ': ' + pair[1]);
 }
-// -----------------------------
             
             const funcionDeGuardado = onSave || crearProducto;
             const respuesta = await funcionDeGuardado(formData);
             
             console.log("RESPUESTA CREAR PRODUCTO:", respuesta);
 
-            const productoCreado = respuesta?.producto || respuesta;
 
-            if (!productoCreado || !productoCreado._id) {
-                throw new Error("El servidor no devolvió el ID del producto creado");
+            if (!respuesta) {
+                throw new Error("Respuesta inválida del servidor");
             }
             toast.success(respuesta.msg || "Producto guardado correctamente");
             

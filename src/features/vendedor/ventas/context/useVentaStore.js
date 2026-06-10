@@ -129,6 +129,13 @@ const useVentaStore = create(
             setDatosFacturacion: (d) =>
                 set({ datosFacturacion: d }),
 
+            finalizarFlujoVenta: (data) => {
+                if (data.venta.estado === 'FINALIZADO') {
+                    get().resetVentaCompleta();
+                }
+                set({ ventaPendiente: data.venta });
+            }
+
         }),
         {
             name: "venta-storage",

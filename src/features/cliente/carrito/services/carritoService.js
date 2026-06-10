@@ -71,3 +71,12 @@ export const crearPedidoCarrito = async (formdata) => {
     }
 
 }
+
+export const pagarCarritoTarjeta = async (payload) => {
+    try {
+        const response = await api.post("/ventas/pagar-carrito-tarjeta", payload);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.msg || "Error en el pago con tarjeta");
+    }
+};

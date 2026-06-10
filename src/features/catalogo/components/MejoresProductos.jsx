@@ -10,7 +10,8 @@ import BaseCard from "../../shared/components/BaseCard"
 export default function MejoresProductos({
     productos = [],
     showHeader = true,
-    onSelectProducto
+    onSelectProducto,
+    onAddCart
 }) {
     const navigate = useNavigate()
 
@@ -62,9 +63,15 @@ export default function MejoresProductos({
                                         <FiStar className="text-yellow-500 bg-white text-xl" />
                                     </button>
 
-                                    <button onClick={(e) => { e.stopPropagation(); console.log("Agregar carrito", p); }} className="w-[42px] h-[42px] bg-emerald-200 hover:bg-emerald-300 rounded-xl transition flex items-center justify-center">
-                                        <MdAddShoppingCart className="text-xl text-black" />
-                                    </button>
+                                    <button 
+                                            onClick={(e) => { 
+                                                e.stopPropagation(); 
+                                                onAddCart({ productoId: p._id, cantidad: 1 }); 
+                                            }} 
+                                            className="w-[42px] h-[42px] bg-emerald-200 hover:bg-emerald-300 rounded-xl transition flex items-center justify-center"
+                                        >
+                                            <MdAddShoppingCart className="text-xl text-black" />
+                                        </button>
                                 </BaseCard>
                             </div>
                         ))}
