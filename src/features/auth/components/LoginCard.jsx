@@ -69,7 +69,7 @@ export default function LoginCard({ onLogin }) {
                 <LoginForm onSubmit={onLogin} />
             </CardContent>
 
-            <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 text-center  sm:text-left pt-6">
+            <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 text-center  sm:text-left ">
                 <Label className={footerLabelClass}>
                     ¿No tienes una cuenta?
                 </Label>

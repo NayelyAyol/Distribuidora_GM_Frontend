@@ -4,12 +4,12 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import {
     inputClass,
     labelClass,
     buttonPrimaryClass,
-    buttonOutlineClass,
 } from "@/utils/styles"
 
 export default function LoginForm({ onSubmit }) {
@@ -21,10 +21,30 @@ export default function LoginForm({ onSubmit }) {
 
     const navigate = useNavigate()
 
+    const isValidEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         setError("")
+
+        // 🔴 VALIDACIONES CON TOAST
+        if (!email || !password) {
+            toast.error("Todos los campos son obligatorios")
+            return
+        }
+
+        if (!isValidEmail(email)) {
+            toast.error("Ingresa un correo válido")
+            return
+        }
+
+        if (password.length < 6) {
+            toast.error("La contraseña es muy corta")
+            return
+        }
 
         try {
             await onSubmit({ email, password })
@@ -110,11 +130,12 @@ export default function LoginForm({ onSubmit }) {
                 Iniciar Sesión
             </Button>
 
-            <Button variant="outline" className={`${buttonOutlineClass} py-5`}>
+<div className="border"></div>
+            {/*<Button variant="outline" className={`${buttonOutlineClass} py-5`}>
                 <img src="/icons8-logo-de-google.svg" className="mr-3 h-5 w-5" />
                 Iniciar sesión con Google
             </Button>
-
+*/}
         </form>
     )
 }
