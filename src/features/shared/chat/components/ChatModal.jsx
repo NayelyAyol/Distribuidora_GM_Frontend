@@ -6,38 +6,63 @@ import { toast } from "react-toastify";
 import useAuthStore from "@/context/useAuthStore";
 import { io } from "socket.io-client";
 
-const socket = io("https://grupo-moreno.onrender.com/api");
+const socket = io(import.meta.env.VITE_BACKEND_URL.replace("/api", ""));
 
 export default function ChatModal({ isOpen, onClose, pedidoId, otherUserName, pedidoNombre }) {
     const [inputMensaje, setInputMensaje] = useState("");
     const [mensajes, setMensajes] = useState([]);
     const user = useAuthStore((state) => state.user);
 
+
+useEffect(() => {
+    socket.on("connect", () => {
+        console.log("SOCKET CONECTADO", socket.id);
+    });
+
+    socket.on("disconnect", () => {
+        console.log("SOCKET DESCONECTADO");
+    });
+
+    socket.on("connect_error", (err) => {
+        console.log("ERROR SOCKET", err);
+    });
+
+    return () => {
+        socket.off("connect");
+        socket.off("disconnect");
+        socket.off("connect_error");
+    };
+}, []);
+
     useEffect(() => {
-        if (isOpen && pedidoId) {
-            socket.emit("unirse-chat-pedido", pedidoId);
+    if (!isOpen || !pedidoId) return;
 
-            socket.on("recibir-mensaje-pedido", (nuevoMensaje) => {
-                setMensajes((prev) => [...prev, nuevoMensaje]);
-            });
+    socket.emit("unirse-chat-pedido", pedidoId);
 
-            const cargarChat = async () => {
-                try {
-                    const data = await obtenerChatPedido(pedidoId);
-                    setMensajes(data.mensajes);
-                    marcarChatLeido(pedidoId);
-                } catch (error) {
-                    toast.error("Error al cargar el chat");
-                }
-            };
-            cargarChat();
+    const handleNuevoMensaje = (nuevoMensaje) => {
+        console.log("MENSAJE RECIBIDO:", nuevoMensaje);
+        setMensajes((prev) => [...prev, nuevoMensaje]);
+    };
 
-            return () => {
-                socket.emit("salir-chat-pedido", pedidoId); // Buena práctica
-                socket.off("recibir-mensaje-pedido");
-            };
+    socket.on("nuevo-mensaje-pedido", handleNuevoMensaje);
+
+    const cargarChat = async () => {
+        try {
+            const data = await obtenerChatPedido(pedidoId);
+            setMensajes(data.mensajes);
+            marcarChatLeido(pedidoId);
+        } catch (error) {
+            toast.error("Error al cargar el chat");
         }
-    }, [isOpen, pedidoId]);
+    };
+
+    cargarChat();
+
+    return () => {
+        socket.emit("salir-chat-pedido", pedidoId);
+        socket.off("nuevo-mensaje-pedido", handleNuevoMensaje);
+    };
+}, [isOpen, pedidoId]);
 
     const handleEnviar = async () => {
         if (!inputMensaje.trim()) return;
@@ -49,13 +74,6 @@ export default function ChatModal({ isOpen, onClose, pedidoId, otherUserName, pe
             if (!nuevoMensaje.emisor || typeof nuevoMensaje.emisor !== 'object') {
                 nuevoMensaje.emisor = { _id: user?.id, nombre: user?.nombre };
             }
-
-            setMensajes((prev) => [...prev, nuevoMensaje]);
-
-            socket.emit("enviar-mensaje-pedido", { 
-                pedidoId, 
-                mensaje: nuevoMensaje 
-            });
 
             setInputMensaje("");
         } catch (error) {

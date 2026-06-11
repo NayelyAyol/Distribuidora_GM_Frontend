@@ -233,7 +233,7 @@ return (
                             ? `${pedidoSeleccionado.vendedor.perfilId.nombre} ${pedidoSeleccionado.vendedor.perfilId.apellido}` 
                             : "Vendedor")
                         : (pedidoSeleccionado?.cliente?.perfilId 
-                            ? `${pedidoSeleccionado.datosFacturacion?.nombreCompleto} ${pedidoSeleccionado.cliente.perfilId.apellido}` 
+                            ? `${pedidoSeleccionado.datosFacturacion?.nombreCompleto}` 
                             : "Cliente")
                 }
                 pedidoNombre={pedidoSeleccionado?.nombrePedido}
