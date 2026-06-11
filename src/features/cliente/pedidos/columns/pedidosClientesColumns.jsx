@@ -72,9 +72,10 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                         <FiEye className="text-lg" />
                     </button>
 
-                    <button
-                        onClick={() => onChat(pedido)}
-                        className="
+                    {(pedido.estado === "EN_PROCESO" || pedido.estado === "FINALIZADO") && (
+                        <button
+                            onClick={() => onChat(pedido)}
+                            className="
                             text-emerald-700 
                             hover:text-emerald-900 
                             p-1.5 
@@ -83,10 +84,11 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                             transition 
                             flex items-center justify-center
                         "
-                        title="Chat"
-                    >
-                        <FiMessageCircle className="text-lg" />
-                    </button>
+                            title="Chat"
+                        >
+                            <FiMessageCircle className="text-lg" />
+                        </button>
+                    )}
 
                     {pedido.estado === "FINALIZADO" &&
                         pedido.esPedidoFoto &&

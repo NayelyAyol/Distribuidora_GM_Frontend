@@ -224,7 +224,7 @@ return (
             <ChatModal 
                 isOpen={isChatOpen}
                 onClose={() => setIsChatOpen(false)}
-                pedidoId={pedidoSeleccionado?.nombrePedido}
+                pedidoId={pedidoSeleccionado?._id}
                 role={esCliente ? "cliente" : "vendedor"}
                 userName={esCliente ? user?.nombre || "Cliente" : "Vendedor"}
                 otherUserName={
@@ -236,6 +236,7 @@ return (
                             ? `${pedidoSeleccionado.datosFacturacion?.nombreCompleto} ${pedidoSeleccionado.cliente.perfilId.apellido}` 
                             : "Cliente")
                 }
+                pedidoNombre={pedidoSeleccionado?.nombrePedido}
             />
         </div>
     

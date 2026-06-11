@@ -1,108 +1,110 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiX } from "react-icons/fi";
+import { obtenerChatPedido, enviarMensajePedido, marcarChatLeido } from "../services/chatService";
+import { toast } from "react-toastify";
+import useAuthStore from "@/context/useAuthStore";
+import { io } from "socket.io-client";
 
-export default function ChatModal({ 
-    isOpen, 
-    onClose, 
-    pedidoId, 
-    role = "cliente", 
-    userName = "Nayely", 
-    otherUserName = "Carlos" 
-}) {
+const socket = io("https://grupo-moreno.onrender.com/api");
+
+export default function ChatModal({ isOpen, onClose, pedidoId, otherUserName, pedidoNombre }) {
     const [inputMensaje, setInputMensaje] = useState("");
-    
-    const [mensajes, setMensajes] = useState([
-        { id: 1, from: "Carlos", body: "Hola", mine: false },
-        { id: 2, from: "Nayely", body: "Hola, ¿cómo puedo ayudarte?", mine: true },
-        { id: 3, from: "Carlos", body: "Necesito información del producto", mine: false },
-        { id: 4, from: "Nayely", body: "Claro, dime cuál producto necesitas", mine: true },
-        { id: 5, from: "Carlos", body: "El shampoo hidratante", mine: false }
-    ]);
+    const [mensajes, setMensajes] = useState([]);
+    const user = useAuthStore((state) => state.user);
 
     useEffect(() => {
-        if (isOpen) document.body.style.overflow = "hidden";
-        else document.body.style.overflow = "unset";
-        return () => { document.body.style.overflow = "unset"; };
-    }, [isOpen]);
+        if (isOpen && pedidoId) {
+            socket.emit("unirse-chat-pedido", pedidoId);
+
+            socket.on("recibir-mensaje-pedido", (nuevoMensaje) => {
+                setMensajes((prev) => [...prev, nuevoMensaje]);
+            });
+
+            const cargarChat = async () => {
+                try {
+                    const data = await obtenerChatPedido(pedidoId);
+                    setMensajes(data.mensajes);
+                    marcarChatLeido(pedidoId);
+                } catch (error) {
+                    toast.error("Error al cargar el chat");
+                }
+            };
+            cargarChat();
+
+            return () => {
+                socket.emit("salir-chat-pedido", pedidoId); // Buena práctica
+                socket.off("recibir-mensaje-pedido");
+            };
+        }
+    }, [isOpen, pedidoId]);
+
+    const handleEnviar = async () => {
+        if (!inputMensaje.trim()) return;
+        
+        try {
+            const res = await enviarMensajePedido(pedidoId, inputMensaje);
+            const nuevoMensaje = res.mensaje;
+
+            if (!nuevoMensaje.emisor || typeof nuevoMensaje.emisor !== 'object') {
+                nuevoMensaje.emisor = { _id: user?.id, nombre: user?.nombre };
+            }
+
+            setMensajes((prev) => [...prev, nuevoMensaje]);
+
+            socket.emit("enviar-mensaje-pedido", { 
+                pedidoId, 
+                mensaje: nuevoMensaje 
+            });
+
+            setInputMensaje("");
+        } catch (error) {
+            toast.error(error.message || "No se pudo enviar el mensaje");
+        }
+    };
 
     if (!isOpen) return null;
 
-    const handleEnviar = () => {
-        if (!inputMensaje.trim()) return;
-        setMensajes([...mensajes, {
-            id: Date.now(),
-            from: userName,
-            body: inputMensaje,
-            mine: true
-        }]);
-        setInputMensaje("");
-    };
-
     return createPortal(
         <div className="fixed inset-0 w-screen h-screen bg-white/30 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 m-0">
-            
             <div className="w-full max-w-2xl h-[80vh] bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden flex flex-col shadow-2xl">
-
-                <div className="flex items-center justify-between gap-4 p-5 md:p-6 border-b border-gray-200 bg-white">
+                <div className="flex items-center justify-between gap-4 p-5 border-b border-gray-200 bg-white">
                     <div>
-                        <p className="text-emerald-800 mt-1 text-lg">
-                            <span className="font-bold text-emerald-950">{otherUserName}</span>
-                            {" — "}
-                            <span className="text-gray-500 font-medium">{pedidoId}</span>
+                        <p className="text-emerald-800 font-bold text-lg">{otherUserName}</p>
+                        <p className="text-xs text-gray-500 font-medium">
+                            Pedido: <span className="text-emerald-600 font-semibold">{pedidoNombre || "ID: " + pedidoId.slice(-6)}</span>
                         </p>
                     </div>
-                    
-                    <button 
-                        onClick={onClose}
-                        className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition"
-                    >
-                        <FiX className="text-xl" />
-                    </button>
+                    <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100"><FiX /></button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-5 bg-gradient-to-b from-white to-emerald-50/40 custom-scroll">
-                    {mensajes.map((mensaje) => (
-                        <div
-                            key={mensaje.id}
-                            className={`flex ${mensaje.mine ? "justify-end" : "justify-start"}`}
-                        >
-                            <div className={`max-w-[90%] md:max-w-md px-5 py-4 rounded-3xl shadow-md break-words ${
-                                mensaje.mine
-                                    ? "bg-emerald-900 text-white rounded-br-md"
-                                    : "bg-white border border-gray-200 text-gray-800 rounded-bl-md"
-                            }`}>
-                                <p className="text-xs font-bold mb-1 opacity-70">
-                                    {mensaje.from}
-                                </p>
-                                <p className="leading-relaxed">
-                                    {mensaje.body}
-                                </p>
+                <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5 bg-gradient-to-b from-white to-emerald-50/40">
+                    {mensajes.map((msg, index) => {
+                        const msgId = msg._id || msg.id || `msg-${index}`;
+                        const contenido = msg.mensaje || msg.texto;
+                        const emisorId = typeof msg.emisor === 'object' ? msg.emisor?._id : msg.emisor;
+                        const isMine = emisorId === user?.id;
+                        return (
+                            <div key={msgId} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                                <div className={`max-w-[80%] px-5 py-3 rounded-2xl ${isMine ? "bg-emerald-900 text-white" : "bg-white border"}`}>
+                                    <p className="text-xs opacity-70 mb-1">{isMine ? "Tú" : otherUserName}</p>
+                                    <p className="text-sm">{contenido}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
-                <div className="border-t border-gray-200 bg-white p-4 md:p-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <input
-                            type="text"
-                            value={inputMensaje}
-                            onChange={(e) => setInputMensaje(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleEnviar()}
-                            placeholder="Escribe un mensaje..."
-                            className="flex-1 py-4 px-6 rounded-2xl bg-gray-100 border border-gray-200 outline-none focus:ring-2 focus:ring-emerald-500 text-gray-700"
-                        />
-
-                        <button 
-                            onClick={handleEnviar}
-                            className="py-4 px-8 rounded-2xl bg-emerald-900 hover:bg-black text-white font-bold transition-all active:scale-95 sm:w-44"
-                        >
-                            Enviar
-                        </button>
-                    </div>
+                <div className="border-t bg-white p-4 flex gap-2">
+                    <input
+                        value={inputMensaje}
+                        onChange={(e) => setInputMensaje(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleEnviar()}
+                        placeholder="Escribe algo..."
+                        className="flex-1 p-3 rounded-xl border outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                    <button onClick={handleEnviar} className="px-6 bg-emerald-900 text-white rounded-xl">Enviar</button>
                 </div>
-
             </div>
         </div>,
         document.body
