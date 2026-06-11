@@ -11,7 +11,12 @@ export default function RecomendacionesPage() {
                 </p>
             </div>
 
-            <RecomendacionForm />
+            <RecomendacionForm
+                titulo="Enviar recomendación"
+                placeholderAsunto="Título de la recomendación"
+                placeholderMensaje="Escribe tu recomendación..."
+                mensajeExito="Recomendación enviada correctamente"
+            />
             <RecomendacionList />
         </div>
     );

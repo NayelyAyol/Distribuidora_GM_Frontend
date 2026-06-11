@@ -1,44 +1,82 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import FeedbackCard from "./FeedbackCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { buttonPrimaryClass, buttonOutlineClass, inputClass } from "@/utils/styles"
+import {
+    buttonPrimaryClass,
+    buttonOutlineClass,
+    inputClass
+} from "@/utils/styles"
+import { toast } from "react-toastify"
 
+import {
+    obtenerQuejasSugerenciasAdmin,
+    responderQuejaSugerencia
+} from "@/features/cliente/quejasysugerencias/services/quejasSugerenciasService"
 
 export default function FeedbackList() {
 
-    const [data, setData] = useState([
-        { id: 1, tipo: "Queja", text: "Agregar modo oscuro", user: "Cliente 1", estado: "Pendiente", respuesta: null, fecha: "2024-06-01" },
-        { id: 2, tipo: "Sugerencia", text: "Mejorar rendimiento", user: "Cliente 2", estado: "Pendiente", respuesta: null, fecha: "2024-06-02" },
-        { id: 3, tipo: "Queja", text: "Cambio de colores", user: "Cliente 3", estado: "Finalizada", respuesta: "Se evaluará el cambio", fecha: "2024-06-03" }
-    ])
-
+    const [data, setData] = useState([])
     const [selected, setSelected] = useState(null)
     const [respuesta, setRespuesta] = useState("")
     const [filter, setFilter] = useState("Pendiente")
 
-    const handleResponder = () => {
+    const cargarQuejas = async () => {
 
-        if (!respuesta.trim()) return
+        try {
 
-        setData(prev =>
-            prev.map(item =>
-                item.id === selected.id
-                    ? {
-                        ...item,
-                        estado: "Finalizada",
-                        respuesta: respuesta
-                    }
-                    : item
+            const estado =
+                filter === "Pendiente"
+                    ? "PENDIENTE"
+                    : "FINALIZADA"
+
+            const response =
+                await obtenerQuejasSugerenciasAdmin(
+                    estado
+                )
+
+            setData(
+                response.quejasSugerencias || []
             )
-        )
 
-        setSelected(null)
-        setRespuesta("")
+        } catch (error) {
+
+            toast.error(error.message)
+        }
     }
 
-    const filteredData =
-        data.filter(item => item.estado === filter)
+    useEffect(() => {
+        cargarQuejas()
+    }, [filter])
+
+    const handleResponder = async () => {
+
+        if (!respuesta.trim()) {
+            toast.error("Escribe una respuesta")
+            return
+        }
+
+        try {
+
+            await responderQuejaSugerencia(
+                selected._id,
+                respuesta
+            )
+
+            toast.success(
+                "Respuesta enviada correctamente"
+            )
+
+            setSelected(null)
+            setRespuesta("")
+
+            cargarQuejas()
+
+        } catch (error) {
+
+            toast.error(error.message)
+        }
+    }
 
     return (
 
@@ -48,29 +86,52 @@ export default function FeedbackList() {
 
                 <Button
                     onClick={() => setFilter("Pendiente")}
-                    className={filter === "Pendiente" ? "bg-emerald-100 text-emerald-700"
-                        : "bg-gray-200 text-gray-600"}
+                    className={
+                        filter === "Pendiente"
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-gray-200 text-gray-600"
+                    }
                 >
                     Pendientes
                 </Button>
 
                 <Button
                     onClick={() => setFilter("Finalizada")}
-                    className={filter === "Finalizada" ? "bg-emerald-100 text-emerald-700"
-                        : "bg-gray-200 text-gray-600"}
+                    className={
+                        filter === "Finalizada"
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-gray-200 text-gray-600"
+                    }
                 >
                     Finalizadas
                 </Button>
 
             </div>
 
-            {filteredData.map(item => (
+            {data.map(item => (
                 <FeedbackCard
-                    key={item.id}
+                    key={item._id}
                     item={item}
                     onOpen={() => setSelected(item)}
                 />
             ))}
+
+            {data.length === 0 && (
+    <div
+        className="
+            text-center
+            py-10
+            text-gray-500
+            border
+            border-dashed
+            rounded-2xl
+        "
+    >
+        {filter === "Pendiente"
+            ? "No hay quejas o sugerencias pendientes por responder."
+            : "No hay quejas o sugerencias finalizadas."}
+    </div>
+)}
 
             {selected && (
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
@@ -82,7 +143,7 @@ export default function FeedbackList() {
                         </h2>
 
                         <p className="text-[15px] text-gray-500 mb-3">
-                            {selected.text}
+                            {selected.mensaje}
                         </p>
 
                         <textarea
@@ -90,7 +151,7 @@ export default function FeedbackList() {
                             onChange={(e) => setRespuesta(e.target.value)}
                             placeholder="Escribe tu respuesta..."
                             className={`${inputClass} h-[120px] resize-none`}
-                            maxLength={100}
+                            maxLength={400}
                         />
 
                         <div className="flex justify-end gap-3 mt-4">
@@ -98,14 +159,18 @@ export default function FeedbackList() {
                             <Button
                                 variant="ghost"
                                 className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
-                                onClick={() => setSelected(null)}
+                                onClick={() => {
+                                    setSelected(null)
+                                    setRespuesta("")
+                                }}
                             >
                                 Cancelar
                             </Button>
 
                             <Button
                                 onClick={handleResponder}
-                                className={`max-w-[100px] ${buttonPrimaryClass}`}                >
+                                className={`max-w-[100px] ${buttonPrimaryClass}`}
+                            >
                                 Aceptar
                             </Button>
 

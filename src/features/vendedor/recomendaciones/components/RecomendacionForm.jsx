@@ -2,56 +2,80 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
 import { toast } from "react-toastify"
+import { crearQuejaSugerencia } from "@/features/cliente/quejasysugerencias/services/quejasSugerenciasService"
+import { Input } from "@/components/ui/input"
 
-export default function RecomendacionForm() {
+export default function RecomendacionForm({
+    placeholderAsunto = "Asunto",
+    placeholderMensaje = "Escribe tu mensaje...",
+    mensajeExito = "Mensaje enviado correctamente"
+}) {
 
-    const [text, setText] = useState("")
+    const [asunto, setAsunto] = useState("")
+    const [mensaje, setMensaje] = useState("")
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if (!text.trim()) {
-            toast.error("Escribe un mensaje antes de enviar")
+        if (!asunto.trim()) {
+            toast.error("Ingresa un asunto")
             return
         }
 
-        if (text.trim().length < 10) {
-            toast.error("El mensaje debe tener al menos 10 caracteres")
+        if (!mensaje.trim()) {
+            toast.error("Escribe un mensaje")
             return
         }
 
-        if (text.trim().length > 300) {
-            toast.error("El mensaje no puede superar 300 caracteres")
+        if (asunto.trim().length < 5) {
+            toast.error(
+                "El asunto debe tener al menos 5 caracteres"
+            )
             return
         }
 
-        const data = {
-            text: text.trim(),
-            fecha: new Date().toISOString()
+        try {
+
+            await crearQuejaSugerencia({
+                asunto,
+                mensaje
+            })
+
+            toast.success(mensajeExito)
+
+            setAsunto("")
+            setMensaje("")
+
+        } catch (error) {
+
+            toast.error(error.message)
         }
-
-        console.log(data)
-
-        toast.success("Mensaje enviado correctamente")
-
-        setText("")
     }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
 
+            <Input
+                value={asunto}
+                className="bg-white"
+                onChange={(e) => setAsunto(e.target.value)}
+                placeholder={placeholderAsunto}
+                maxLength={100}
+            />
+
             <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Escribe tu recomendación..."
+                value={mensaje}
+                onChange={(e) => setMensaje(e.target.value)}
+                placeholder={placeholderMensaje}
                 className="w-full p-4 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={4}
                 maxLength={300}
             />
 
-            <Button 
-            type="submit"
-            className={`${buttonPrimaryClass} w-full`}>
+            <Button
+                type="submit"
+                className={`${buttonPrimaryClass} w-full`}
+            >
                 Enviar
             </Button>
 

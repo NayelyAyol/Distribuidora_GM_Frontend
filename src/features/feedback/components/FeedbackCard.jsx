@@ -8,46 +8,57 @@ export default function FeedbackCard({ item, onOpen }) {
             <div className="flex justify-between items-start mb-2">
 
                 <h3 className="font-semibold text-gray-800">
-                    {item.tipo}
+                    {item.asunto}
                 </h3>
 
                 <p className="text-[11px] text-gray-400">
-                    {new Date(item.fecha).toLocaleDateString("es-EC", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric"
-                    })}
+                    {item.createdAt
+                        ? new Date(item.createdAt).toLocaleDateString(
+                            "es-EC",
+                            {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric"
+                            }
+                        )
+                        : ""}
                 </p>
 
             </div>
 
             <p className="text-gray-800 text-base">
-                {item.text}
+                {item.mensaje}
             </p>
 
-            {item.respuesta && (
+            {item.respuestaAdmin && (
                 <p className="text-sm text-emerald-700 mt-2">
-                    Administrador: {item.respuesta}
+                    Administrador: {item.respuestaAdmin}
                 </p>
             )}
 
             <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
 
-                <span>{item.user}</span>
+                <span>{item.usuario?.email || item.rolUsuario}</span>
 
                 <div className="flex items-center gap-3">
 
-                    <span className={`text-xs px-2 py-1 rounded-full ${item.estado === "Respondido"
-                        ? "bg-emerald-100 text-emerald-900"
-                        : "bg-blue-100 text-blue-700"
-                        }`}>
-                        {item.estado}
+
+                    <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                            item.estado === "FINALIZADA"
+                                ? "bg-emerald-100 text-emerald-900"
+                                : "bg-blue-100 text-blue-700"
+                        }`}
+                    >
+                        {item.estado === "FINALIZADA"
+                            ? "Finalizada"
+                            : "Pendiente"}
                     </span>
 
-                    {item.estado === "Pendiente" && (
+                    {item.estado === "PENDIENTE" && (
                         <button
                             onClick={onOpen}
-                            className={`${buttonOutlineClass} text-[11px] px-2 `}
+                            className={`${buttonOutlineClass} text-[11px] px-2`}
                         >
                             Responder
                         </button>
