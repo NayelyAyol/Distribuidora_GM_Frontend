@@ -1,4 +1,4 @@
-import ResetPassword from "../components/ResetPasswordForm"
+import ResetPasswordUI from "../components/ResetPasswordForm"
 import {
     pageClass,
     containerClass,
@@ -12,7 +12,7 @@ export default function ResetPasswordPage() {
             <div className={containerClass}>
 
                 <div className={formContainerClass}>
-                    <ResetPassword />
+                    <ResetPasswordUI />
                 </div>
 
                 <div className={imageWrapperClass}>

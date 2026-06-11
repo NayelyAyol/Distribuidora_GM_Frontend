@@ -2,26 +2,32 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { labelClass, inputClass, buttonPrimaryClass } from "@/utils/styles"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { changePassword } from "../services/authService"
 import { toast } from "react-toastify"
 
 export default function ResetPasswordUI() {
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-
-    const token = searchParams.get("token")
+    const { token } = useParams()
 
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
-
     const [loading, setLoading] = useState(false)
 
+    // VALIDAR TOKEN
+    useEffect(() => {
+        if (!token) {
+            toast.error("Token inválido")
+            navigate("/login")
+        }
+    }, [token, navigate])
+
+    // VALIDACIÓN PASSWORD
     const validatePassword = (password) => {
         return (
             /[a-z]/.test(password) &&
@@ -33,7 +39,10 @@ export default function ResetPasswordUI() {
         )
     }
 
+    // RESET PASSWORD
     const handlePassword = async () => {
+        if (loading) return
+
         try {
             if (!password || !confirmPassword) {
                 toast.error("Todos los campos son obligatorios")
@@ -73,6 +82,7 @@ export default function ResetPasswordUI() {
 
     return (
         <div className="w-full max-w-lg mx-auto">
+
             <button
                 type="button"
                 onClick={() => navigate("/login")}
@@ -81,7 +91,13 @@ export default function ResetPasswordUI() {
                 ← Volver
             </button>
 
-            <form className="space-y-6 relative">
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    handlePassword()
+                }}
+                className="space-y-6 relative"
+            >
 
                 <div className="text-center pt-8">
                     <h2 className="text-2xl font-bold text-gray-800">
@@ -92,6 +108,7 @@ export default function ResetPasswordUI() {
                     </p>
                 </div>
 
+                {/* PASSWORD */}
                 <div className="relative">
                     <Label className={`${labelClass} mb-2`}>
                         Nueva contraseña
@@ -103,6 +120,7 @@ export default function ResetPasswordUI() {
                         className={`${inputClass} pr-10`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        disabled={loading}
                         required
                     />
 
@@ -115,6 +133,7 @@ export default function ResetPasswordUI() {
                     </button>
                 </div>
 
+                {/* CONFIRM PASSWORD */}
                 <div className="relative">
                     <Label className={`${labelClass} mb-2`}>
                         Confirmar contraseña
@@ -126,6 +145,7 @@ export default function ResetPasswordUI() {
                         className={`${inputClass} pr-10`}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        disabled={loading}
                         required
                     />
 
@@ -138,9 +158,9 @@ export default function ResetPasswordUI() {
                     </button>
                 </div>
 
+                {/* BUTTON */}
                 <Button
-                    type="button"
-                    onClick={handlePassword}
+                    type="submit"
                     disabled={loading}
                     className={`${buttonPrimaryClass} w-full py-5`}
                 >
