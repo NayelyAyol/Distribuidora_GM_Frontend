@@ -70,7 +70,7 @@ export default function LoginForm({ onSubmit }) {
                     <Button
                         type="button"
                         variant="link"
-                        onClick={() => navigate("/recuperar-password")}
+                        onClick={() => navigate("/resetear-password")}
                         className="text-sm font-semibold text-emerald-900 hover:text-black"
                     >
                         ¿Olvidaste tu contraseña?
