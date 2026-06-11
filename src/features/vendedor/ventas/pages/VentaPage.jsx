@@ -17,30 +17,23 @@ export default function VentaPage() {
         setFactura
     } = useVentaStore();
 
+useEffect(() => {
+    if (!pedidoSeleccionado) return;
 
-    useEffect(() => {
-        if (pedidoSeleccionado?.tipoPedido === "CARRITO") {
-            setFactura(pedidoSeleccionado.articulos || []);
-            
-            if (pedidoSeleccionado.cliente) {
-                setDatosFacturacion({
-                    nombreCompleto: pedidoSeleccionado.datosFacturacion?.nombreCompleto || "",
-                    correo: pedidoSeleccionado.datosFacturacion?.correo || "",
-                    telefono: pedidoSeleccionado.datosFacturacion?.telefono || "",
-                    identificacion: pedidoSeleccionado.datosFacturacion?.identificacion || ""
-                });
-            }
-            if (pedidoSeleccionado.metodoPago) {
-                setMetodoPago(pedidoSeleccionado.metodoPago);
-            }
-        }
-    }, [pedidoSeleccionado]);
+    if (factura.length === 0) {
+        setFactura(
+            pedidoSeleccionado.articulos || []
+        );
+    }
+
+}, [pedidoSeleccionado]);
 
     return (
         <VentaLayout
             pedidoSeleccionado={pedidoSeleccionado}
             setPedidoSeleccionado={setPedidoSeleccionado}
             factura={factura}
+            modo="VENTA_DIRECTA"
             agregarProducto={agregarProducto}
             cambiarCantidad={cambiarCantidad}
             eliminarProducto={eliminarProducto}
@@ -48,6 +41,7 @@ export default function VentaPage() {
             setMetodoPago={setMetodoPago}
             setDatosFacturacion={setDatosFacturacion}
             setFactura={setFactura}
+            esEditable={true}
         />
     );
 }

@@ -4,7 +4,8 @@ import { toast } from "react-toastify";
 export default function ProductoItemFactura({
     producto,
     onDelete,
-    onCantidadChange
+    onCantidadChange,
+    esEditable=true
 }) {
 
     const aumentarCantidad = () => {
@@ -74,6 +75,7 @@ export default function ProductoItemFactura({
 
             <div className="flex items-center gap-4">
 
+            {esEditable && (
                 <div
                     className="
                         flex
@@ -113,7 +115,9 @@ export default function ProductoItemFactura({
                     </button>
 
                 </div>
+                )}
 
+            {esEditable && (
                 <button
                     onClick={() => onDelete(producto.id)}
                     className="
@@ -123,7 +127,7 @@ export default function ProductoItemFactura({
                 >
                     <FiTrash2 />
                 </button>
-
+            )}
             </div>
 
         </div>

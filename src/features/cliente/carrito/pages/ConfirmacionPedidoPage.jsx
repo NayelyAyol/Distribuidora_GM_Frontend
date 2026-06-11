@@ -12,6 +12,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { crearPedidoCarrito, pagarCarritoTarjeta } from "../../carrito/services/carritoService";
+import { definirPagoPedido } from "../../pedidos/services/pedidoService";
 
 export default function ConfirmacionPedidoPage() {
 
@@ -24,6 +25,8 @@ export default function ConfirmacionPedidoPage() {
 
     const metodoPago =
         location.state?.metodoPago || "";
+    
+        const resumenDatos = location.state?.resumenDatos || null;
 
     const tipoEntrega =
         location.state?.tipoEntrega || "local";
@@ -39,86 +42,83 @@ export default function ConfirmacionPedidoPage() {
             ? "/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso"
             : "/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso";
 
+
+
+    const pedidoId = location.state?.pedidoId;
+
     const handleConfirmar = async () => {
-        setLoading(true);
-        try {
-            let respuesta;
+        console.log("DEBUG: ID que llega a confirmación:", pedidoId); 
+    
+    if (!pedidoId) {
+        toast.error("Error: ID de pedido no encontrado. Por favor, reinicia el proceso.");
+        return;
+    }
+    setLoading(true);
+    try {
+        let respuesta;
+        const pedidoId = location.state?.pedidoId;
+        
+        const payloadBase = {
+            metodoPago: metodoPago.toUpperCase(),
+        };
+
+        if (esPedidoFoto) {
             const payload = {
-                nombrePedido:
-                    datosPedido.nombrePedido,
-
-                nombreCompleto:
-                    datosPedido.nombreCompleto,
-
-                identificacion:
-                    datosPedido.identificacion,
-
-                correo:
-                    datosPedido.correo,
-
-                telefono:
-                    datosPedido.telefono,
-
-                tipoEntrega:
-                    tipoEntrega === "domicilio"
-                        ? "ENVIO_DOMICILIO"
-                        : "RETIRO_LOCAL",
-
-                metodoPago:
-                    metodoPago.toUpperCase(),
-
-                observaciones:
-                    datosPedido.observaciones || ""
+                ...payloadBase,
+                paymentMethodId: location.state?.paymentMethodId || null
             };
 
+            respuesta = await definirPagoPedido(pedidoId, payload);
+
+            toast.success("Método de pago registrado correctamente");
+            
+            navigate(rutaExito, {
+                state: {
+                    pedido:respuesta.data.pedido,
+                    esPedidoFoto: true,
+                }
+            });
+
+        } else {
+            const payload = {
+                ...datosPedido,
+                tipoEntrega: tipoEntrega === "domicilio" ? "ENVIO_DOMICILIO" : "RETIRO_LOCAL",
+                metodoPago: metodoPago.toUpperCase(),
+                observaciones: datosPedido.observaciones || "",
+                carrito: carrito
+            };
+
+                        console.log("Payload enviado:", payload);
+
             if (tipoEntrega === "domicilio") {
-
-                payload.ciudad =
-                    datosPedido.ciudad;
-
-                payload.direccion =
-                    datosPedido.direccion;
-
-                payload.referencia =
-                    datosPedido.referencia;
+                payload.ciudad = datosPedido.ciudad;
+                payload.direccion = datosPedido.direccion;
+                payload.referencia = datosPedido.referencia;
             }
-console.log("Payload enviado:", payload);
 
             if (metodoPago === "TARJETA") {
-                payload.paymentMethodId = location.state?.paymentMethodId; 
+                payload.paymentMethodId = location.state?.paymentMethodId;
                 respuesta = await pagarCarritoTarjeta(payload);
             } else {
                 respuesta = await crearPedidoCarrito(payload);
             }
 
+            toast.success("Pedido creado correctamente");
 
-            toast.success(
-                "Pedido creado correctamente"
-            );
-
-            navigate(
-                rutaExito,
-                {
-                    state: {
-                        esPedidoFoto,
-                        pedido: respuesta.pedido
-                    }
+            navigate(rutaExito, {
+                state: {
+                    esPedidoFoto: false,
+                    pedido: respuesta.pedido
                 }
-            );
-
-        } catch (error) {
-
-            toast.error(
-                error.message ||
-                "Error al crear el pedido"
-            );
-
-        } finally {
-
-            setLoading(false);
-
+            });
         }
-    };
+    } catch (error) {
+        console.error("Error en confirmación:", error);
+        toast.error(error.message || "Error al procesar la confirmación");
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
 
@@ -307,6 +307,7 @@ console.log("Payload enviado:", payload);
                         carrito={carrito}
                         esPedidoFoto={esPedidoFoto}
                         tipoEntrega={tipoEntrega}
+                        resumenDatos={resumenDatos}
                     />
 
                     <Button

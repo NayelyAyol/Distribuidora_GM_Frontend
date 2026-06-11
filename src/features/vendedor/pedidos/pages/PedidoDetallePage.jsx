@@ -13,15 +13,24 @@ import { obtenerDetallesPedido } from "../services/pedidosSeleccionadosService";
 import useVentaStore from "../../ventas/context/useVentaStore"
 import { ventaDesdePedido } from "../../ventas/services/ventaService";
 import { toast } from "react-toastify";
+import { armarPedidoFoto } from "@/features/cliente/pedidos/services/pedidoService";
+import IngresoProducto from "../../ventas/components/IngresoProducto";
+import FacturaPanel from "../../ventas/components/Factura";
+import { io } from "socket.io-client";
+const socket = io("https://grupo-moreno.onrender.com/api");
 
 export default function PedidoDetallePage() {
 
     const {
-        setPedidoSeleccionado,
-        setFactura,
-        resetVentaCompleta
+    setPedidoSeleccionado,
+    setFactura,
+    setMetodoPago,
+    setDatosFacturacion,
+    resetVentaCompleta,
+    limpiarVenta
     } = useVentaStore();
 
+    const [articulosSeleccionados, setArticulosSeleccionados] = useState([]);
     const navigate = useNavigate()
     const { id } = useParams()
     const user = useAuthStore((state) => state.user)
@@ -33,7 +42,7 @@ export default function PedidoDetallePage() {
     const [loading, setLoading] = useState(true)
 
     const subtotal =
-    pedido?.resumenPago?.subtotalProductos || 0;
+        pedido?.resumenPago?.subtotalProductos || 0;
 
     const iva =
         pedido?.resumenPago?.ivaProductos || 0;
@@ -58,6 +67,32 @@ export default function PedidoDetallePage() {
         cargarDetalle();
     }, [id]);
 
+    useEffect(() => {
+        if (!esCliente) return;
+
+        socket.on('pedido:armado', (data) => {
+            if (data.id === id) {
+                toast.info("¡El vendedor ha armado tu pedido, revisa los detalles!");
+                obtenerDetallesPedido(id).then(res => setPedido(res.pedido));
+            }
+        });
+
+        return () => socket.off('pedido:armado');
+    }, [id, esCliente]);
+
+
+    useEffect(() => {
+        if (pedido?.articulos && articulosSeleccionados.length === 0) {
+            const articulosParaEdicion = pedido.articulos.map(item => ({
+                id: item.producto, 
+                nombre: item.nombreProducto,
+                cantidad: item.cantidad,
+                precio: item.precioUnitario
+            }));
+            setArticulosSeleccionados(articulosParaEdicion);
+        }
+    }, [pedido]);
+
 
     const handleIniciarVenta = async () => {
         if (!pedido) return;
@@ -65,19 +100,48 @@ export default function PedidoDetallePage() {
         try {
             setLoading(true);
             const data = await ventaDesdePedido(id, { observaciones: pedido.observaciones });
-            
+limpiarVenta();
             const esPagoTarjeta = data.venta.metodoPago === 'TARJETA';
             const urlPago = data.venta.stripe?.urlPago;
 
-            if (esPagoTarjeta && urlPago) {
-                window.location.href = urlPago;
-            } else {
-                resetVentaCompleta();
-                setPedidoSeleccionado(pedido);
-                setFactura(data.venta.articulos);
-                toast.success("Venta iniciada correctamente");
-                navigate("/dashboard/ventas");
-            }
+setPedidoSeleccionado(pedido);
+
+setFactura(
+    data.venta.articulos.map(item => ({
+        id: item.producto?._id || item.producto || item.id,
+        nombre: item.nombreProducto,
+        precio: item.precioUnitario,
+        cantidad: item.cantidad,
+        stock: 999
+    }))
+);
+
+setMetodoPago(pedido.metodoPago);
+
+setDatosFacturacion({
+    nombreCompleto:
+        pedido.datosFacturacion?.nombreCompleto ||
+        `${pedido.cliente?.nombre || ""} ${pedido.cliente?.apellido || ""}`,
+
+    correo:
+        pedido.datosFacturacion?.correo ||
+        pedido.cliente?.email ||
+        "",
+
+    telefono:
+        pedido.datosFacturacion?.telefono ||
+        pedido.cliente?.telefono ||
+        "",
+
+    identificacion:
+        pedido.datosFacturacion?.identificacion || ""
+});
+console.log("ANTES DE NAVEGAR");
+console.log(useVentaStore.getState());
+setTimeout(() => {
+            navigate("/dashboard/ventas");
+        }, 100);
+            
         } catch (error) {
             console.log("ERROR DETALLADO:", error.message);
             toast.error(error.message || "Ocurrió un error inesperado al iniciar la venta");
@@ -86,9 +150,100 @@ export default function PedidoDetallePage() {
         }
     };
 
+    const handleArmarPedido = async () => {
+        if (articulosSeleccionados.length === 0) {
+            toast.warning("Debes agregar al menos un producto a la lista");
+            return;
+        }
+
+        const articulosFormateados = articulosSeleccionados.map(item => ({
+                producto: item.id, 
+                cantidad: item.cantidad
+            }));
+
+        try {
+            setLoading(true);
+            await armarPedidoFoto(id, articulosFormateados);
+            toast.success("Pedido armado y cotizado con éxito");
+            const data = await obtenerDetallesPedido(id);
+            setPedido(data.pedido);
+        } catch (error) {
+            toast.error(error.message || "Error al armar el pedido");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const agregarAlArray = (producto) => {
+        setArticulosSeleccionados((prev) => {
+            const existe = prev.find((item) => item.id === producto.id);
+            if (existe) {
+                return prev.map((item) =>
+                    item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item
+                );
+            }
+            return [...prev, { ...producto, cantidad: 1 }];
+        });
+    };
+
+    const quitarDelArray = (id) => {
+        setArticulosSeleccionados((prev) => prev.filter((item) => item.id !== id));
+    };
+
+    const actualizarCantidad = (id, nuevaCantidad) => {
+        setArticulosSeleccionados((prev) =>
+            prev.map((item) =>
+                item.id === id ? { ...item, cantidad: nuevaCantidad } : item
+            )
+        );
+    };
+
+    const handleIrAPago = () => {
+        if (!pedido) return;
+
+        const datosPedido = {
+            nombrePedido: pedido.nombrePedido,
+            nombreCompleto: pedido.datosFacturacion?.nombreCompleto || "",
+            identificacion: pedido.datosFacturacion?.identificacion || "",
+            correo: pedido.datosFacturacion?.correo || "",
+            telefono: pedido.datosFacturacion?.telefono || "",
+            direccion: pedido.direccionEntrega?.direccion || "",
+            referencia: pedido.direccionEntrega?.referencia || "",
+            observaciones: pedido.observaciones || ""
+        };
+
+        navigate("/dashboard/mis-pedidos/pago", {
+            state: {
+                pedidoId: pedido._id,
+                esPedidoFoto: pedido.tipoPedido === "FOTO_LISTA",
+                tipoEntrega: pedido.direccionEntrega ? "domicilio" : "local",
+                carrito: pedido.articulos || [],
+                datosPedido: datosPedido,
+                resumenDatos: pedido.resumenPago
+            }
+        });
+    };
+
+    const getBotonConfig = () => {
+        if (!pedido) return null;
+
+        if (pedido?.metodoPago === 'TARJETA') {
+            return { text: "Cerrar Pedido", action: handleIniciarVenta, color: "bg-blue-600" };
+        }
+
+        if (pedido?.metodoPago === 'EFECTIVO' || pedido?.metodoPago === 'TRANSFERENCIA') {
+            return { text: "Iniciar Venta", action: handleIniciarVenta, color: "bg-emerald-600" };
+        }
+
+        return null;
+    };
+
+    const botonConfig = getBotonConfig();
+
     if (loading) return <div>Cargando...</div>;
 
-
+    // Añade esto para inspeccionar el objeto
+    console.log("DEBUG: Objeto Pedido completo:", JSON.parse(JSON.stringify(pedido)));
     const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
     const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
 
@@ -323,87 +478,33 @@ export default function PedidoDetallePage() {
                 )
             }
 
-            {
-                esPedidoCarrito && (
+{
+    // Cambia la condición aquí para incluir ambos tipos
+    (esPedidoCarrito || (esPedidoLista && pedido?.articulos?.length > 0)) && (
 
-                    <Card className="
-                        p-6
-                        rounded-3xl
-                        border border-white/20
-                        shadow-sm
-                        bg-white/60
-                        backdrop-blur-xl
-                    ">
+        <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl">
+            <div className="mb-5">
+                <h2 className="text-lg font-semibold text-gray-800">
+                    Productos cotizados por el vendedor
+                </h2>
+                <p className="text-sm text-gray-500">
+                    Detalle de los productos agregados a tu lista
+                </p>
+            </div>
 
-                        <div className="mb-5">
-
-                            <h2 className="
-                                text-lg
-                                font-semibold
-                                text-gray-800
-                            ">
-                                Productos solicitados
-                            </h2>
-
-                            <p className="text-sm text-gray-500">
-                                Productos agregados al carrito
-                            </p>
-
+            <div className="space-y-4">
+                {pedido?.articulos?.map((producto) => (
+                    <div key={producto._id || producto.id} className="flex items-center justify-between border border-gray-100 rounded-2xl p-4 bg-white">
+                        <div>
+                            <p className="font-medium text-gray-800">{producto.nombreProducto}</p>
+                            <p className="text-sm text-gray-500">Cantidad: {producto.cantidad}</p>
                         </div>
-
-                        <div className="space-y-4">
-
-                            {
-                                pedido?.articulos?.map((producto) => (
-
-                                    <div
-                                        key={producto._id || producto.id}
-                                        className="
-                                            flex items-center
-                                            justify-between
-                                            border border-gray-100
-                                            rounded-2xl
-                                            p-4
-                                            bg-white
-                                        "
-                                    >
-                                        <div>
-
-                                            <p className="
-                                                font-medium
-                                                text-gray-800
-                                            ">
-                                                {producto.nombreProducto}
-                                            </p>
-
-                                            <p className="
-                                                text-sm
-                                                text-gray-500
-                                            ">
-                                                Cantidad: {producto.cantidad}
-                                            </p>
-
-                                        </div>
-
-                                        <div className="
-                                            font-semibold
-                                            text-emerald-700
-                                        ">
-                                            $
-                                            {
-                                                (
-                                                    producto.precioUnitario *
-                                                    producto.cantidad
-                                                ).toFixed(2)
-                                            }
-                                        </div>
-
-                                    </div>
-
-                                ))
-                            }
-
+                        <div className="font-semibold text-emerald-700">
+                            ${(producto.precioUnitario * producto.cantidad).toFixed(2)}
                         </div>
+                    </div>
+                ))}
+            </div>
 
                         <div className="
                             mt-6
@@ -480,8 +581,30 @@ export default function PedidoDetallePage() {
 
             </Card>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {esPedidoLista && (
+                    <>
+                        {!esCliente && (
+                            <div className="space-y-6">
+                                <IngresoProducto onAdd={agregarAlArray} />
+                            </div>
+                        )}
+                        {!esCliente && (
+                            <FacturaPanel
+                                factura={articulosSeleccionados}
+                                modo="ARMADO_FOTO"
+                                esEditable={!esCliente && (pedido.estado === 'EN_PROCESO' || pedido.estado === 'COTIZADO')}                                eliminarProducto={quitarDelArray}
+                                eliminarProducto={quitarDelArray}
+                                cambiarCantidad={actualizarCantidad}
+                            />
+                        )}
+                    </>
+                )}
+            </div>
+
             {
-                !esCliente && (
+                !esCliente && esPedidoCarrito && (
 
                     <Card className="
                         p-6
@@ -508,6 +631,51 @@ export default function PedidoDetallePage() {
                     </Card>
                 )
             }
+            {/* Ajuste en tu lógica de botones */}
+            {!esCliente && pedido.tipoPedido === "FOTO_LISTA" && pedido.estado === 'EN_PROCESO' && (
+                <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl">
+                    <div className="flex flex-wrap gap-4 justify-end">
+                        <Button
+                            onClick={handleArmarPedido}
+                            disabled={loading}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        >
+                            {/* Si ya tiene artículos, es una actualización, si no, es la primera vez */}
+                            {pedido.articulos?.length > 0 ? "Actualizar Cotización" : "Armar Pedido"}
+                        </Button>
+                    </div>
+                </Card>
+            )}
+
+            {esCliente && pedido.tipoPedido === 'FOTO_LISTA' && pedido.metodoPago === null && pedido.estado === "EN_PROCESO" && (
+                <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl mt-4">
+                    <div className="flex flex-wrap gap-4 justify-between items-center">
+                        <p className="text-amber-600 font-medium">
+                            Por favor, selecciona un método de pago para continuar.            </p>
+                        <Button
+                            onClick={handleIrAPago}
+                            disabled={loading}
+                            className="bg-emerald-700 hover:bg-emerald-900 text-white"
+                        >
+                            Continuar a pago
+                        </Button>
+                    </div>
+                </Card>
+            )}
+
+            {!esCliente && botonConfig && pedido.metodoPago !== null && (
+                <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl mt-4">
+                    <div className="flex flex-wrap gap-4 justify-end">
+                        <Button
+                            onClick={botonConfig.action}
+                            disabled={loading}
+                            className={`${botonConfig.color} hover:opacity-90 text-white`}
+                        >
+                            {botonConfig.text}
+                        </Button>
+                    </div>
+                </Card>
+            )}
         </div>
     )
 }

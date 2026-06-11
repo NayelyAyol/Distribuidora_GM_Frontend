@@ -13,19 +13,19 @@ import {
 } from "@/utils/styles"
 
 import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
 
 export default function PedidoExitosoPage() {
 
-    const handlePrint = () => {
-        window.print()
-    }
 
     const navigate = useNavigate()
     const location = useLocation()
+    console.log("DEBUG: Contenido de location.state:", location.state);
+    const [pedido, setPedido] = useState(location.state?.pedido || null);
 
     const esPedidoFoto = location.state?.esPedidoFoto || false;
 
-    const pedido = location.state?.pedido || null;
+    const metodoPago = pedido?.metodoPago || "DESCONOCIDO";
 
     const subtotal =
         pedido?.resumenPago?.subtotalProductos || 0;
@@ -38,6 +38,34 @@ export default function PedidoExitosoPage() {
 
     const total =
         pedido?.resumenPago?.totalPagar || 0;
+
+    const handlePrint = () => {
+        window.print()
+    }
+    useEffect(() => {
+        // Si no tenemos el pedido completo, lo buscamos por ID
+        if (!pedido && location.state?.pedidoId) {
+            // Llama a tu API para obtener los detalles: getPedidoById(location.state.pedidoId)
+            // y luego haz setPedido(datosDesdeApi)
+        }
+    }, [pedido, location.state]);
+
+    const getMensaje = () => {
+        if (esPedidoFoto) {
+            return {
+                titulo: "¡Pago registrado!",
+                descripcion: metodoPago === "TRANSFERENCIA"
+                    ? "Hemos recibido tu selección de pago. Por favor, realiza la transferencia"
+                    : "Tu método de pago ha sido configurado correctamente. Procesaremos tu pedido de inmediato."
+            };
+        }
+        return {
+            titulo: "¡Pedido confirmado!",
+            descripcion: "Tu compra se realizó correctamente y está siendo procesada."
+        };
+    };
+
+    const { titulo, descripcion } = getMensaje();
 
     return (
 
@@ -97,7 +125,7 @@ export default function PedidoExitosoPage() {
                         font-black
                         text-gray-800
                     ">
-                            ¡Pedido confirmado!
+                            {titulo}
                         </h1>
 
                         <p className="
@@ -105,7 +133,7 @@ export default function PedidoExitosoPage() {
                         text-lg
                         max-w-xl
                     ">
-                            Tu compra se realizó correctamente.
+                            {descripcion}
                         </p>
 
                     </div>
@@ -257,15 +285,15 @@ export default function PedidoExitosoPage() {
                 ">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Button
-                                onClick={() =>
-                                    navigate("/dashboard/mi-carrito")
-                                }
-                                className={buttonPrimaryClass}
-                            >
-                                <FiShoppingCart size={20} />
-                                Volver al carrito
-                            </Button>
+                            {!esPedidoFoto && (
+                                    <Button
+                                        onClick={() => navigate("/dashboard/mi-carrito")}
+                                        className={buttonPrimaryClass}
+                                    >
+                                        <FiShoppingCart size={20} />
+                                        Volver al carrito
+                                    </Button>
+                                )}
 
                             <Button
                                 onClick={() =>

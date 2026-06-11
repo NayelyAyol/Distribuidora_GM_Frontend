@@ -91,7 +91,7 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                     )}
 
                     {pedido.estado === "FINALIZADO" &&
-                        pedido.esPedidoFoto &&
+                        
                         (
                             <button
                                 onClick={() => onPago(pedido)}

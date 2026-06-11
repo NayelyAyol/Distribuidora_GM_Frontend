@@ -232,6 +232,7 @@ export default function usePedidoForm() {
 
     return {
         form,
+        setForm,
         metodoPago,
         setMetodoPago,
         imagen,

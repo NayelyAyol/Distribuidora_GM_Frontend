@@ -4,6 +4,8 @@ import SeleccionPedido from "./SeleccionPedido"
 
 export default function VentaLayout({
     factura,
+    modo,
+    esEditable,
     agregarProducto,
     cambiarCantidad,
     eliminarProducto,
@@ -38,6 +40,8 @@ export default function VentaLayout({
                 </div>
                 <FacturaPanel
                     factura={factura}
+                    modo={modo}
+                    esEditable={esEditable}
                     cambiarCantidad={cambiarCantidad}
                     eliminarProducto={eliminarProducto}
                     limpiarFactura={limpiarFactura}

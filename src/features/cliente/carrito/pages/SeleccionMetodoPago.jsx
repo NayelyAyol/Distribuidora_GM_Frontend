@@ -10,9 +10,11 @@ import PedidoDireccionForm from "../../../cliente/pedidos/components/PedidoDirec
 import PedidoDatosForm from "../../../cliente/pedidos/components/PedidoDatosForm";
 import ResumenPago from "@/features/shared/pagos/components/ResumenPago";
 import usePedidoForm from "../../../cliente/pedidos/hooks/usePedidoForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { pagarCarritoTarjeta } from "../services/carritoService"
+import { FiArrowLeft } from "react-icons/fi";
+import { definirPagoPedido } from "../../pedidos/services/pedidoService";
 
 export default function SeleccionMetodoPagoPage() {
     const navigate = useNavigate();
@@ -24,14 +26,31 @@ export default function SeleccionMetodoPagoPage() {
 
     const {
         form,
+        setForm,
         handleChange,
         metodoPago,
         setMetodoPago
     } = usePedidoForm();
 
+    const [resumenOriginal, setResumenOriginal] = useState(null);
     const tipoEntrega = location.state?.tipoEntrega || "local";
     const carrito = location.state?.carrito || [];
     const esPedidoFoto = location.state?.esPedidoFoto || false;
+
+    const totalPedidoFoto = location.state?.datosPedido?.resumenPago?.totalPagar || 0;
+    const { resumenDatos } = location.state || {};
+
+    const pedidoId = location.state?.pedidoId;
+
+    useEffect(() => {
+        if (location.state?.datosPedido) {
+            setForm(prev => ({ ...prev, ...location.state.datosPedido }));
+
+            if (location.state.datosPedido.resumenPago) {
+                setResumenOriginal(location.state.datosPedido.resumenPago);
+            }
+        }
+    }, [location.state?.datosPedido]);
 
     const rutaConfirmacion = location.pathname.includes("/mis-pedidos")
         ? "/dashboard/mis-pedidos/pago/confirmar-pago"
@@ -85,9 +104,9 @@ export default function SeleccionMetodoPagoPage() {
                 return false;
             }
             if (!/^\d{2}\/\d{2}$/.test(datosTarjeta.mmAA)) {
-                    toast.error("Formato de fecha inválido. Use MM/AA (ej: 11/26)");
-                    return false;
-                }
+                toast.error("Formato de fecha inválido. Use MM/AA (ej: 11/26)");
+                return false;
+            }
 
             if (datosTarjeta.mmAA.length !== 5) {
                 toast.error("Ingrese 4 dígitos para la fecha (MM + AA)");
@@ -108,16 +127,18 @@ export default function SeleccionMetodoPagoPage() {
         return true;
     };
 
+    const pedidoCompleto = location.state?.datosPedido;
+
     const handleContinuar = () => {
         if (!validarFormulario()) return;
         setIsSubmitting(true);
-    try {
+        try {
             navigate(rutaConfirmacion, {
                 state: { esPedidoFoto, tipoEntrega, metodoPago, datosPedido: form, carrito }
             });
         } catch (error) {
-            toast.error( "Ocurrió un error al procesar la solicitud");
-            setIsSubmitting(false); 
+            toast.error("Ocurrió un error al procesar la solicitud");
+            setIsSubmitting(false);
         }
     };
 
@@ -141,8 +162,8 @@ export default function SeleccionMetodoPagoPage() {
 
         try {
             const payload = {
-                ...datosPedido, 
-                paymentMethodId: paymentMethod.id, 
+                ...form,
+                paymentMethodId: paymentMethod.id,
                 carrito: carrito
             };
 
@@ -156,42 +177,105 @@ export default function SeleccionMetodoPagoPage() {
         }
     };
 
-    const handleAccionBoton = () => {
-        if (metodoPago === "TARJETA") {
-            handleConfirmarPago(); 
-        } else {
-            handleContinuar(); 
+
+    const handleAccionBoton = async () => {
+        const pedidoId = location.state?.pedidoId;
+    console.log("DEBUG: El ID que voy a enviar es:", pedidoId); // <-- VERIFICA ESTO
+    
+    if (!pedidoId) {
+        toast.error("Error: No se encontró el ID del pedido");
+        return;
+    }
+        if (!validarFormulario()) return;
+        setIsSubmitting(true);
+
+        try {
+            const pedidoId = location.state?.pedidoId;
+            let paymentMethodId = null;
+
+            if (metodoPago === "TARJETA") {
+                const { error, paymentMethod } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: elements.getElement(CardElement),
+                });
+                if (error) throw new Error(error.message);
+                paymentMethodId = paymentMethod.id;
+            }
+
+            navigate(rutaConfirmacion, {
+                state: {
+                    esPedidoFoto,
+                    metodoPago,
+                    datosPedido: form,
+                    pedidoId: pedidoId,
+                    paymentMethodId,
+                    resumenDatos,
+                    carrito
+                }
+            });
+        } catch (err) {
+            toast.error(err.message || "Error al procesar el pago");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
+    console.log("DEBUG: location.state en SeleccionMetodoPagoPage:", location.state);
     return (
         <div className="p-4 md:p-6 max-w-7xl mx-auto flex flex-col gap-6">
             <div>
-
-                <p className="text-gray-500">
-                    Este módulo te permite completar los datos de facturación y seleccionar un método de pago
-                </p>
-
+                <p className="text-gray-500">Este módulo te permite completar los datos de facturación y seleccionar un método de pago</p>
             </div>
 
-            {/*
-            <button
-                onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-gray-600 hover:text-emerald-700 transition font-medium w-fit"
-            >
-                <FiArrowLeft size={20} />
-                Volver al carrito
-            </button>
-*/}
-            <PedidoInfoForm
-                form={form}
-                handleChange={handleChange}
-            />
+            {!esPedidoFoto && (
+                <PedidoInfoForm form={form} handleChange={handleChange} />
+            )}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-
                 <div className="lg:col-span-2 flex flex-col gap-6">
+
                     <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/20 p-6 shadow-sm">
-                        <PedidoDatosForm form={form} handleChange={handleChange} />
+                        {esPedidoFoto ? (
+                            <div className="bg-white/60 rounded-3xl">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <button
+                                        onClick={() => navigate(-1)}
+                                        className="w-11 h-11 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition shrink-0"
+                                    >
+                                        <FiArrowLeft className="text-xl text-gray-700" />
+                                    </button>
+                                    <h2 className="text-xl font-bold text-gray-800">Datos para facturación</h2>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-9 gap-y-6 pl-3">                                    <div>
+                                    <p className="text-sm text-gray-500">Nombre</p>
+                                    <p className="font-semibold text-gray-800">{form.nombreCompleto}</p>
+                                </div>
+
+                                    <div>
+                                        <p className="text-sm text-gray-500">Identificación</p>
+                                        <p className="font-semibold text-gray-800">{form.identificacion}</p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-sm text-gray-500">Teléfono</p>
+                                        <p className="font-semibold text-gray-800">{form.telefono}</p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-sm text-gray-500">Dirección</p>
+                                        <p className="font-semibold text-gray-800">{form.direccion || "N/A"}</p>
+                                    </div>
+                                </div>
+
+                                <p className="text-xs text-emerald-600 mt-6 italic pl-3">
+                                    * Los datos de facturación fueron cargados de tu pedido original.
+                                </p>
+                            </div>
+                        ) : (
+                            <>
+                                <PedidoDatosForm form={form} handleChange={handleChange} />
+                            </>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -199,19 +283,26 @@ export default function SeleccionMetodoPagoPage() {
                             <PedidoDireccionForm form={form} handleChange={handleChange} />
                         )}
 
-                        <div className={`bg-white/60 backdrop-blur-xl rounded-3xl border border-white/20 p-6 shadow-sm ${tipoEntrega !== "domicilio" ? "md:col-span-2" : ""}`}>
-                            <h2 className="text-lg font-semibold text-gray-800">Observaciones</h2>
-                            <p className="text-sm text-gray-500 mb-4">Información adicional del pedido</p>
-                            <textarea
-                                name="observaciones"
-                                value={form.observaciones}
-                                onChange={handleChange}
-                                placeholder="Ejemplo: Necesito entrega urgente..."
-                                maxLength={150}
-                                className="w-full rounded-2xl border border-gray-200 p-4 h-[120px] resize-none outline-none focus:ring-2 focus:ring-emerald-200"
-                            />
-                            <p className="text-xs text-gray-400 text-right mt-1">{form.observaciones.length}/150</p>
-                        </div>
+                        {(form.observaciones || esPedidoFoto) && (
+                            <div className={`bg-white/60 backdrop-blur-xl rounded-3xl border border-white/20 p-6 shadow-sm ${tipoEntrega !== "domicilio" ? "md:col-span-2" : ""}`}>
+                                <h2 className="text-lg font-semibold text-gray-800">Observaciones</h2>
+
+                                {esPedidoFoto ? (
+                                    <p className="mt-2 text-sm text-gray-600 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                        {form.observaciones || "Sin observaciones adicionales."}
+                                    </p>
+                                ) : (
+                                    <textarea
+                                        name="observaciones"
+                                        value={form.observaciones}
+                                        onChange={handleChange}
+                                        placeholder="Ejemplo: Necesito entrega urgente..."
+                                        maxLength={150}
+                                        className="w-full rounded-2xl border border-gray-200 p-4 h-[120px] mt-2 resize-none outline-none focus:ring-2 focus:ring-emerald-200"
+                                    />
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/20 p-6 shadow-sm">
@@ -221,9 +312,7 @@ export default function SeleccionMetodoPagoPage() {
                         />
                         <div className="mt-6">
                             {metodoPago === "TRANSFERENCIA" && <TransferenciaForm />}
-                            {metodoPago === "TARJETA" && (
-                                <TarjetaForm onUpdate={(data) => setDatosTarjeta(data)} />
-                            )}
+                            {metodoPago === "TARJETA" && <TarjetaForm onUpdate={(data) => setDatosTarjeta(data)} />}
                         </div>
                     </div>
                 </div>
@@ -233,20 +322,15 @@ export default function SeleccionMetodoPagoPage() {
                         carrito={carrito}
                         esPedidoFoto={esPedidoFoto}
                         tipoEntrega={tipoEntrega}
+                        resumenDatos={resumenDatos}
+                        totalPedidoFoto={totalPedidoFoto}
                     />
                     <Button
-                        className={`${buttonPrimaryClass} w-full h-12 text-base flex items-center justify-center gap-2`}
+                        className={`${buttonPrimaryClass} w-full h-12 text-base`}
                         onClick={handleAccionBoton}
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? (
-                            <>
-                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                Procesando...
-                            </>
-                        ) : (
-                            "Continuar"
-                        )}
+                        {isSubmitting ? "Procesando..." : "Continuar"}
                     </Button>
                 </div>
             </div>

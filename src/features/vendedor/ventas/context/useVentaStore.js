@@ -134,7 +134,14 @@ const useVentaStore = create(
                     get().resetVentaCompleta();
                 }
                 set({ ventaPendiente: data.venta });
-            }
+            },
+            cargarVentaDesdePedido: (pedido, articulos) =>
+    set({
+        pedidoSeleccionado: pedido,
+        factura: articulos,
+        metodoPago: pedido.metodoPago,
+        datosFacturacion: pedido.datosFacturacion || {}
+    }),
 
         }),
         {

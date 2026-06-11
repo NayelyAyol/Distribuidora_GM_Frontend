@@ -93,6 +93,14 @@ export default function CobroPage() {
 
     const esVentaDirecta = !pedidoSeleccionado;
 
+    console.log("FACTURA:", factura);
+console.log("PEDIDO:", pedidoSeleccionado);
+console.log("METODO:", metodoPago);
+console.log("DATOS:", datosFacturacion);
+
+useEffect(() => {
+    console.log("STORE COMPLETO", useVentaStore.getState());
+}, []);
     return (
         <div className="p-6 flex flex-col gap-6">
 

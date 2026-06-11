@@ -3,15 +3,19 @@ import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
 import useVentaStore from "../../ventas/context/useVentaStore"
+import { toast } from "react-toastify"
 
 export default function FacturaPanel({
-    factura,
+    factura = [],
+    modo = "VENTA_DIRECTA", // "VENTA_DIRECTA" (por defecto), "CARRITO", "ARMADO_FOTO"
     eliminarProducto,
     limpiarFactura,
     cambiarCantidad,
     pedidoSeleccionado,
-    limpiarPedido
+    limpiarPedido,
+    esEditable
 }) {
+    const esSoloLectura = modo === "CARRITO"
     const navigate = useNavigate()
     const metodoPago = useVentaStore(state => state.metodoPago ?? null);
     const datosFacturacion = useVentaStore(state => state.datosFacturacion ?? {});
@@ -51,23 +55,30 @@ export default function FacturaPanel({
     const esVentaDirecta = !pedidoSeleccionado;
 
 
-    const handleCobrar = () => {
-        const esPedidoCarritoCompleto = 
-            pedidoSeleccionado?.tipoPedido === "CARRITO" && 
-            pedidoSeleccionado?.cliente?.email; 
+const handleCobrar = () => {
+    // 1. Definimos qué hace que un pedido pueda saltarse el CobroPage
+    const esCarritoValido = pedidoSeleccionado?.tipoPedido === "CARRITO" && pedidoSeleccionado?.cliente?.email;
+    const esFotoListaValida = pedidoSeleccionado?.tipoPedido === "FOTO_LISTA" && pedidoSeleccionado?.datosAdicionales; 
 
-        if (esVentaDirecta) {
-            navigate("/dashboard/ventas/cobro"); 
-        } 
-        else if (esPedidoCarritoCompleto) {
-            navigate("/dashboard/ventas/cobro/confirmacion-venta");
-        }
-        else if (puedeIrConfirmacion) {
-            navigate("/dashboard/ventas/cobro/confirmacion-venta");
-        } else {
-            navigate("/dashboard/ventas/cobro");
-        }
+    // 2. Evaluamos
+    const puedeSaltarCobro = esCarritoValido || esFotoListaValida;
+
+    // 3. Ejecución del flujo
+    if (esVentaDirecta) {
+        navigate("/dashboard/ventas/cobro");
+    } else if (puedeSaltarCobro) {
+        // Si tiene todos sus datos, directo a confirmar
+        navigate("/dashboard/ventas/cobro/confirmacion-venta");
+    } else {
+        // Si no cumple los requisitos, lo enviamos a completar datos
+        toast.info("Por favor, completa los datos del pedido antes de continuar.");
+        navigate("/dashboard/ventas/cobro");
     }
+}
+
+    const handleEliminar = (id) => {
+        if (eliminarProducto) eliminarProducto(id);
+    };
 
     return (
         <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-lg flex flex-col">
@@ -87,8 +98,9 @@ export default function FacturaPanel({
                         <ProductoItemFactura
                             key={p.id || p._id}
                             producto={p}
-                            onDelete={eliminarProducto}
-                            onCantidadChange={cambiarCantidad}
+                            onDelete={esSoloLectura ? undefined : eliminarProducto}
+                            onCantidadChange={esSoloLectura ? undefined : cambiarCantidad}
+                            esEditable={esEditable}
                         />
                     ))
                 )}
@@ -156,26 +168,23 @@ export default function FacturaPanel({
                 }
 
 
-                <Button
-                    onClick={() => {
-                        limpiarFactura()
-                        limpiarPedido()
-                    }}
-                    className={`${buttonOutlineClass} py-5`}
-                >
-                    Limpiar
-                </Button>
+                {esEditable && (
+                    <>
+                        <Button onClick={() => { limpiarFactura(); limpiarPedido(); }} className={`${buttonOutlineClass} py-5`}>
+                            Limpiar
+                        </Button>
 
-                <Button
-                    disabled={
-                        factura.length === 0 ||
-                        productosSinStock
-                    }
-                    onClick={handleCobrar}
-                    className={buttonPrimaryClass}
-                >
-                    Cobrar
-                </Button>
+                        {modo !== "ARMADO_FOTO" && (
+                            <Button 
+                                disabled={factura.length === 0 || productosSinStock} 
+                                onClick={handleCobrar} 
+                                className={buttonPrimaryClass}
+                            >
+                                Cobrar
+                            </Button>
+                        )}
+                    </>
+                )}
             </div>
 
         </div>
