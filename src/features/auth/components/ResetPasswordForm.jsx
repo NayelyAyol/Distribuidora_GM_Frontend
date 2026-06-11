@@ -7,6 +7,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md"
 import { useState, useEffect } from "react"
 import { changePassword } from "../services/authService"
 import { toast } from "react-toastify"
+import { FiArrowLeft } from "react-icons/fi"
 
 export default function ResetPasswordUI() {
     const navigate = useNavigate()
@@ -83,13 +84,32 @@ export default function ResetPasswordUI() {
     return (
         <div className="w-full max-w-lg mx-auto">
 
-            <button
-                type="button"
-                onClick={() => navigate("/login")}
-                className="absolute top-6 left-6 text-sm text-gray-600 hover:text-emerald-600 transition"
-            >
-                ← Volver
-            </button>
+                <button
+                    type="button"
+                    onClick={() => navigate("/login")}
+                    className="
+                        absolute
+                        top-9
+                        
+                        
+                        
+
+                        w-10 h-10
+                        sm:w-11 sm:h-11
+
+                        rounded-xl
+                        bg-white
+                        shadow-sm
+                        border border-gray-100
+                        flex items-center justify-center
+
+                        hover:bg-emerald-50
+                        transition
+                        z-10
+                    "
+                >
+                    <FiArrowLeft className="text-lg sm:text-xl text-gray-700" />
+                </button>
 
             <form
                 onSubmit={(e) => {
