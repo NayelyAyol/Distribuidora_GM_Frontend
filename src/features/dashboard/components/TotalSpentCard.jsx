@@ -2,12 +2,41 @@ import { MdArrowDropUp, MdOutlineCalendarToday, MdBarChart } from "react-icons/m
 import { Card } from "@/components/ui/card"
 import LineChart from "@/components/charts/LineChart"
 
-import {
-    lineChartDataTotalSpent,
-    lineChartOptionsTotalSpent
-} from "../data/charts"
+export default function TotalSpentCard({
+    isVendedor,
+    ventasPorMes = []
+}) {
 
-export default function TotalSpentCard({ isVendedor = false }) {
+    const series = [
+        {
+            name: "Ventas",
+            data: ventasPorMes.map(
+                item => item.total
+            )
+        }
+    ]
+
+    const options = {
+        chart: {
+            toolbar: {
+                show: false
+            }
+        },
+
+        xaxis: {
+            categories:
+                ventasPorMes.map(
+                    item => item.mes
+                )
+        }
+    }
+
+    const total =
+        ventasPorMes.reduce(
+            (acc, item) =>
+                acc + item.total,
+            0
+        )
 
     return (
         <Card className="bg-white/80 backdrop-blur-xl border border-gray-200 shadow-lg rounded-2xl p-6">
@@ -30,7 +59,7 @@ export default function TotalSpentCard({ isVendedor = false }) {
                 <div className="flex flex-col justify-center">
 
                     <p className="text-3xl font-bold text-gray-800">
-                        $37.5K
+                        ${total.toFixed(2)}
                     </p>
 
                     <p className="text-sm text-gray-500 mt-2">
@@ -48,8 +77,8 @@ export default function TotalSpentCard({ isVendedor = false }) {
 
                 <div className="w-full h-[220px]">
                     <LineChart
-                        options={lineChartOptionsTotalSpent}
-                        series={lineChartDataTotalSpent}
+                        options={options}
+                        series={series}
                     />
                 </div>
 

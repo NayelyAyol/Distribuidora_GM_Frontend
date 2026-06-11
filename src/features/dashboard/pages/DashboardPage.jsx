@@ -3,10 +3,16 @@ import WeeklyRevenueCard from "../components/WeeklyRevenueCard"
 import Widget from "../components/Widget"
 import PieChartCard from "../components/PieChartCard"
 import { MdBarChart, MdDashboard } from "react-icons/md"
-import { IoMdHome } from "react-icons/io"
 import { IoDocuments } from "react-icons/io5"
 import useAuthStore from "../../../context/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+import {
+    obtenerDashboardAdmin,
+    obtenerDashboardVendedor
+} from "../services/dashboardService";
 
 export default function DashboardPage() {
 
@@ -14,6 +20,8 @@ export default function DashboardPage() {
 
     const user = useAuthStore((state) => state.user)
     const hydrated = useAuthStore((state) => state._hasHydrated)
+
+    const [dashboard, setDashboard] = useState(null);
 
     if (!hydrated) {
         return <p className="p-6">Cargando...</p>
@@ -26,67 +34,100 @@ export default function DashboardPage() {
     const rol = user?.rol
     const esVendedor = rol?.toUpperCase() === "VENDEDOR"
 
+    useEffect(() => {
+            if (!user) return;
+
+
+        const cargarDashboard = async () => {
+
+            try {
+
+                const response = esVendedor
+                    ? await obtenerDashboardVendedor()
+                    : await obtenerDashboardAdmin();
+
+                console.log("Dashboard:", response);
+
+                setDashboard(response);
+
+            } catch (error) {
+
+                toast.error(error.message);
+            }
+        };
+
+        cargarDashboard();
+
+    }, [esVendedor, user]);
+
+    if (!dashboard) {
+        return (
+            <div className="p-6">
+                Cargando dashboard...
+            </div>
+        );
+    }
+
     const adminWidgets = [
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ingresos",
-            subtitle: "$340.5"
-        },
-        {
-            icon: <IoDocuments className="text-xl" />,
-            title: "Recomendaciones",
-            subtitle: "10",
-            notification: 10,
-            path: "/dashboard/recomendaciones"
-        },
-        {
-            icon: <IoDocuments className="text-xl" />,
-            title: "Quejas y Sugerencias",
-            subtitle: "4",
-            notification: 4,
-            path: "/dashboard/quejas-sugerencias"
-        },
-        {
-            icon: <MdDashboard className="text-xl" />,
-            title: "Balance",
-            subtitle: "$1,000"
+            title: "Ingresos Totales",
+            subtitle: `$${dashboard.resumen.ingresosTotales}`
         },
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ventas",
-            subtitle: "145"
+            title: "Ingresos del Mes",
+            subtitle: `$${dashboard.resumen.ingresosMes}`
         },
         {
-            icon: <IoMdHome className="text-xl" />,
-            title: "Proyectos",
-            subtitle: "2433"
+            icon: <MdBarChart className="text-xl" />,
+            title: "Ingresos de Hoy",
+            subtitle: `$${dashboard.resumen.ingresosHoy}`
+        },
+        {
+            icon: <IoDocuments className="text-xl" />,
+            title: "Quejas Pendientes",
+            subtitle: dashboard.resumen.quejasPendientes,
+            notification: dashboard.resumen.quejasPendientes,
+            path: "/dashboard/quejas-sugerencias"
+        },
+        {
+            icon: <IoDocuments className="text-xl" />,
+            title: "Pedidos Pendientes",
+            subtitle: dashboard.resumen.pedidosPendientes,
+            notification: dashboard.resumen.pedidosPendientes,
+        },
+        {
+            icon: <MdDashboard className="text-xl" />,
+            title: "Productos",
+            subtitle: dashboard.resumen.totalProductos
         }
-    ]
+    ];
 
     const vendedorWidgets = [
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Mis ventas",
-            subtitle: "$574.34"
+            title: "Mis Ventas",
+            subtitle: `$${dashboard.resumen.misVentas}`
         },
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ventas del mes",
-            subtitle: "$1200"
+            title: "Ventas del Mes",
+            subtitle: `$${dashboard.resumen.ventasMes}`
         },
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ventas de hoy",
-            subtitle: "$120"
+            title: "Ventas de Hoy",
+            subtitle: `$${dashboard.resumen.ventasHoy}`
         },
         {
             icon: <IoDocuments className="text-xl" />,
-            title: "Pedidos pendientes",
-            subtitle: "4",
-            notification: 4,
+            title: "Pedidos Pendientes",
+            subtitle: dashboard.resumen.pedidosPendientes,
+            notification: dashboard.resumen.pedidosPendientes,
             path: "/dashboard/pedidos"
-        },
-    ]
+        }
+    ];
 
     const widgets = esVendedor
         ? vendedorWidgets
@@ -127,16 +168,22 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
 
                 <div className="h-full">
-                    <TotalSpentCard isVendedor={esVendedor} />
+                    <TotalSpentCard isVendedor={esVendedor}
+                    ventasPorMes={dashboard?.graficas?.ventasPorMes || []}
+                    />
                 </div>
 
-                <div className="w-full">
-                    {!esVendedor ? (
-                        <WeeklyRevenueCard />
-                    ) : (
-                        <PieChartCard />
-                    )}
-                </div>
+<div className="w-full">
+    {!esVendedor ? (
+        <WeeklyRevenueCard
+            data={dashboard?.graficas?.ventasPorMetodoPago || []}
+        />
+    ) : (
+        <PieChartCard
+            data={dashboard?.graficas?.ventasPorMetodoPago || []}
+        />
+    )}
+</div>
 
             </div>
         </div>
