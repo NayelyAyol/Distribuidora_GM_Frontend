@@ -1,14 +1,12 @@
 import api from "../../../../utils/api";
 
-export const obtenerPedidosSeleccionados = async () => {
+export const obtenerPedidosSeleccionados = async (queryString) => {
     try {
-        const response = await api.get(`/pedidos/pendientes`)
+        const response = await api.get(`/pedidos/pendientes?${queryString}`)
         return response.data
     } catch (error) {
-        console.error("Error al obtener pedidos seleccionados:", error)
-        throw new Error(
-            error.response?.data?.msg || "Error al obtener pedidos seleccionados",
-        )    
+        console.error("Error obteniendo pedidos disponibles:", error)
+        throw new Error(error.response?.data?.msg || "Error al obtener los pedidos disponibles")
     }
 }
 

@@ -11,12 +11,17 @@ export default function PedidosDisponiblesPage() {
     const [pedidos, setPedidos] = useState([])
     const [cargando, setCargando] = useState(false)
     const [pedidoToConfirm, setPedidoToConfirm] = useState(null)
+    const [page, setPage] = useState(1)
+    const [totalPaginas, setTotalPaginas] = useState(1)
 
     const cargarPedidos = async () => {
         setCargando(true)
         try {
+            const params = { page }
+            const query = new URLSearchParams(params).toString()
             const data = await obtenerPedidosSeleccionados()
             setPedidos(data.pedidos || [])
+            setTotalPaginas(data.totalPaginas || 1)
         } catch (error) {
             toast.error(error.message || "Error al cargar pedidos disponibles")
         } finally {
@@ -26,11 +31,11 @@ export default function PedidosDisponiblesPage() {
 
     useEffect(() => {
         cargarPedidos()
-    }, [])
+    }, [page])
 
     const handleConfirmarToma = async () => {
         if (!pedidoToConfirm) return
-        
+
         try {
             await tomarPedido(pedidoToConfirm._id)
             toast.success("Pedido tomado correctamente")
@@ -38,7 +43,7 @@ export default function PedidosDisponiblesPage() {
         } catch (error) {
             toast.error(error.message || "Error al tomar pedido")
         } finally {
-            setPedidoToConfirm(null) 
+            setPedidoToConfirm(null)
         }
     }
 
@@ -52,11 +57,30 @@ export default function PedidosDisponiblesPage() {
                 {cargando ? (
                     <div className="p-6 text-center">Cargando pedidos...</div>
                 ) : (
-                    <div className="flex border-b bg-white">
+                    <div className="flex flex-col border-b bg-white">
                         <DataTable
                             data={pedidos}
                             columns={pedidosDisponiblesColumns((pedido) => setPedidoToConfirm(pedido))}
                         />
+                        <div className="flex justify-center items-center gap-2 p-4 flex-wrap">
+                            {Array.from({ length: totalPaginas }, (_, index) => {
+                                const numero = index + 1
+                                const activa = numero === page
+                                return (
+                                    <button
+                                        key={numero}
+                                        onClick={() => setPage(numero)}
+                                        className={`min-w-[40px] h-[40px] px-3 rounded-xl border transition font-medium
+                                            ${activa
+                                                ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+                                                : "text-gray-600 hover:bg-gray-100 border-gray-200"
+                                            }`}
+                                    >
+                                        {numero}
+                                    </button>
+                                )
+                            })}
+                        </div>
                     </div>
                 )}
             </div>
@@ -69,7 +93,7 @@ export default function PedidosDisponiblesPage() {
                         </h2>
 
                         <p className="text-[15px] text-gray-500 mb-4">
-                            ¿Estás seguro de que deseas tomar el pedido del cliente 
+                            ¿Estás seguro de que deseas tomar el pedido del cliente
                             <span className="font-semibold text-emerald-800">
                                 {" "}{pedidoToConfirm.datosFacturacion?.nombreCompleto || "Sin nombre"}
                             </span>?

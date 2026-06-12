@@ -10,6 +10,9 @@ export default function CarritoItem({
 }) {
     const [cantidadLocal, setCantidadLocal] = useState(producto.cantidad);
 
+    const stockDisponible = producto.stockDisponible ?? 0;
+    const limiteEfectivo = stockDisponible - 5;
+
     useEffect(() => {
         setCantidadLocal(producto.cantidad);
     }, [producto.cantidad]);
@@ -75,7 +78,7 @@ export default function CarritoItem({
 
                         <button
                             onClick={() => actualizarCantidad(cantidadLocal + 1)}
-                            disabled={cantidadLocal >= (producto.stock ?? 0)}
+                            disabled={cantidadLocal >= limiteEfectivo}
                             className="p-2 hover:bg-gray-100 text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
                         >
                             <FiPlus size={14} />
