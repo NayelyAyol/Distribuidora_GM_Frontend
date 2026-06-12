@@ -108,7 +108,7 @@ export default function VentaExitosaPage() {
 
                             {venta.articulos.map((item, index) => (
                                 <div key={index} className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
-                                    <span>{item.producto.nombre || item.nombreProducto}</span> 
+                                    <span>{item.producto.nombre || item.nombreProducto}</span>
                                     <span>x{item.cantidad}</span>
                                 </div>
                             ))}
@@ -143,11 +143,21 @@ export default function VentaExitosaPage() {
 
                         <Button
                             onClick={handlePrint}
-                            className={`${buttonOutlineClass} p-[22px]`}
+                            className={`${buttonPrimaryClass} p-[22px]`}
                         >
                             <FiPrinter size={20} />
                             Imprimir factura
                         </Button>
+
+                        {venta.origen === "DIRECTA" && (
+                            <Button
+                                onClick={() => navigate("/dashboard/mis-ventas")}
+                                className={`${buttonOutlineClass} p-[22px] md:col-span-2`}
+                            >
+                                <FiFileText size={20} />
+                                Ver mis ventas
+                            </Button>
+                        )}
 
                     </div>
 

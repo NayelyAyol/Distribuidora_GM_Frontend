@@ -184,21 +184,22 @@ export default function ConfirmacionVentaPage() {
                                 </p>
                             </div>
 
-                            <div>
-                                <p className="
-                                    text-sm
-                                    text-gray-500
-                                ">
-                                    Nombre del pedido
-                                </p>
-                                <p className="
-                                    font-semibold
-                                    text-gray-800
-                                ">
-                                    {pedidoSeleccionado?.nombrePedido}
-                                </p>
-                            </div>
-
+                            {pedidoSeleccionado && (
+                                <div>
+                                    <p className="
+            text-sm
+            text-gray-500
+        ">
+                                        Nombre del pedido
+                                    </p>
+                                    <p className="
+            font-semibold
+            text-gray-800
+        ">
+                                        {pedidoSeleccionado?.nombrePedido}
+                                    </p>
+                                </div>
+                            )}
                             <div>
                                 <p className="
                                     text-sm
@@ -233,7 +234,7 @@ export default function ConfirmacionVentaPage() {
                         ">
                             Productos facturados
                         </h3>
-{console.log("Estructura de factura:", factura)}
+                        {console.log("Estructura de factura:", factura)}
                         {factura.map((producto, index) => (
                             <div
                                 key={producto.id || index}
@@ -290,7 +291,7 @@ export default function ConfirmacionVentaPage() {
                         ">
                             Total cobrado
                         </h3>
-                        
+
                         {/*{metodoPago === 'TRANSFERENCIA' && (
                             <div className="bg-white p-4 rounded-xl border border-gray-200 mt-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">

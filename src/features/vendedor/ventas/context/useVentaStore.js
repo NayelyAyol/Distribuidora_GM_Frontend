@@ -2,6 +2,13 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { toast } from "react-toastify";
 
+const DATOS_FACTURACION_INICIAL = {
+    nombreCompleto: "",
+    identificacion: "",
+    correo: "",
+    telefono: ""
+};
+
 const useVentaStore = create(
     persist(
         (set, get) => ({
@@ -9,7 +16,7 @@ const useVentaStore = create(
             factura: [],
             pedidoSeleccionado: null,
             metodoPago: null,
-            datosFacturacion: {},
+            datosFacturacion: { ...DATOS_FACTURACION_INICIAL },
 
             setPedidoSeleccionado: (pedido) =>
                 set({
@@ -107,7 +114,7 @@ const useVentaStore = create(
                 set({
                     factura: [],
                     metodoPago: null,
-                    datosFacturacion: {},
+                    datosFacturacion: { ...DATOS_FACTURACION_INICIAL },
                 }),
             
             ventaId:null,
@@ -121,7 +128,7 @@ const useVentaStore = create(
                     factura: [],
                     pedidoSeleccionado: null,
                     metodoPago: null,
-                    datosFacturacion: {},
+                    datosFacturacion: { ...DATOS_FACTURACION_INICIAL },
                     ventaId:null,
                     transferenciaConfirmada: false,
                 }),
@@ -148,7 +155,10 @@ const useVentaStore = create(
         pedidoSeleccionado: pedido,
         factura: articulos,
         metodoPago: pedido.metodoPago,
-        datosFacturacion: pedido.datosFacturacion || {}
+        datosFacturacion: {
+            ...DATOS_FACTURACION_INICIAL,
+            ...(pedido.datosFacturacion || {})
+        }
     }),
 
         }),
