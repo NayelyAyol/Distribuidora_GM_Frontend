@@ -165,7 +165,13 @@ return (
                                 type="text"
                                 placeholder={placeholderTexto}
                                 value={busqueda}
-                                onChange={(e) => setBusqueda(e.target.value)}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (!/^[\p{L}\p{N}\s]*$/u.test(value)) return;
+                                    if (value.length > 100) return;
+                                    setBusqueda(value);
+                                }}
+                                maxLength={100}
                                 className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1 placeholder:text-sm`}
                             />
                             <button className="rounded-full flex items-center justify-center h-12 w-12 px-2 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition">

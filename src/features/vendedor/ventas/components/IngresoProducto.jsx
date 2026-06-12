@@ -134,7 +134,11 @@ export default function IngresoProducto({ onAdd }) {
 
                 <Input
                     value={codigo}
-                    onChange={(e) => setCodigo(e.target.value)}
+                        onChange={(e) => {
+                        const value = e.target.value;
+                        if (!/^[\p{L}\p{N}\s]*$/u.test(value)) return;
+                        setCodigo(value);
+                    }}
                     onKeyDown={(e) => e.key === "Enter" && handleAgregar()}
                     placeholder="Buscar producto por nombre..."
                     className={`${inputClass} bg-transparent border-0 focus:ring-0 placeholder:text-sm`}

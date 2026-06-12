@@ -13,7 +13,7 @@ export default function RecomendacionList({
 
     const [data, setData] = useState([])
 
-    const [filter, setFilter] = useState("CON_RESPUESTA")
+    const [filter, setFilter] = useState("SIN_RESPUESTA")
     const [search, setSearch] = useState("")
 
     const filteredData = data.filter(item =>
@@ -52,6 +52,7 @@ export default function RecomendacionList({
     return (
         <div className="grid gap-4">
 
+            
             <div className="
                 flex flex-col
                 md:flex-row
@@ -60,7 +61,7 @@ export default function RecomendacionList({
                 gap-3
             ">
 
-                <div className="
+                {/*<div className="
                     flex items-center
                     bg-white
                     rounded-full
@@ -101,8 +102,9 @@ export default function RecomendacionList({
                     >
                         <FiSearch className="text-emerald-900 text-xl" />
                     </button>
+                    
 
-            </div>
+            </div>*/}
 
         <div className="flex flex-wrap gap-2">
 

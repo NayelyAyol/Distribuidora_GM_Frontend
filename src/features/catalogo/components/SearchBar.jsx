@@ -17,6 +17,16 @@ export default function SearchBar({
         }
     }
 
+    const handleChange = (e) => {
+        const value = e.target.value;
+
+        if (!/^[\p{L}\p{N}\s]*$/u.test(value)) return;
+
+        if (value.length > 60) return;
+
+        setSearch(value);
+    }
+
     return (
 
         <div className="flex items-center bg-white rounded-full w-full md:w-[320px] border border-gray-100 shadow-sm">
@@ -25,7 +35,7 @@ export default function SearchBar({
                 type="text"
                 placeholder="Buscar productos..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleChange}
                 onKeyDown={(e) => {
 
                     if (

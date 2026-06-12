@@ -57,7 +57,7 @@ export default function RecomendacionForm({
 
             <Input
                 value={asunto}
-                className="bg-white"
+                className="bg-white rounded-lg placeholder:text-base h-11 px-4"
                 onChange={(e) => setAsunto(e.target.value)}
                 placeholder={placeholderAsunto}
                 maxLength={100}
