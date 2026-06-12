@@ -1,21 +1,28 @@
-import { useState } from "react"
-
 import Switch from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 
 export default function NotificationItem({
     label,
     id,
-    showButton = false
+    tipo,
+    estado,
+    showButton = false,
+    onFinalizar,
+    onEjecutar
 }) {
 
-    const [active, setActive] = useState(true)
+    const active = estado === "PENDIENTE"
 
     const handleExecute = () => {
+        onEjecutar?.(tipo)
+    }
 
-        console.log("Proceso ejecutado")
-
-        setActive(false)
+    const handleChange = () => {
+        // Solo se permite apagar (finalizar). Encenderse de nuevo
+        // depende de que el evento vuelva a estar vigente (backend/n8n).
+        if (active) {
+            onFinalizar?.(tipo)
+        }
     }
 
     return (
@@ -27,7 +34,6 @@ export default function NotificationItem({
                 transition
             "
         >
-
             <p className="text-gray-700 font-medium">
                 {label}
             </p>
@@ -59,7 +65,8 @@ export default function NotificationItem({
                     id={id}
                     color="emerald"
                     checked={active}
-                    onChange={() => setActive(!active)}
+                    disabled={!active}
+                    onChange={handleChange}
                 />
 
             </div>

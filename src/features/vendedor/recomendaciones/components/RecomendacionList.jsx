@@ -8,7 +8,10 @@ import { toast } from "react-toastify"
 import { obtenerMisQuejasSugerencias } from "@/features/cliente/quejasysugerencias/services/quejasSugerenciasService"
 
 export default function RecomendacionList({
-    placeholder = "Buscar recomendación..."
+    placeholder = "Buscar recomendación...",
+    recargar,
+    onCargar,
+    dataKey
 }) {
 
     const [data, setData] = useState([])
@@ -16,38 +19,19 @@ export default function RecomendacionList({
     const [filter, setFilter] = useState("SIN_RESPUESTA")
     const [search, setSearch] = useState("")
 
-    const filteredData = data.filter(item =>
-        item.asunto?.toLowerCase()
-            .includes(search.toLowerCase())
-    )
-
-    const cargarQuejas = async () => {
-
+    const cargar = async () => {
         try {
-
-            const estado =
-                filter === "SIN_RESPUESTA"
-                    ? "PENDIENTE"
-                    : "FINALIZADA"
-
-            const response =
-                await obtenerMisQuejasSugerencias(
-                    estado
-                )
-
-            setData(
-                response.quejasSugerencias || []
-            )
-
+            const estado = filter === "SIN_RESPUESTA" ? "PENDIENTE" : "FINALIZADA"
+            const response = await onCargar(estado)
+            setData(response[dataKey] || [])
         } catch (error) {
-
             toast.error(error.message)
         }
     }
 
     useEffect(() => {
-        cargarQuejas()
-    }, [filter])
+        cargar()
+    }, [filter, recargar])
 
     return (
         <div className="grid gap-4">
@@ -135,8 +119,8 @@ export default function RecomendacionList({
     </div>
 
 
-            {filteredData.length > 0 ? (
-                filteredData.map(item => (
+            {data.length > 0 ? (
+                data.map(item => (
                     <RecomendacionCard
                         key={item._id}
                         item={item}

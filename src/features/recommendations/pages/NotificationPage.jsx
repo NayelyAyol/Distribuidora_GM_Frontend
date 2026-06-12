@@ -1,39 +1,109 @@
+import { useState, useEffect, useCallback } from "react"
 import { Card } from "@/components/ui/card"
+import { toast } from "react-toastify"
 import NotificationItem from "../components/NotificationItem"
+import {
+    listarAccionesAdmin,
+    finalizarAccionAdmin,
+    ejecutarPromocionSugerida
+} from "../service/accionesService"
+
+const labels = {
+    PROMOCION_SUGERIDA: "Promociones sugeridas",
+    NUEVA_MERCADERIA: "Nueva mercadería",
+    BAJO_NUMERO_VENTAS: "Bajo número de ventas",
+    PAGO_SRI: "Pago al SRI",
+    FECHA_FESTIVA: "Promoción por fechas festivas"
+}
 
 export default function NotificationPage() {
 
-    const notifications = [
-        "Promociones sugeridas",
-        "Nueva mercadería",
-        "Bajo número de ventas",
-        "Pago al SRI",
-        "Promoción por fechas festivas"
-    ]
+    const [acciones, setAcciones] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    const cargarAcciones = useCallback(async () => {
+        try {
+            const response = await listarAccionesAdmin()
+            setAcciones(response.acciones || [])
+        } catch (error) {
+            toast.error(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        cargarAcciones()
+    }, [cargarAcciones])
+
+    // Solo se permite "apagar" el switch -> marcar la acción como atendida
+    const handleFinalizar = async (tipo) => {
+        try {
+            await finalizarAccionAdmin(tipo)
+
+            setAcciones(prev =>
+                prev.map(item =>
+                    item.tipo === tipo
+                        ? { ...item, estado: "FINALIZADA" }
+                        : item
+                )
+            )
+
+            toast.success("Acción ejecutada con éxito")
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const handleEjecutar = async (tipo) => {
+        try {
+            await ejecutarPromocionSugerida()
+            await finalizarAccionAdmin(tipo)
+
+            setAcciones(prev =>
+                prev.map(item =>
+                    item.tipo === tipo
+                        ? { ...item, estado: "FINALIZADA" }
+                        : item
+                )
+            )
+
+            toast.success("Promoción ejecutada correctamente")
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="space-y-4">
+                <Card className="p-6 rounded-2xl">
+                    <p className="text-gray-500 text-center py-6">
+                        Cargando notificaciones...
+                    </p>
+                </Card>
+            </div>
+        )
+    }
 
     return (
         <div className="space-y-4">
-
             <Card className="p-6 rounded-2xl">
-
                 <div className="divide-y">
-                    {notifications.map((item, index) => (
-
+                    {acciones.map((accion) => (
                         <NotificationItem
-                            key={index}
-                            id={`switch${index}`}
-                            label={item}
-
-                            showButton={
-                                index === 0 || index === 4
-                            }
+                            key={accion.tipo}
+                            id={`switch-${accion.tipo}`}
+                            label={labels[accion.tipo] || accion.tipo}
+                            tipo={accion.tipo}
+                            estado={accion.estado}
+                            showButton={accion.tipo === "PROMOCION_SUGERIDA"}
+                            onFinalizar={handleFinalizar}
+                            onEjecutar={handleEjecutar}
                         />
-
                     ))}
                 </div>
-
             </Card>
-
         </div>
     )
 }

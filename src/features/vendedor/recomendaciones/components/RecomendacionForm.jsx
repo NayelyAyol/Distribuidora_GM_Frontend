@@ -2,13 +2,13 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { buttonPrimaryClass } from "@/utils/styles"
 import { toast } from "react-toastify"
-import { crearQuejaSugerencia } from "@/features/cliente/quejasysugerencias/services/quejasSugerenciasService"
 import { Input } from "@/components/ui/input"
 
 export default function RecomendacionForm({
     placeholderAsunto = "Asunto",
     placeholderMensaje = "Escribe tu mensaje...",
-    mensajeExito = "Mensaje enviado correctamente"
+    mensajeExito = "Mensaje enviado correctamente",
+    onSubmit
 }) {
 
     const [asunto, setAsunto] = useState("")
@@ -34,12 +34,16 @@ export default function RecomendacionForm({
             return
         }
 
+        if (mensaje.trim().length < 5) {
+            toast.error(
+                "El mensaje debe tener al menos 5 caracteres"
+            )
+            return
+        }
+
         try {
 
-            await crearQuejaSugerencia({
-                asunto,
-                mensaje
-            })
+            await onSubmit({ asunto, mensaje })
 
             toast.success(mensajeExito)
 
@@ -60,7 +64,7 @@ export default function RecomendacionForm({
                 className="bg-white rounded-lg placeholder:text-base h-11 px-4"
                 onChange={(e) => setAsunto(e.target.value)}
                 placeholder={placeholderAsunto}
-                maxLength={100}
+                maxLength={60}
             />
 
             <textarea
@@ -69,7 +73,7 @@ export default function RecomendacionForm({
                 placeholder={placeholderMensaje}
                 className="w-full p-4 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={4}
-                maxLength={300}
+                maxLength={500}
             />
 
             <Button

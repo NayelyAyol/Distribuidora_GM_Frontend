@@ -4,38 +4,32 @@ import { FiMessageCircle } from "react-icons/fi"
 
 const columnHelper = createColumnHelper()
 
-export const recomendacionColumns = (onResponder, onToggleEstado) => [
+export const recomendacionColumns = (onResponder) => [
 
-    columnHelper.accessor("descripcion", {
-        header: "Descripción"
+    columnHelper.accessor("asunto", {
+        header: "Asunto"
     }),
 
-    columnHelper.accessor("vendedor", {
+
+    columnHelper.accessor(row => row.vendedor?.email, {
+        id: "vendedor",
         header: "Vendedor"
     }),
 
-    columnHelper.accessor("fecha", {
-        header: "Fecha"
+    columnHelper.accessor("createdAt", {
+        header: "Fecha",
+        cell: ({ getValue }) =>
+            new Date(getValue()).toLocaleDateString("es-EC")
     }),
 
     columnHelper.accessor("estado", {
         header: "Estado",
-        cell: ({ row }) => {
-
-            const rec = row.original
-            const isActivo = rec.estado === "FINALIZADA";
-            const label = isActivo ? "Finalizada" : "Pendiente";
-
-            const handleToggle = async () => {
-                const nuevoEstado = isActivo ? "PENDIENTE" : "FINALIZADA";
-                await onToggleEstado(rec, nuevoEstado);
-            };
-
+        cell: ({ getValue }) => {
+            const estado = getValue()
             return (
                 <StatusBadge
-                    label={label}
-                    isActivo={isActivo}
-                    onToggle={handleToggle}
+                    label={estado === "FINALIZADA" ? "Finalizada" : "Pendiente"}
+                    isActivo={estado === "FINALIZADA"}
                 />
             )
         }
@@ -44,22 +38,16 @@ export const recomendacionColumns = (onResponder, onToggleEstado) => [
     columnHelper.display({
         id: "acciones",
         header: "Acciones",
-        cell: ({ row }) => {
-
-            const rec = row.original
-
-            return (
-                <div className="flex justify-center gap-3">
-
-                    <button
-                        onClick={() => onResponder(rec)}
-                        className="text-emerald-700 hover:text-emerald-900"
-                    >
-                        <FiMessageCircle />
-                    </button>
-
-                </div>
-            )
-        }
+        cell: ({ row }) => (
+            <div className="flex justify-center gap-3">
+                <button
+                    onClick={() => onResponder(row.original)}
+                    className="text-emerald-700 hover:text-emerald-900"
+                    disabled={row.original.estado === "FINALIZADA"}
+                >
+                    <FiMessageCircle />
+                </button>
+            </div>
+        )
     })
 ]

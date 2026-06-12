@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect, useCallback  } from "react"
 import { toast } from "react-toastify"
 import DataTable from "@/components/ui/DataTable"
 import { recomendacionColumns } from "../columns/recomendacionColumns"
@@ -6,23 +6,30 @@ import NotificationPage from "./NotificationPage"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { inputClass, buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
+import { obtenerRecomendacionesAdmin, responderRecomendacion,  } from "../../recommendations/service/recomendacionService"
 
 export default function RecomendacionesPage() {
 
     const [tab, setTab] = useState("vendedor")
     const [filter, setFilter] = useState("PENDIENTE")
-
+    const [data, setData] = useState([])
     const [selectedRec, setSelectedRec] = useState(null)
     const [respuesta, setRespuesta] = useState("")
 
-    const [recomendacionesVendedor] = useState([
-        { id: 1, descripcion: "Ofrecer combo promocional", vendedor: "Carlos Ruiz", fecha: "2025-04-28", respuesta: null },
-        { id: 2, descripcion: "Mejorar tiempos de entrega", vendedor: "Ana García", fecha: "2025-05-10", respuesta: "En revisión" }
-    ])
 
-    const filteredData = filter === "PENDIENTE" 
-        ? recomendacionesVendedor.filter(item => !item.respuesta)
-        : recomendacionesVendedor.filter(item => item.respuesta)
+    const cargarRecomendaciones = useCallback(async () => {
+        try {
+            const response = await obtenerRecomendacionesAdmin(filter)
+            setData(response.recomendaciones || [])
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }, [filter])
+
+    useEffect(() => {
+        if (tab === "vendedor") cargarRecomendaciones()
+    }, [tab, cargarRecomendaciones])
+
 
     const handleOpenModal = (rec) => {
         setSelectedRec(rec)
@@ -34,13 +41,16 @@ export default function RecomendacionesPage() {
         setRespuesta("")
     }
 
-    const handleResponder = () => {
-        if (!respuesta.trim()) {
-            toast.error("La respuesta no puede estar vacía")
-            return
+    const handleResponder = async () => {
+        if (!respuesta.trim()) return toast.error("La respuesta no puede estar vacía")
+        try {
+            await responderRecomendacion(selectedRec._id, respuesta)
+            toast.success("Recomendación respondida")
+            handleCloseModal()
+            cargarRecomendaciones()
+        } catch (error) {
+            toast.error(error.message)
         }
-        toast.success("Recomendación respondida")
-        handleCloseModal()
     }
 
     return (
@@ -86,7 +96,7 @@ export default function RecomendacionesPage() {
                             </div>
 
                             <DataTable
-                                data={filteredData}
+                                data={data}
                                 columns={recomendacionColumns(
                                     handleOpenModal,
                                     null,
