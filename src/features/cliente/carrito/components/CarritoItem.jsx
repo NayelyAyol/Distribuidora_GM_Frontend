@@ -18,7 +18,7 @@ export default function CarritoItem({
         console.log("Datos del producto:", producto);
         let valor = nuevaCantidad;
 
-        const stockMax = producto.stock ?? Infinity;
+        const stockMax = producto.stockDisponible ?? Infinity;
 
         if (valor >= stockMax) {
             valor = stockMax;

@@ -21,100 +21,74 @@ export default function ConfirmacionPedidoPage() {
 
     const [loading, setLoading] = useState(false);
 
-    const carrito = location.state?.carrito || null;
-
-    const metodoPago =
-        location.state?.metodoPago || "";
-    
-        const resumenDatos = location.state?.resumenDatos || null;
-
-    const tipoEntrega =
-        location.state?.tipoEntrega || "local";
-
-    const datosPedido =
-        location.state?.datosPedido || {};
-
-    const esPedidoFoto =
-        location.state?.esPedidoFoto || false;
-
+    const checkout = location.state?.checkout;
+    const pedido = checkout?.pedido;
+    const metodoPago = checkout?.metodoPago;
+    const tipoEntrega = checkout?.tipoEntrega;
+    const esPedidoFoto = checkout?.esPedidoFoto;
+    const carrito = checkout?.carrito;       
+    const form = checkout?.form || {};
+    const datosPedido = checkout?.form || {};
     const rutaExito =
         location.pathname.includes("/mis-pedidos")
             ? "/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso"
             : "/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso";
 
-
-
     const pedidoId = location.state?.pedidoId;
 
-    const handleConfirmar = async () => {
-        console.log("DEBUG: ID que llega a confirmación:", pedidoId); 
-    
-    if (!pedidoId) {
-        toast.error("Error: ID de pedido no encontrado. Por favor, reinicia el proceso.");
-        return;
-    }
+    const tipoEntregaBackend = tipoEntrega === "domicilio" ? "ENVIO_DOMICILIO" : "RETIRO_LOCAL";
+
+const handleConfirmar = async () => {
     setLoading(true);
+
     try {
-        let respuesta;
-        const pedidoId = location.state?.pedidoId;
-        
-        const payloadBase = {
-            metodoPago: metodoPago.toUpperCase(),
+        const payload = {
+            metodoPago: metodoPago?.toUpperCase(),
+            paymentMethodId: checkout.paymentMethodId || null
         };
 
+        let respuesta;
+
         if (esPedidoFoto) {
-            const payload = {
-                ...payloadBase,
-                paymentMethodId: location.state?.paymentMethodId || null
-            };
+            if (!pedido?._id) {
+                toast.error("Pedido no encontrado");
+                return;
+            }
+            respuesta = await definirPagoPedido(pedido._id, payload);
+console.log("DEBUG respuesta definirPagoPedido:", JSON.stringify(respuesta));
 
-            respuesta = await definirPagoPedido(pedidoId, payload);
-
-            toast.success("Método de pago registrado correctamente");
-            
-            navigate(rutaExito, {
-                state: {
-                    pedido:respuesta.data.pedido,
-                    esPedidoFoto: true,
-                }
+        } else if (payload.metodoPago === "TARJETA") {
+            // Flujo carrito + tarjeta: usa el endpoint de Stripe
+            respuesta = await pagarCarritoTarjeta({
+                ...form,
+                paymentMethodId: payload.paymentMethodId,
+                tipoEntrega: tipoEntregaBackend
             });
 
         } else {
-            const payload = {
-                ...datosPedido,
-                tipoEntrega: tipoEntrega === "domicilio" ? "ENVIO_DOMICILIO" : "RETIRO_LOCAL",
-                metodoPago: metodoPago.toUpperCase(),
-                observaciones: datosPedido.observaciones || "",
-                carrito: carrito
-            };
-
-                        console.log("Payload enviado:", payload);
-
-            if (tipoEntrega === "domicilio") {
-                payload.ciudad = datosPedido.ciudad;
-                payload.direccion = datosPedido.direccion;
-                payload.referencia = datosPedido.referencia;
-            }
-
-            if (metodoPago === "TARJETA") {
-                payload.paymentMethodId = location.state?.paymentMethodId;
-                respuesta = await pagarCarritoTarjeta(payload);
-            } else {
-                respuesta = await crearPedidoCarrito(payload);
-            }
-
-            toast.success("Pedido creado correctamente");
-
-            navigate(rutaExito, {
-                state: {
-                    esPedidoFoto: false,
-                    pedido: respuesta.pedido
-                }
+            // Flujo carrito + efectivo o transferencia
+            respuesta = await crearPedidoCarrito({
+                ...form,
+                metodoPago: payload.metodoPago,
+                tipoEntrega: tipoEntregaBackend,
             });
         }
-    } catch (error) {
-        console.error("Error en confirmación:", error);
-        toast.error(error.message || "Error al procesar la confirmación");
+
+        // En ConfirmacionPedidoPage — dentro del navigate al final de handleConfirmar
+        navigate(rutaExito, {
+            state: {
+                // Mezcla: datos actualizados del backend + artículos del pedido original
+                pedido: {
+                    ...pedido,                                              // pedido original (tiene artículos)
+                    ...(respuesta?.data?.pedido || respuesta?.pedido || {}) // sobrescribe con datos frescos
+                },
+                esPedidoFoto,
+                metodoPago
+            }
+        });
+
+    } catch (err) {
+        toast.error(err.message || "Error al confirmar el pedido");
     } finally {
         setLoading(false);
     }
@@ -291,7 +265,7 @@ export default function ConfirmacionPedidoPage() {
                             </h3>
 
                             <CarritoList
-                                carrito={carrito.articulos || []}
+                                carrito={carrito?.articulos || carrito || []}
                                 editable={false}
                             />
 
@@ -303,12 +277,12 @@ export default function ConfirmacionPedidoPage() {
 
                 <div className="flex flex-col gap-4">
 
-                    <ResumenPago
-                        carrito={carrito}
-                        esPedidoFoto={esPedidoFoto}
-                        tipoEntrega={tipoEntrega}
-                        resumenDatos={resumenDatos}
-                    />
+                <ResumenPago
+                    carrito={carrito}
+                    esPedidoFoto={esPedidoFoto}
+                    tipoEntrega={tipoEntrega}
+                    resumenDatos={checkout.resumenPago || checkout.pedido?.resumenPago}
+                />
 
                     <Button
                         onClick={handleConfirmar}

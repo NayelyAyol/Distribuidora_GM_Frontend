@@ -1,13 +1,14 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import StatusBadge from "@/features/shared/components/StatusBadge"
-import { FiEye, FiMessageCircle } from "react-icons/fi"
+import { FiEye, FiMessageCircle, FiXCircle } from "react-icons/fi"
 
 const columnHelper = createColumnHelper()
 
 export const pedidosSeleccionadosColumns = (
     onRevisar,
     onChat,
-    mostrarAcciones = true
+    mostrarAcciones = true,
+    onCancelar
 ) => {
 
     const columnas = [
@@ -87,7 +88,7 @@ export const pedidosSeleccionadosColumns = (
                             <button
                                 onClick={() => onRevisar(pedido)}
                                 className="
-                                    px-3 py-1.5
+                                    py-1.5
                                     text-emerald-700
                                     hover:text-emerald-900
                                 "
@@ -104,6 +105,18 @@ export const pedidosSeleccionadosColumns = (
                             >
                                 <FiMessageCircle />
                             </button>
+                                {pedido.estado === "EN_PROCESO" && (
+                                <button
+                                    onClick={() => onCancelar(pedido)}
+                                    className="
+                                        text-red-600
+                                        hover:text-red-800
+                                    "
+                                    title="Cancelar pedido"
+                                >
+                                    <FiXCircle />
+                                </button>
+                            )}
                         </div>
                     )
                 }

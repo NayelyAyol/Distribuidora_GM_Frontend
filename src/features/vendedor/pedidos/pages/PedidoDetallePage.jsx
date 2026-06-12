@@ -21,14 +21,7 @@ const socket = io("https://grupo-moreno.onrender.com/api");
 
 export default function PedidoDetallePage() {
 
-    const {
-    setPedidoSeleccionado,
-    setFactura,
-    setMetodoPago,
-    setDatosFacturacion,
-    resetVentaCompleta,
-    limpiarVenta
-    } = useVentaStore();
+    const { setPedidoSeleccionado, setFactura, setMetodoPago, setDatosFacturacion, resetVentaCompleta, limpiarVenta, setVentaId } = useVentaStore();
 
     const [articulosSeleccionados, setArticulosSeleccionados] = useState([]);
     const navigate = useNavigate()
@@ -84,7 +77,7 @@ export default function PedidoDetallePage() {
     useEffect(() => {
         if (pedido?.articulos && articulosSeleccionados.length === 0) {
             const articulosParaEdicion = pedido.articulos.map(item => ({
-                id: item.producto, 
+                id: item.producto,
                 nombre: item.nombreProducto,
                 cantidad: item.cantidad,
                 precio: item.precioUnitario
@@ -100,48 +93,50 @@ export default function PedidoDetallePage() {
         try {
             setLoading(true);
             const data = await ventaDesdePedido(id, { observaciones: pedido.observaciones });
-limpiarVenta();
+            console.log("DEBUG data completa:", JSON.stringify(data));
+            setVentaId(data.venta.id); 
+            limpiarVenta();
             const esPagoTarjeta = data.venta.metodoPago === 'TARJETA';
             const urlPago = data.venta.stripe?.urlPago;
 
-setPedidoSeleccionado(pedido);
+            setPedidoSeleccionado(pedido);
 
-setFactura(
-    data.venta.articulos.map(item => ({
-        id: item.producto?._id || item.producto || item.id,
-        nombre: item.nombreProducto,
-        precio: item.precioUnitario,
-        cantidad: item.cantidad,
-        stock: 999
-    }))
-);
+            setFactura(
+                data.venta.articulos.map(item => ({
+                    id: item.producto?._id || item.producto || item.id,
+                    nombre: item.nombreProducto,
+                    precio: item.precioUnitario,
+                    cantidad: item.cantidad,
+                    stock: 999
+                }))
+            );
 
-setMetodoPago(pedido.metodoPago);
+            setMetodoPago(pedido.metodoPago);
 
-setDatosFacturacion({
-    nombreCompleto:
-        pedido.datosFacturacion?.nombreCompleto ||
-        `${pedido.cliente?.nombre || ""} ${pedido.cliente?.apellido || ""}`,
+            setDatosFacturacion({
+                nombreCompleto:
+                    pedido.datosFacturacion?.nombreCompleto ||
+                    `${pedido.cliente?.nombre || ""} ${pedido.cliente?.apellido || ""}`,
 
-    correo:
-        pedido.datosFacturacion?.correo ||
-        pedido.cliente?.email ||
-        "",
+                correo:
+                    pedido.datosFacturacion?.correo ||
+                    pedido.cliente?.email ||
+                    "",
 
-    telefono:
-        pedido.datosFacturacion?.telefono ||
-        pedido.cliente?.telefono ||
-        "",
+                telefono:
+                    pedido.datosFacturacion?.telefono ||
+                    pedido.cliente?.telefono ||
+                    "",
 
-    identificacion:
-        pedido.datosFacturacion?.identificacion || ""
-});
-console.log("ANTES DE NAVEGAR");
-console.log(useVentaStore.getState());
-setTimeout(() => {
-            navigate("/dashboard/ventas");
-        }, 100);
-            
+                identificacion:
+                    pedido.datosFacturacion?.identificacion || ""
+            });
+            console.log("ANTES DE NAVEGAR");
+            console.log(useVentaStore.getState());
+            setTimeout(() => {
+                navigate("/dashboard/ventas");
+            }, 100);
+
         } catch (error) {
             console.log("ERROR DETALLADO:", error.message);
             toast.error(error.message || "Ocurrió un error inesperado al iniciar la venta");
@@ -157,9 +152,9 @@ setTimeout(() => {
         }
 
         const articulosFormateados = articulosSeleccionados.map(item => ({
-                producto: item.id, 
-                cantidad: item.cantidad
-            }));
+            producto: item.id,
+            cantidad: item.cantidad
+        }));
 
         try {
             setLoading(true);
@@ -198,31 +193,24 @@ setTimeout(() => {
         );
     };
 
-    const handleIrAPago = () => {
-        if (!pedido) return;
+const handleIrAPago = () => {
+    if (!pedido) return;
 
-        const datosPedido = {
-            nombrePedido: pedido.nombrePedido,
-            nombreCompleto: pedido.datosFacturacion?.nombreCompleto || "",
-            identificacion: pedido.datosFacturacion?.identificacion || "",
-            correo: pedido.datosFacturacion?.correo || "",
-            telefono: pedido.datosFacturacion?.telefono || "",
-            direccion: pedido.direccionEntrega?.direccion || "",
-            referencia: pedido.direccionEntrega?.referencia || "",
-            observaciones: pedido.observaciones || ""
-        };
-
-        navigate("/dashboard/mis-pedidos/pago", {
-            state: {
-                pedidoId: pedido._id,
+    navigate("/dashboard/mis-pedidos/pago", {
+        state: {
+            checkout: {
+                pedido: pedido,                              // objeto pedido completo
+                tipoEntrega: pedido.tipoEntrega || (pedido.direccionEntrega ? "domicilio" : "local"),
+                carrito: pedido.articulos,
+                datosFacturacion: pedido.datosFacturacion,
+                resumenPago: pedido.resumenPago,
                 esPedidoFoto: pedido.tipoPedido === "FOTO_LISTA",
-                tipoEntrega: pedido.direccionEntrega ? "domicilio" : "local",
-                carrito: pedido.articulos || [],
-                datosPedido: datosPedido,
-                resumenDatos: pedido.resumenPago
+                metodoPago: pedido.metodoPago               // null en este caso, el usuario lo elegirá
             }
-        });
-    };
+        }
+    });
+};
+
 
     const getBotonConfig = () => {
         if (!pedido) return null;
@@ -478,33 +466,33 @@ setTimeout(() => {
                 )
             }
 
-{
-    // Cambia la condición aquí para incluir ambos tipos
-    (esPedidoCarrito || (esPedidoLista && pedido?.articulos?.length > 0)) && (
+            {
+                // Cambia la condición aquí para incluir ambos tipos
+                (esPedidoCarrito || (esPedidoLista && pedido?.articulos?.length > 0)) && (
 
-        <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl">
-            <div className="mb-5">
-                <h2 className="text-lg font-semibold text-gray-800">
-                    Productos cotizados por el vendedor
-                </h2>
-                <p className="text-sm text-gray-500">
-                    Detalle de los productos agregados a tu lista
-                </p>
-            </div>
+                    <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl">
+                        <div className="mb-5">
+                            <h2 className="text-lg font-semibold text-gray-800">
+                                Productos cotizados por el vendedor
+                            </h2>
+                            <p className="text-sm text-gray-500">
+                                Detalle de los productos agregados a tu lista
+                            </p>
+                        </div>
 
-            <div className="space-y-4">
-                {pedido?.articulos?.map((producto) => (
-                    <div key={producto._id || producto.id} className="flex items-center justify-between border border-gray-100 rounded-2xl p-4 bg-white">
-                        <div>
-                            <p className="font-medium text-gray-800">{producto.nombreProducto}</p>
-                            <p className="text-sm text-gray-500">Cantidad: {producto.cantidad}</p>
+                        <div className="space-y-4">
+                            {pedido?.articulos?.map((producto) => (
+                                <div key={producto._id || producto.id} className="flex items-center justify-between border border-gray-100 rounded-2xl p-4 bg-white">
+                                    <div>
+                                        <p className="font-medium text-gray-800">{producto.nombreProducto}</p>
+                                        <p className="text-sm text-gray-500">Cantidad: {producto.cantidad}</p>
+                                    </div>
+                                    <div className="font-semibold text-emerald-700">
+                                        ${(producto.precioUnitario * producto.cantidad).toFixed(2)}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                        <div className="font-semibold text-emerald-700">
-                            ${(producto.precioUnitario * producto.cantidad).toFixed(2)}
-                        </div>
-                    </div>
-                ))}
-            </div>
 
                         <div className="
                             mt-6
@@ -594,7 +582,7 @@ setTimeout(() => {
                             <FacturaPanel
                                 factura={articulosSeleccionados}
                                 modo="ARMADO_FOTO"
-                                esEditable={!esCliente && (pedido.estado === 'EN_PROCESO' || pedido.estado === 'COTIZADO')}                                eliminarProducto={quitarDelArray}
+                                esEditable={!esCliente && (pedido.estado === 'EN_PROCESO' || pedido.estado === 'COTIZADO')} eliminarProducto={quitarDelArray}
                                 eliminarProducto={quitarDelArray}
                                 cambiarCantidad={actualizarCantidad}
                             />
@@ -603,7 +591,7 @@ setTimeout(() => {
                 )}
             </div>
 
-            {
+            {/*{
                 !esCliente && esPedidoCarrito && (
 
                     <Card className="
@@ -630,9 +618,10 @@ setTimeout(() => {
                         </div>
                     </Card>
                 )
-            }
+            }*/}
+
             {/* Ajuste en tu lógica de botones */}
-            {!esCliente && pedido.tipoPedido === "FOTO_LISTA" && pedido.estado === 'EN_PROCESO' && (
+            {!esCliente && pedido.tipoPedido === "FOTO_LISTA" && pedido.estado === 'EN_PROCESO' && pedido.metodoPago === null && (
                 <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl">
                     <div className="flex flex-wrap gap-4 justify-end">
                         <Button

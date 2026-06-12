@@ -4,10 +4,12 @@ import { buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
 import useVentaStore from "../../ventas/context/useVentaStore"
 import { toast } from "react-toastify"
+import { confirmarTransferenciaVenta } from "../../ventas/services/ventaService";
+import { useState } from "react"
 
 export default function FacturaPanel({
     factura = [],
-    modo = "VENTA_DIRECTA", // "VENTA_DIRECTA" (por defecto), "CARRITO", "ARMADO_FOTO"
+    modo = "VENTA_DIRECTA", 
     eliminarProducto,
     limpiarFactura,
     cambiarCantidad,
@@ -15,6 +17,8 @@ export default function FacturaPanel({
     limpiarPedido,
     esEditable
 }) {
+
+    const ventaId = useVentaStore(state => state.ventaId);
     const esSoloLectura = modo === "CARRITO"
     const navigate = useNavigate()
     const metodoPago = useVentaStore(state => state.metodoPago ?? null);
@@ -54,27 +58,29 @@ export default function FacturaPanel({
 
     const esVentaDirecta = !pedidoSeleccionado;
 
+    const transferenciaConfirmada = useVentaStore(state => state.transferenciaConfirmada);
+    const setTransferenciaConfirmada = useVentaStore(state => state.setTransferenciaConfirmada);
 
-const handleCobrar = () => {
-    // 1. Definimos qué hace que un pedido pueda saltarse el CobroPage
-    const esCarritoValido = pedidoSeleccionado?.tipoPedido === "CARRITO" && pedidoSeleccionado?.cliente?.email;
-    const esFotoListaValida = pedidoSeleccionado?.tipoPedido === "FOTO_LISTA" && pedidoSeleccionado?.datosAdicionales; 
+    const handleCobrar = () => {
+        // 1. Definimos qué hace que un pedido pueda saltarse el CobroPage
+        const esCarritoValido = pedidoSeleccionado?.tipoPedido === "CARRITO" && pedidoSeleccionado?.cliente?.email;
+        const esFotoListaValida = pedidoSeleccionado?.tipoPedido === "FOTO_LISTA" && pedidoSeleccionado?.datosAdicionales;
 
-    // 2. Evaluamos
-    const puedeSaltarCobro = esCarritoValido || esFotoListaValida;
+        // 2. Evaluamos
+        const puedeSaltarCobro = esCarritoValido || esFotoListaValida;
 
-    // 3. Ejecución del flujo
-    if (esVentaDirecta) {
-        navigate("/dashboard/ventas/cobro");
-    } else if (puedeSaltarCobro) {
-        // Si tiene todos sus datos, directo a confirmar
-        navigate("/dashboard/ventas/cobro/confirmacion-venta");
-    } else {
-        // Si no cumple los requisitos, lo enviamos a completar datos
-        toast.info("Por favor, completa los datos del pedido antes de continuar.");
-        navigate("/dashboard/ventas/cobro");
+        // 3. Ejecución del flujo
+        if (esVentaDirecta) {
+            navigate("/dashboard/ventas/cobro");
+        } else if (puedeSaltarCobro) {
+            // Si tiene todos sus datos, directo a confirmar
+            navigate("/dashboard/ventas/cobro/confirmacion-venta");
+        } else {
+            // Si no cumple los requisitos, lo enviamos a completar datos
+            toast.info("Por favor, completa los datos del pedido antes de continuar.");
+            navigate("/dashboard/ventas/cobro");
+        }
     }
-}
 
     const handleEliminar = (id) => {
         if (eliminarProducto) eliminarProducto(id);
@@ -167,24 +173,46 @@ const handleCobrar = () => {
                     )
                 }
 
+{esEditable && (
+    <>
+        <Button 
+            onClick={() => { limpiarFactura(); limpiarPedido(); setTransferenciaConfirmada(false); }} 
+            className={`${buttonOutlineClass} py-5`}
+        >
+            Limpiar
+        </Button>
 
-                {esEditable && (
-                    <>
-                        <Button onClick={() => { limpiarFactura(); limpiarPedido(); }} className={`${buttonOutlineClass} py-5`}>
-                            Limpiar
-                        </Button>
+        {/* Sin pedido seleccionado → venta directa, mostrar Cobrar siempre */}
+        {!pedidoSeleccionado && modo !== "ARMADO_FOTO" && (
+            <Button 
+                disabled={factura.length === 0 || productosSinStock} 
+                onClick={handleCobrar} 
+                className={buttonPrimaryClass}
+            >
+                Cobrar
+            </Button>
+        )}
 
-                        {modo !== "ARMADO_FOTO" && (
-                            <Button 
-                                disabled={factura.length === 0 || productosSinStock} 
-                                onClick={handleCobrar} 
-                                className={buttonPrimaryClass}
-                            >
-                                Cobrar
-                            </Button>
-                        )}
-                    </>
-                )}
+        {/* Con pedido seleccionado → ocultar Cobrar, mostrar Confirmar Transferencia si aplica */}
+        {pedidoSeleccionado && metodoPago === "TRANSFERENCIA" && !transferenciaConfirmada && (
+            <Button
+                disabled={factura.length === 0}
+                onClick={async () => {
+                    try {
+                        await confirmarTransferenciaVenta(ventaId);
+                        toast.success("Transferencia confirmada con éxito");
+                        setTransferenciaConfirmada(true);
+                    } catch (error) {
+                        toast.error(error.message || "Error al confirmar transferencia");
+                    }
+                }}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white w-full py-3 rounded-xl font-medium"
+            >
+                Confirmar transferencia
+            </Button>
+        )}
+    </>
+)}
             </div>
 
         </div>

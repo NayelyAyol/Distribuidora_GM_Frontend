@@ -1,11 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import StatusBadge from "@/features/shared/components/StatusBadge"
-import { FiEye, FiMessageCircle } from "react-icons/fi"
+import { FiEye, FiMessageCircle, FiXCircle } from "react-icons/fi"
 import { MdPayment } from "react-icons/md"
 
 const columnHelper = createColumnHelper()
 
-export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
+export const pedidosClienteColumns = (onRevisar, onChat, onPago, onCancelar) => [
 
     columnHelper.accessor("nombrePedido", {
         header: "Nombre del Pedido",
@@ -89,8 +89,26 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                             <FiMessageCircle className="text-lg" />
                         </button>
                     )}
+                    
+                    {pedido.estado === "PENDIENTE" && (
+                        <button
+                            onClick={() => onCancelar(pedido)}
+                            className="
+                                text-red-600
+                                hover:text-red-800
+                                p-1.5
+                                rounded-full
+                                hover:bg-red-100
+                                transition
+                                flex items-center justify-center
+                            "
+                            title="Cancelar pedido"
+                        >
+                            <FiXCircle className="text-lg" />
+                        </button>
+                    )}
 
-                    {pedido.estado === "FINALIZADO" &&
+                    {/*{pedido.estado === "FINALIZADO" &&
                         
                         (
                             <button
@@ -109,6 +127,7 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago) => [
                                 <MdPayment className="text-lg" />
                             </button>
                         )}
+                            */}
                 </div>
             )
         }

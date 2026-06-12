@@ -110,12 +110,20 @@ const useVentaStore = create(
                     datosFacturacion: {},
                 }),
             
+            ventaId:null,
+            transferenciaConfirmada: false, 
+
+            setVentaId: (id) => set({ ventaId: id }),
+            setTransferenciaConfirmada: (valor) => set({ transferenciaConfirmada: valor }),
+
             resetVentaCompleta: () =>
                 set({
                     factura: [],
                     pedidoSeleccionado: null,
                     metodoPago: null,
                     datosFacturacion: {},
+                    ventaId:null,
+                    transferenciaConfirmada: false,
                 }),
 
             setFactura: (productos) =>

@@ -32,7 +32,6 @@ export default function ResumenPago({
         return <div className="p-4 text-red-500">Error: No se pudo obtener el total.</div>;
     }
 
-    if (!resumenDatos) return <p>Cargando información de pago...</p>;
 
     return (
         <div className="bg-white rounded-2xl shadow-sm p-6 flex flex-col gap-4">

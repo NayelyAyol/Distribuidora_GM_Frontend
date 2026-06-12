@@ -23,8 +23,13 @@ export default function CarritoResumen({ carrito, tipoEntrega, setTipoEntrega })
             if (respuesta.puedeComprar) {
                 // Si todo está bien, navegamos al flujo de pago
                 navigate("/dashboard/mi-carrito/pago", {
-                    state: { tipoEntrega,
-                        carrito:carrito
+                    state: {
+                        checkout: {
+                            carrito,           // objeto con subtotalGeneral, ivaGeneral, totalGeneral, articulos
+                            tipoEntrega,
+                            esPedidoFoto: false,
+                            pedido: null
+                        }
                     }
                 });
             } else {

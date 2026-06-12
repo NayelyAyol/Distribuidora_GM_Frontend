@@ -43,3 +43,13 @@ export const definirPagoPedido = async (pedidoId, data) => {
         throw new Error(error.response?.data?.msg || "Error al definir el método de pago");
     }
 };
+
+export const cambiarEstadoPedido = async (pedidoId, estado) => {
+    try {
+        const response = await api.put(`/pedidos/estado-cancelar/${pedidoId}`, { estado })
+        return response.data
+    } catch (error) {
+        console.error("Error cambiando el estado del pedido:", error)
+        throw new Error(error.response?.data?.msg || "Error al cambiar el estado del pedido")
+    }
+}

@@ -132,8 +132,8 @@ export default function VentaDetallePage() {
             </Card>
             )}
             {showCancelModal && (
-                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <Card className="w-full max-w-md p-6 bg-white backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
+                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+                    <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
                         <h2 className="text-lg font-bold text-gray-800 mb-2">Confirmar cancelación</h2>
                         <p className="text-[15px] text-gray-500 mb-6">
                             ¿Estás seguro de que deseas cancelar la venta #{id.slice(-6)}? 
@@ -142,7 +142,7 @@ export default function VentaDetallePage() {
                         <div className="flex justify-end gap-3">
                             <Button
                                 variant="ghost"
-                                className={`py-[22px] ${buttonOutlineClass}`}
+                                className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
                                 onClick={() => setShowCancelModal(false)}
                             >
                                 Cancelar
@@ -150,7 +150,7 @@ export default function VentaDetallePage() {
                             
                             <Button
                                 onClick={handleCancelarVenta}
-                                className={`bg-red-600 hover:bg-red-700 text-white ${buttonPrimaryClass}`}
+                                className={`max-w-[100px] ${buttonPrimaryClass}`}
                             >
                                 Aceptar
                             </Button>

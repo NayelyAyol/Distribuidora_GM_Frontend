@@ -9,12 +9,13 @@ import { pedidosClienteColumns } from "@/features/cliente/pedidos/columns/pedido
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import ChatModal from "../../../shared/chat/components/ChatModal" // Importamos el modal refactorizado
 import { toast } from "react-toastify"
 
-import { inputClass } from "@/utils/styles"
+import { inputClass, buttonOutlineClass, buttonPrimaryClass } from "@/utils/styles"
 import useAuthStore from "@/context/useAuthStore"
-import { obtenerMisPedidos } from "../../../cliente/pedidos/services/pedidoService"
+import { obtenerMisPedidos, cambiarEstadoPedido } from "../../../cliente/pedidos/services/pedidoService"
 
 export default function PedidosPage() {
     const [filtro, setFiltro] = useState("pendientes")
@@ -24,6 +25,10 @@ export default function PedidosPage() {
     const [loading, setLoading] = useState(false)
     const [tipoPedido, setTipoPedido] = useState("") 
     const [busqueda, setBusqueda] = useState("")
+    const [page, setPage] = useState(1)
+    const [totalPaginas, setTotalPaginas] = useState(1)
+    const [pedidoACancelar, setPedidoACancelar] = useState(null)
+
 
     const navigate = useNavigate()
     const user = useAuthStore((state) => state.user)
@@ -43,7 +48,7 @@ export default function PedidosPage() {
                 cancelados: "CANCELADO"
             };
 
-            const params = {};
+            const params = {page};
             
             params.estado = estadoMap[filtro] || "PENDIENTE";
             
@@ -74,12 +79,25 @@ export default function PedidosPage() {
             const query = new URLSearchParams(params).toString();
             const data = await obtenerMisPedidos(query);
             setPedidos(data.pedidos || []);
+            setTotalPaginas(data.totalPaginas || 1);
+
         } catch (error) {
             toast.error(error.message || "Error al cargar los pedidos");
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (!esCliente && filtro === "pendientes") {
+            setFiltro("enProceso");
+        }
+    }, [esCliente, filtro]);
+
+    // Reinicia la página cuando cambian los filtros (igual que MisVentasPage)
+    useEffect(() => {
+        setPage(1)
+    }, [filtro, tipoPedido, busqueda]);
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -91,7 +109,7 @@ export default function PedidosPage() {
         }, 500); 
 
         return () => clearTimeout(delayDebounceFn);
-    }, [filtro, esCliente, tipoPedido, busqueda]);
+    }, [filtro, esCliente, tipoPedido, busqueda,page]);
 
     const handleAbrirChat = (pedido) => {
         setPedidoSeleccionado(pedido)
@@ -110,6 +128,22 @@ export default function PedidosPage() {
                 esPedidoFoto: pedido.esPedidoFoto || false
             } 
         });
+    }
+
+    const handleCancelar = (pedido) => setPedidoACancelar(pedido)
+
+    const handleConfirmarCancelacion = async () => {
+        try {
+            setLoading(true)
+            const data = await cambiarEstadoPedido(pedidoACancelar._id, "CANCELADO")
+            toast.success(data.msg || "Pedido cancelado correctamente")
+            setPedidoACancelar(null)
+            cargarPedidos()
+        } catch (error) {
+            toast.error(error.message)
+        } finally {
+            setLoading(false)
+        }
     }
 
 return (
@@ -184,18 +218,19 @@ return (
                         <Button onClick={() => setFiltro("enProceso")} className={filtro === "enProceso" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}>
                             En Proceso
                         </Button>
-                        <Button onClick={() => setFiltro("finalizados")} className={filtro === "finalizados" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}>
-                            Finalizados
-                        </Button>
-                        <Button onClick={() => setFiltro("cancelados")} className={filtro === "cancelados" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}>
-                            Cancelados
-                        </Button>
                         <Button 
                             onClick={() => setFiltro("pagosPendientes")} 
                             className={filtro === "pagosPendientes" ? "bg-emerald-100 text-emerald-700": "bg-gray-200 text-gray-600"}
                         >
                             Pago Pendiente
                         </Button>
+                        <Button onClick={() => setFiltro("finalizados")} className={filtro === "finalizados" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}>
+                            Finalizados
+                        </Button>
+                        <Button onClick={() => setFiltro("cancelados")} className={filtro === "cancelados" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}>
+                            Cancelados
+                        </Button>
+
                     </div>
 
 
@@ -207,15 +242,36 @@ return (
                                     ? pedidosClienteColumns(
                                         (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
                                         handleAbrirChat,
-                                        handleRealizarPago
+                                        handleRealizarPago,
+                                        handleCancelar
                                     )
                                     : pedidosSeleccionadosColumns(
                                         (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
                                         handleAbrirChat,
-                                        filtro !== "cancelados"
+                                        filtro !== "cancelados",
+                                        handleCancelar
                                     )
                             }
                         />
+                    </div>
+                    <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">
+                        {Array.from({ length: totalPaginas }, (_, index) => {
+                            const numero = index + 1
+                            const activa = numero === page
+                            return (
+                                <button
+                                    key={numero}
+                                    onClick={() => setPage(numero)}
+                                    className={`min-w-[40px] h-[40px] px-3 rounded-xl border transition font-medium
+                                        ${activa
+                                            ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+                                            : "text-gray-600 hover:bg-gray-100 border-gray-200"
+                                        }`}
+                                >
+                                    {numero}
+                                </button>
+                            )
+                        })}
                     </div>
                 </div>
             </div>
@@ -238,6 +294,32 @@ return (
                 }
                 pedidoNombre={pedidoSeleccionado?.nombrePedido}
             />
+{pedidoACancelar && (
+                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+                    <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
+                        <h2 className="text-lg font-bold text-gray-800 mb-2">Confirmar cancelación</h2>
+                        <p className="text-[15px] text-gray-500 mb-6">
+                            ¿Estás seguro de que deseas cancelar el pedido "{pedidoACancelar?.nombrePedido || "este pedido"}"?
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <Button
+                                variant="ghost"
+                                className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
+                                onClick={() => setPedidoACancelar(null)}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                onClick={handleConfirmarCancelacion}
+                                disabled={loading}
+                                className={`max-w-[100px] ${buttonPrimaryClass}`}
+                            >
+                                Aceptar
+                            </Button>
+                        </div>
+                    </Card>
+                </div>
+            )}
         </div>
     
     )

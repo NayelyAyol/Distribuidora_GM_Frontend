@@ -21,23 +21,20 @@ export default function PedidoExitosoPage() {
     const navigate = useNavigate()
     const location = useLocation()
     console.log("DEBUG: Contenido de location.state:", location.state);
-    const [pedido, setPedido] = useState(location.state?.pedido || null);
 
-    const esPedidoFoto = location.state?.esPedidoFoto || false;
+    const checkout = location.state?.checkout;
+    const pedido = location.state?.pedido;
+    const esPedidoFoto = location.state?.esPedidoFoto;
+    const metodoPago = location.state?.metodoPago || pedido?.metodoPago || "DESCONOCIDO";
 
-    const metodoPago = pedido?.metodoPago || "DESCONOCIDO";
+    const tipoEntrega = pedido?.tipoEntrega;
 
-    const subtotal =
-        pedido?.resumenPago?.subtotalProductos || 0;
+    const subtotal = pedido?.resumenPago?.subtotalProductos || 0;
+    const iva = pedido?.resumenPago?.ivaProductos || 0;
+    const envio = pedido?.resumenPago?.costoEnvio || 0;
+    const total = pedido?.resumenPago?.totalPagar || 0;
 
-    const iva =
-        pedido?.resumenPago?.ivaProductos || 0;
-
-    const envio =
-        pedido?.resumenPago?.costoEnvio || 0;
-
-    const total =
-        pedido?.resumenPago?.totalPagar || 0;
+    const productos = pedido?.articulos || [];
 
     const handlePrint = () => {
         window.print()
@@ -46,7 +43,6 @@ export default function PedidoExitosoPage() {
         // Si no tenemos el pedido completo, lo buscamos por ID
         if (!pedido && location.state?.pedidoId) {
             // Llama a tu API para obtener los detalles: getPedidoById(location.state.pedidoId)
-            // y luego haz setPedido(datosDesdeApi)
         }
     }, [pedido, location.state]);
 
@@ -65,8 +61,10 @@ export default function PedidoExitosoPage() {
         };
     };
 
-    const { titulo, descripcion } = getMensaje();
+    const resumen = pedido?.resumenPago;
 
+    const { titulo, descripcion } = getMensaje();
+console.log("DEBUG pedido en exitoso:", JSON.stringify(location.state?.pedido));
     return (
 
         <div className="
@@ -204,44 +202,31 @@ export default function PedidoExitosoPage() {
 
                     </div>
 
-                    {!esPedidoFoto && (
-                        <div className="w-full bg-white/60 border border-gray-200 rounded-2xl p-6 flex flex-col gap-3 text-left">
 
-                            <p className="text-sm text-gray-500">
-                                Productos vendidos
-                            </p>
+                    <div className="w-full bg-white/60 border border-gray-200 rounded-2xl p-6 flex flex-col gap-4 text-left">
+                        <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                            Productos vendidos
+                        </p>
 
-                            <div className="flex flex-col gap-2">
-
-                                {pedido?.articulos?.map((item) => (
-
+                        <div className="flex flex-col gap-3">
+                            {productos?.length > 0 ? (
+                                productos.map((item, index) => (
                                     <div
-                                        key={item.producto}
-                                        className="
-                                            flex justify-between
-                                            text-gray-800
-                                            border-b
-                                            border-gray-200
-                                            pb-2
-                                        "
+                                        key={item.producto || index}
+                                        className="flex items-center justify-between bg-white border border-gray-100 rounded-xl px-4 py-3"
                                     >
-
-                                        <span>
-                                            {item.nombreProducto}
-                                        </span>
-
-                                        <span>
+                                        <span className="text-gray-800 font-medium">{item.nombreProducto}</span>
+                                        <span className="text-sm text-white bg-emerald-600 rounded-full px-3 py-1 font-semibold">
                                             x{item.cantidad}
                                         </span>
-
                                     </div>
-
-                                ))}
-
-                            </div>
-
+                                ))
+                            ) : (
+                                <p className="text-gray-400 italic">No hay productos en este pedido</p>
+                            )}
                         </div>
-                    )}
+                    </div>
+
 
                     <div className="w-full bg-emerald-50 border border-emerald-100 rounded-2xl p-6 flex flex-col gap-2 text-left">
 
@@ -278,28 +263,20 @@ export default function PedidoExitosoPage() {
 
                     </div>
 
-                    <div className="
-                    w-full
-                    flex flex-col
-                    gap-4
-                ">
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="w-full flex flex-col gap-4">
+                        <div className="flex gap-4 justify-center flex-wrap">
                             {!esPedidoFoto && (
-                                    <Button
-                                        onClick={() => navigate("/dashboard/mi-carrito")}
-                                        className={buttonPrimaryClass}
-                                    >
-                                        <FiShoppingCart size={20} />
-                                        Volver al carrito
-                                    </Button>
-                                )}
-
+                                <Button
+                                    onClick={() => navigate("/dashboard/mi-carrito")}
+                                    className={`${buttonPrimaryClass} flex-1 min-w-[160px]`}
+                                >
+                                    <FiShoppingCart size={20} />
+                                    Volver al carrito
+                                </Button>
+                            )}
                             <Button
-                                onClick={() =>
-                                    navigate("/dashboard/mis-pedidos")
-                                }
-                                className={buttonPrimaryClass}
+                                onClick={() => navigate("/dashboard/mis-pedidos")}
+                                className={`${buttonPrimaryClass} flex-1 min-w-[160px]`}
                             >
                                 <FiShoppingBag size={20} />
                                 Ver mis pedidos
@@ -309,14 +286,13 @@ export default function PedidoExitosoPage() {
                         <div className="flex justify-center">
                             <Button
                                 onClick={handlePrint}
-                                className={`${buttonOutlineClass} p-[22px]`}
+                                className={`${buttonOutlineClass} p-[22px] w-full`}
                             >
                                 <FiPrinter size={20} />
                                 Imprimir factura
                             </Button>
                         </div>
                     </div>
-
                 </div>
 
             </div>
