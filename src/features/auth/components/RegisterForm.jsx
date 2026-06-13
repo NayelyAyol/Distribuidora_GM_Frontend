@@ -166,6 +166,7 @@ const RegisterForm = () => {
                     placeholder="Carlos"
                     className={inputClass}
                     required
+                    maxLength={50}
                 />
             </div>
 
@@ -178,6 +179,7 @@ const RegisterForm = () => {
                     placeholder="Ruiz"
                     className={inputClass}
                     required
+                    maxLength={50}
                 />
             </div>
 
@@ -190,6 +192,7 @@ const RegisterForm = () => {
                     placeholder="1725841230"
                     className={inputClass}
                     required
+                    maxLength={10}
                 />
             </div>
 
@@ -214,6 +217,7 @@ const RegisterForm = () => {
                     placeholder="0984512367"
                     className={inputClass}
                     required
+                    maxLength={10}
                 />
             </div>
 
@@ -226,6 +230,7 @@ const RegisterForm = () => {
                     placeholder="Quito"
                     className={inputClass}
                     required
+                    maxLength={50}
                 />
             </div>
 
@@ -238,6 +243,7 @@ const RegisterForm = () => {
                     placeholder="Av. de los Granados"
                     className={inputClass}
                     required
+                    maxLength={100}
                 />
             </div>
 
@@ -251,6 +257,7 @@ const RegisterForm = () => {
                     placeholder="correo@gmail.com"
                     className={inputClass}
                     required
+                    maxLength={200}
                 />
             </div>
 
@@ -263,6 +270,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     className={`${inputClass} pr-12`}
                     required
+                    maxLength={16}
                 />
                 <button
                     type="button"
@@ -282,6 +290,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     className={`${inputClass} pr-12`}
                     required
+                    maxLength={16}
                 />
                 <button
                     type="button"

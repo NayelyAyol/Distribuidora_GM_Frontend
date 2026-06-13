@@ -76,6 +76,7 @@ export default function ForgotPasswordForm({ onSubmit }) {
                                 message: "Ingresa un correo válido"
                             }
                         })}
+                        maxLength={200}
                     />
 
                     {errors.email && (

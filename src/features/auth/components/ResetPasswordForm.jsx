@@ -142,6 +142,7 @@ export default function ResetPasswordUI() {
                         onChange={(e) => setPassword(e.target.value)}
                         disabled={loading}
                         required
+                        maxLength={16}
                     />
 
                     <button
@@ -167,6 +168,7 @@ export default function ResetPasswordUI() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         disabled={loading}
                         required
+                        maxLength={16}
                     />
 
                     <button

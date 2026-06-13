@@ -119,6 +119,7 @@ export default function PasswordCard() {
                         onChange={handleChange}
                         required
                         className={inputClass + " pr-10"}
+                        maxLength={16}
                     />
                     <button
                         type="button"
@@ -138,6 +139,7 @@ export default function PasswordCard() {
                         onChange={handleChange}
                         required
                         className={inputClass + " pr-10"}
+                        maxLength={16}
                     />
                     <button
                         type="button"
@@ -157,6 +159,7 @@ export default function PasswordCard() {
                         onChange={handleChange}
                         required
                         className={inputClass + " pr-10"}
+                        maxLength={16}
                     />
                     <button
                         type="button"

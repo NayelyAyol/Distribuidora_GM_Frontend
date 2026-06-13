@@ -42,6 +42,9 @@ export default function Navbar({ onOpenSidenav }) {
         if (location.pathname === "/dashboard/mi-carrito") return "Mi carrito"
         if (location.pathname === "/dashboard/ventas") return "Ventas"
         if (location.pathname === "/dashboard/mis-pedidos/nuevo-pedido") return "Nuevo Pedido"
+        if (location.pathname === "/dashboard/mis-pedidos/pago") return "Seleccionar Método de Pago"
+        if (location.pathname === "/dashboard/mis-pedidos/pago/confirmar-pago") return "Confirmación de Pago"
+        if (location.pathname === "/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso") return "Comprobante"
         if (location.pathname.startsWith("/dashboard/mis-pedidos/")) {
             return "Detalle del pedido"
         }
@@ -63,6 +66,8 @@ export default function Navbar({ onOpenSidenav }) {
         }
         return "Dashboard"
     }
+
+
 
     const title = getTitle()
 
