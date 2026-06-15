@@ -127,7 +127,7 @@ export default function LoginForm({ onSubmit }) {
             )}
 
             <Button type="submit" className={buttonPrimaryClass}>
-                Iniciar Sesión
+                Aceptar
             </Button>
 
 <div className="border"></div>
