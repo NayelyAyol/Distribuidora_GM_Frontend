@@ -79,7 +79,7 @@ export default function LoginCard({ onLogin }) {
                     onClick={() => navigate("/registro")}
                     className={linkButtonClass}
                 >
-                    Registrarse
+                    Regístrate
                 </Button>
             </CardFooter>
 
