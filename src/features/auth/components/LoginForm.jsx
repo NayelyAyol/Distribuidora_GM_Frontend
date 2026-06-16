@@ -17,6 +17,12 @@ export default function LoginForm({ onSubmit }) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
+
+    const [errors, setErrors] = useState({
+        email: "",
+        password: ""
+    })
+
     const [error, setError] = useState("")
 
     const navigate = useNavigate()
@@ -25,24 +31,39 @@ export default function LoginForm({ onSubmit }) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     }
 
+    const isStrongPassword = (password) => {
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-])[A-Za-z\d@$!%*?&.#_-]{8,16}$/.test(password)
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         setError("")
+        setErrors({
+            email: "",
+            password: ""
+        })
 
-        // 🔴 VALIDACIONES CON TOAST
-        if (!email || !password) {
-            toast.error("Todos los campos son obligatorios")
-            return
+        const newErrors = {}
+
+        if (!email) {
+            newErrors.email = "El correo es obligatorio"
+        } else if (!isValidEmail(email)) {
+            newErrors.email = "Ingresa un correo válido"
+        } else if (email.length > 100) {
+            newErrors.email = "El correo es demasiado largo"
         }
 
-        if (!isValidEmail(email)) {
-            toast.error("Ingresa un correo válido")
-            return
+        if (!password) {
+            newErrors.password = "La contraseña es obligatoria"
+        } else if (!isStrongPassword(password)) {
+            newErrors.password =
+                "Debe tener entre 8 y 16 caracteres, mayúsculas, minúsculas, números y caracteres especiales"
         }
 
-        if (password.length < 6) {
-            toast.error("La contraseña es muy corta")
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors)
+            toast.error("Revisa los campos del formulario")
             return
         }
 
@@ -54,13 +75,13 @@ export default function LoginForm({ onSubmit }) {
                 "Usuario o contraseña incorrectos"
 
             setError(msg)
+            toast.error(msg)
         }
     }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
 
-            {/* EMAIL */}
             <div className="space-y-3">
                 <Label className={labelClass}>
                     Correo Electrónico
@@ -72,14 +93,22 @@ export default function LoginForm({ onSubmit }) {
                     value={email}
                     onChange={(e) => {
                         setEmail(e.target.value)
-                        setError("")
+                        setErrors(prev => ({
+                            ...prev,
+                            email: ""
+                        }))
                     }}
-                    required
                     className={inputClass}
+                    maxLength={100}
                 />
+
+                {errors.email && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.email}
+                    </p>
+                )}
             </div>
 
-            {/* PASSWORD */}
             <div className="space-y-3">
 
                 <div className="flex justify-between items-baseline">
@@ -104,10 +133,14 @@ export default function LoginForm({ onSubmit }) {
                         value={password}
                         onChange={(e) => {
                             setPassword(e.target.value)
-                            setError("")
+                            setErrors(prev => ({
+                                ...prev,
+                                password: ""
+                            }))
                         }}
-                        required
                         className={inputClass}
+                        minLength={8}
+                        maxLength={16}
                     />
 
                     <button
@@ -118,6 +151,12 @@ export default function LoginForm({ onSubmit }) {
                         {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
                     </button>
                 </div>
+
+                {errors.password && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.password}
+                    </p>
+                )}
             </div>
 
             {error && (
@@ -126,16 +165,13 @@ export default function LoginForm({ onSubmit }) {
                 </p>
             )}
 
-            <Button type="submit" className={buttonPrimaryClass}>
+            <Button
+                type="submit"
+                className={buttonPrimaryClass}
+            >
                 Aceptar
             </Button>
 
-<div className="border"></div>
-            {/*<Button variant="outline" className={`${buttonOutlineClass} py-5`}>
-                <img src="/icons8-logo-de-google.svg" className="mr-3 h-5 w-5" />
-                Iniciar sesión con Google
-            </Button>
-*/}
         </form>
     )
 }

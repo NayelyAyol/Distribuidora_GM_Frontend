@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom"
 import useAuthStore from "@/context/useAuthStore"
 import { loginRequest } from "../services/authService"
 import { toast } from "react-toastify"
-import { getProfile } from "../../shared/profile/services/profileService" 
 
 export default function LoginPage() {
 

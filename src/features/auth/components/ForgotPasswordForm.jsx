@@ -9,8 +9,10 @@ import {
 } from "@/utils/styles"
 import { useNavigate } from "react-router-dom"
 import { FiArrowLeft } from "react-icons/fi"
+import { toast } from "react-toastify"
 
 export default function ForgotPasswordForm({ onSubmit }) {
+
     const navigate = useNavigate()
 
     const {
@@ -19,82 +21,98 @@ export default function ForgotPasswordForm({ onSubmit }) {
         formState: { errors }
     } = useForm()
 
-    return (
-        <div className="w-full max-w-lg relative">
-                <button
-                    type="button"
-                    onClick={() => navigate("/login")}
-                    className="
-                        absolute
-                        -top-[200px]
-                        
-                        left-0
-                        sm:left-0
+    const handleFormSubmit = (data) => {
+        toast.dismiss()
 
-                        w-10 h-10
-                        sm:w-11 sm:h-11
+        if (!data.email) {
+            toast.error("El correo es obligatorio")
+            return
+        }
 
-                        rounded-xl
-                        bg-white
-                        shadow-sm
-                        border border-gray-100
-                        flex items-center justify-center
+        onSubmit(data)
+    }
 
-                        hover:bg-emerald-50
-                        transition
-                        z-10
-                    "
-                >
-                    <FiArrowLeft className="text-lg sm:text-xl text-gray-700" />
-                </button>
+return (
+    <div className="w-full max-w-lg relative">
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="relative flex items-center justify-center pt-2 mb-8 px-2 sm:px-0">
 
-                <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-800">
-                        ¿Olvidaste tu contraseña?
-                    </h2>
-                    <p className="text-gray-500 text-sm mt-2">
-                        Ingresa tu correo y te enviaremos instrucciones
-                    </p>
-                </div>
+            <button
+                type="button"
+                onClick={() => navigate("/login")}
+                className="
+                    absolute
+                    left-0
 
-                {/* Email */}
-                <div>
-                    <Label className={`${labelClass} mb-2`}>
-                        Correo electrónico
-                    </Label>
+                    w-10 h-10
+                    sm:w-11 sm:h-11
 
-                    <Input
-                        type="email"
-                        placeholder="ejemplo@email.com"
-                        className={inputClass}
-                        {...register("email", {
-                            required: "El correo es obligatorio",
-                            pattern: {
-                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                message: "Ingresa un correo válido"
-                            }
-                        })}
-                        maxLength={200}
-                    />
+                    rounded-xl
+                    bg-white
+                    shadow-sm
+                    border border-gray-100
+                    flex items-center justify-center
 
-                    {errors.email && (
-                        <p className="text-red-500 text-sm mt-1">
-                            {errors.email.message}
-                        </p>
-                    )}
-                </div>
+                    hover:bg-emerald-50
+                    transition
+                    z-10
+                "
+            >
+                <FiArrowLeft className="text-lg sm:text-xl text-gray-700" />
+            </button>
 
-                {/* Botón */}
-                <Button
-                    className={`${buttonPrimaryClass} w-full py-5`}
-                    type="submit"
-                >
-                    Enviar
-                </Button>
+            <div className="text-center">
+                <h2 className="text-2xl font-bold text-gray-800">
+                    ¿Olvidaste tu contraseña?
+                </h2>
 
-            </form>
+                <p className="text-gray-500 text-sm mt-2">
+                    Ingresa tu correo y te enviaremos instrucciones
+                </p>
+            </div>
+
         </div>
-    )
+
+        <form
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="space-y-6"
+        >
+
+            <div>
+                <Label className={`${labelClass} mb-2`}>
+                    Correo electrónico
+                </Label>
+
+                <Input
+                    type="email"
+                    placeholder="ejemplo@email.com"
+                    className={inputClass}
+                    maxLength={200}
+                    {...register("email", {
+                        required: "El correo es obligatorio",
+                        pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Ingresa un correo válido"
+                        }
+                    })}
+                />
+
+                {errors.email && (
+                    <p className="text-red-500 text-sm mt-1 font-medium">
+                        {errors.email.message}
+                    </p>
+                )}
+            </div>
+
+            <Button
+                type="submit"
+                className={`${buttonPrimaryClass} py-5`}
+            >
+                Enviar
+            </Button>
+
+        </form>
+
+    </div>
+)
 }
