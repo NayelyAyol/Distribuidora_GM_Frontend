@@ -1,5 +1,6 @@
 import axios from "axios";
 import useAuthStore from "@/context/useAuthStore";
+import { navigateTo } from "./navigation";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -23,16 +24,23 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-    const { logout } = useAuthStore.getState();
+        const { logout } = useAuthStore.getState()
+        const url = error.config?.url || ""
 
-    if (error.response?.status === 401) {
-        console.warn("Sesión expirada o no autorizada");
-        logout();
-        window.location.href = "/login";
-    }
+        const isPublicEndpoint = [
+            "/auth/login",
+            "/auth/recuperar-password",
+            "/clientes/registro",
+        ].some((endpoint) => url.includes(endpoint))
 
-    return Promise.reject(error);
+        if (error.response?.status === 401 && !isPublicEndpoint) {
+            console.warn("Sesión expirada o no autorizada")
+            logout()
+            navigateTo("/login", { replace: true })
+        }
+
+        return Promise.reject(error)
     },
-);
+)
 
 export default api;

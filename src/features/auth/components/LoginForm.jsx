@@ -23,8 +23,6 @@ export default function LoginForm({ onSubmit }) {
         password: ""
     })
 
-    const [error, setError] = useState("")
-
     const navigate = useNavigate()
 
     const isValidEmail = (email) => {
@@ -38,7 +36,6 @@ export default function LoginForm({ onSubmit }) {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        setError("")
         setErrors({
             email: "",
             password: ""
@@ -58,30 +55,32 @@ export default function LoginForm({ onSubmit }) {
             newErrors.password = "La contraseña es obligatoria"
         } else if (!isStrongPassword(password)) {
             newErrors.password =
-                "Debe tener entre 8 y 16 caracteres, mayúsculas, minúsculas, números y caracteres especiales"
+                "Debe tener entre 8 y 16 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales"
         }
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors)
-            toast.error("Revisa los campos del formulario")
             return
         }
 
         try {
-            await onSubmit({ email, password })
+            await onSubmit({
+                email,
+                password
+            })
         } catch (err) {
             const msg =
                 err?.message ||
                 "Usuario o contraseña incorrectos"
 
-            setError(msg)
             toast.error(msg)
         }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} noValidate className="space-y-8">
 
+            {/* EMAIL */}
             <div className="space-y-3">
                 <Label className={labelClass}>
                     Correo Electrónico
@@ -93,6 +92,7 @@ export default function LoginForm({ onSubmit }) {
                     value={email}
                     onChange={(e) => {
                         setEmail(e.target.value)
+
                         setErrors(prev => ({
                             ...prev,
                             email: ""
@@ -109,6 +109,7 @@ export default function LoginForm({ onSubmit }) {
                 )}
             </div>
 
+            {/* PASSWORD */}
             <div className="space-y-3">
 
                 <div className="flex justify-between items-baseline">
@@ -133,6 +134,7 @@ export default function LoginForm({ onSubmit }) {
                         value={password}
                         onChange={(e) => {
                             setPassword(e.target.value)
+
                             setErrors(prev => ({
                                 ...prev,
                                 password: ""
@@ -148,7 +150,10 @@ export default function LoginForm({ onSubmit }) {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-900"
                     >
-                        {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
+                        {showPassword
+                            ? <MdVisibilityOff />
+                            : <MdVisibility />
+                        }
                     </button>
                 </div>
 
@@ -158,12 +163,6 @@ export default function LoginForm({ onSubmit }) {
                     </p>
                 )}
             </div>
-
-            {error && (
-                <p className="text-red-500 text-sm text-center font-medium">
-                    {error}
-                </p>
-            )}
 
             <Button
                 type="submit"

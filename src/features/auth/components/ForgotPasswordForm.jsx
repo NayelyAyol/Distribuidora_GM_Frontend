@@ -75,6 +75,7 @@ return (
 
         <form
             onSubmit={handleSubmit(handleFormSubmit)}
+            noValidate
             className="space-y-6"
         >
 

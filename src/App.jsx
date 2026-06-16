@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
+import { NavigationSetter } from "./components/NavigationSetter"
 
 import Landing from "./pages/Landing"
 import Login from "./features/auth/pages/LoginPage"
@@ -47,6 +48,7 @@ function App() {
   return (
     <>
       <ToastContainer />
+      <NavigationSetter/>
 
       <Routes>
 
