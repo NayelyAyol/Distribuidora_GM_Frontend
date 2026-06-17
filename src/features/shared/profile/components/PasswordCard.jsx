@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
-import { toast } from "react-toastify"
 
 import {
     inputClass,
@@ -12,6 +11,7 @@ import {
 } from "@/utils/styles"
 
 import { changePassword } from "../services/profileService"
+import { toast } from "react-toastify"
 
 export default function PasswordCard() {
 
@@ -20,6 +20,8 @@ export default function PasswordCard() {
         passwordNueva: "",
         confirmPassword: ""
     })
+
+    const [errors, setErrors] = useState({})
 
     const [loading, setLoading] = useState(false)
 
@@ -45,6 +47,11 @@ export default function PasswordCard() {
             ...prev,
             [name]: value
         }))
+
+        setErrors(prev => ({
+            ...prev,
+            [name]: ""
+        }))
     }
 
     const handleSubmit = async (e) => {
@@ -52,28 +59,39 @@ export default function PasswordCard() {
 
         const { passwordActual, passwordNueva, confirmPassword } = form
 
-        if (!passwordActual || !passwordNueva || !confirmPassword) {
-            toast.error("Todos los campos son obligatorios")
-            return
+        const newErrors = {}
+
+        if (!passwordActual) {
+            newErrors.passwordActual = "La contraseña actual es obligatoria"
         }
 
-        if (passwordActual === passwordNueva) {
-            toast.error("La nueva contraseña no puede ser igual a la actual")
-            return
+        if (!passwordNueva) {
+            newErrors.passwordNueva = "La nueva contraseña es obligatoria"
         }
 
-        if (passwordNueva.length < 8) {
-            toast.error("La contraseña debe tener mínimo 8 caracteres")
-            return
+        if (!confirmPassword) {
+            newErrors.confirmPassword = "Debes confirmar la contraseña"
         }
 
-        if (passwordNueva !== confirmPassword) {
-            toast.error("Las contraseñas no coinciden")
-            return
+        if (passwordActual && passwordNueva && passwordActual === passwordNueva) {
+            newErrors.passwordNueva = "La nueva contraseña no puede ser igual a la actual"
         }
 
-        if (!validatePassword(passwordNueva)) {
-            toast.error("La contraseña debe tener 8-16 caracteres, mayúscula, minúscula, número y símbolo")
+        if (passwordNueva && passwordNueva.length < 8) {
+            newErrors.passwordNueva = "La contraseña debe tener mínimo 8 caracteres"
+        }
+
+        if (passwordNueva && confirmPassword && passwordNueva !== confirmPassword) {
+            newErrors.confirmPassword = "Las contraseñas no coinciden"
+        }
+
+        if (passwordNueva && !validatePassword(passwordNueva)) {
+            newErrors.passwordNueva =
+                "Debe tener 8-16 caracteres, mayúscula, minúscula, número y símbolo"
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors)
             return
         }
 
@@ -108,19 +126,23 @@ export default function PasswordCard() {
                 Cambiar contraseña
             </h2>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmit} noValidate>
 
                 <div className="relative">
-                    <Label className={`${labelClass} mb-3`}>Contraseña actual</Label>
+                    <Label htmlFor="passwordActual" className={`${labelClass} mb-3`}>
+                        Contraseña actual
+                    </Label>
+
                     <Input
+                        id="passwordActual"
                         name="passwordActual"
                         type={showCurrent ? "text" : "password"}
                         value={form.passwordActual}
                         onChange={handleChange}
-                        required
-                        className={inputClass + " pr-10"}
+                        className={inputClass}
                         maxLength={16}
                     />
+
                     <button
                         type="button"
                         onClick={() => setShowCurrent(!showCurrent)}
@@ -128,19 +150,28 @@ export default function PasswordCard() {
                     >
                         {showCurrent ? <MdVisibilityOff /> : <MdVisibility />}
                     </button>
+
+                    {errors.passwordActual && (
+                        <p className="text-red-500 text-sm font-medium">
+                            {errors.passwordActual}
+                        </p>
+                    )}
                 </div>
 
                 <div className="relative">
-                    <Label className={`${labelClass} mb-3`}>Nueva contraseña</Label>
+                    <Label htmlFor="passwordNueva" className={`${labelClass} mb-3`}>
+                        Nueva contraseña
+                    </Label>
+
                     <Input
+                        id="passwordNueva"
                         name="passwordNueva"
                         type={showNew ? "text" : "password"}
                         value={form.passwordNueva}
                         onChange={handleChange}
-                        required
-                        className={inputClass + " pr-10"}
-                        maxLength={16}
+                        className={inputClass}
                     />
+
                     <button
                         type="button"
                         onClick={() => setShowNew(!showNew)}
@@ -148,19 +179,28 @@ export default function PasswordCard() {
                     >
                         {showNew ? <MdVisibilityOff /> : <MdVisibility />}
                     </button>
+
+                    {errors.passwordNueva && (
+                        <p className="text-red-500 text-sm font-medium">
+                            {errors.passwordNueva}
+                        </p>
+                    )}
                 </div>
 
                 <div className="relative">
-                    <Label className={`${labelClass} mb-3`}>Confirmar contraseña</Label>
+                    <Label htmlFor="confirmPassword" className={`${labelClass} mb-3`}>
+                        Confirmar contraseña
+                    </Label>
+
                     <Input
+                        id="confirmPassword"
                         name="confirmPassword"
                         type={showConfirm ? "text" : "password"}
                         value={form.confirmPassword}
                         onChange={handleChange}
-                        required
-                        className={inputClass + " pr-10"}
-                        maxLength={16}
+                        className={inputClass}
                     />
+
                     <button
                         type="button"
                         onClick={() => setShowConfirm(!showConfirm)}
@@ -168,9 +208,19 @@ export default function PasswordCard() {
                     >
                         {showConfirm ? <MdVisibilityOff /> : <MdVisibility />}
                     </button>
+
+                    {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm font-medium">
+                            {errors.confirmPassword}
+                        </p>
+                    )}
                 </div>
 
-                <Button type="submit" disabled={loading} className={buttonPrimaryClass}>
+                <Button
+                    type="submit"
+                    disabled={loading}
+                    className={buttonPrimaryClass}
+                >
                     {loading ? "Actualizando..." : "Actualizar contraseña"}
                 </Button>
 

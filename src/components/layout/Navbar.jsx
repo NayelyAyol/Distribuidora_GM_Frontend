@@ -102,17 +102,20 @@ export default function Navbar({ onOpenSidenav }) {
                         </h1>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="md:hidden">
+                        <div className="flex items-center gap-3">
 
-                        <div className="flex items-center gap-2 sm:gap-3 bg-white dark:bg-navy-800 border border-gray-100 dark:border-white/10
+                            <div className="flex items-center gap-2 sm:gap-3 bg-white dark:bg-navy-800 border border-gray-100 dark:border-white/10
                         rounded-[40px] px-3 py-2 shadow-lg shadow-gray-200/40 dark:shadow-black/30 backdrop-blur-xl
                         flex-nowrap shrink min-w-0 relative z-50">
 
-                            <FiAlignJustify
-                                className="text-xl text-gray-600 cursor-pointer block xl:hidden"
-                                onClick={onOpenSidenav}
-                            />
 
+                                <FiAlignJustify
+                                    className="text-xl text-gray-600 cursor-pointer block xl:hidden"
+                                    onClick={onOpenSidenav}
+                                />
+
+                                {/*
                             <Dropdown
                                 button={
                                     <IoMdNotificationsOutline className="text-xl text-gray-600 cursor-pointer" />
@@ -143,7 +146,8 @@ export default function Navbar({ onOpenSidenav }) {
                                     </div>
                                 </div>
                             </Dropdown>
-
+*/}
+                                {/*
                             <button onClick={toggleDarkMode}>
                                 {darkmode ? (
                                     <RiSunFill className="text-xl text-gray-600" />
@@ -151,53 +155,53 @@ export default function Navbar({ onOpenSidenav }) {
                                     <RiMoonFill className="text-xl text-gray-600" />
                                 )}
                             </button>
-
-                            <Dropdown
-                                button={
-                                    <div className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center font-bold text-emerald-900 cursor-pointer hover:scale-105 transition">
-                                        U
-                                    </div>
-                                }
-                                classNames="right-0 mt-3 w-64"
-                            >
-                                <div className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden">
-
-                                    <div className="p-4 flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center font-bold text-emerald-900">
+*/}
+                                <Dropdown
+                                    button={
+                                        <div className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center font-bold text-emerald-900 cursor-pointer hover:scale-105 transition">
                                             U
                                         </div>
+                                    }
+                                    classNames="right-0 mt-3 w-64"
+                                >
+                                    <div className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden">
 
-                                        <div>
-                                            <p className="text-sm font-bold text-gray-800">
-                                                Bienvenido,
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                {user?.email}
-                                            </p>
+                                        <div className="p-4 flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center font-bold text-emerald-900">
+                                                U
+                                            </div>
+
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-800">
+                                                    Bienvenido,
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    {user?.email}
+                                                </p>
+                                            </div>
                                         </div>
+
+                                        <div className="h-px bg-gray-100" />
+
+                                        <div className="flex flex-col p-2 text-sm">
+                                            <button className="px-3 py-2 text-left font-semibold rounded-lg hover:bg-emerald-50"
+                                                onClick={() => navigate("/dashboard/perfil")}>
+                                                Perfil
+                                            </button>
+
+                                            <button className="px-3 py-2 text-left font-bold rounded-lg text-emerald-900 hover:bg-emerald-50"
+                                                onClick={() => {
+                                                    logout()
+                                                    navigate("/login")
+                                                }}
+                                            >
+                                                Cerrar sesión
+                                            </button>
+                                        </div>
+
                                     </div>
-
-                                    <div className="h-px bg-gray-100" />
-
-                                    <div className="flex flex-col p-2 text-sm">
-                                        <button className="px-3 py-2 text-left font-semibold rounded-lg hover:bg-emerald-50"
-                                            onClick={() => navigate("/dashboard/perfil")}>
-                                            Perfil
-                                        </button>
-
-                                        <button className="px-3 py-2 text-left font-bold rounded-lg text-emerald-900 hover:bg-emerald-50"
-                                            onClick={() => {
-                                                logout()
-                                                navigate("/login")
-                                            }}
-                                        >
-                                            Cerrar sesión
-                                        </button>
-                                    </div>
-
-                                </div>
-                            </Dropdown>
-
+                                </Dropdown>
+                            </div>
                         </div>
 
                     </div>
