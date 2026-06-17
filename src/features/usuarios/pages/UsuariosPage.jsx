@@ -258,7 +258,7 @@ export default function UsuariosPage() {
                             <Input
                                 type="text"
                                 placeholder="Buscar por cédula..."
-                                maxlength={10}
+                                maxLength={10}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value.replace(/\D/g, ""))}
                                 onKeyDown={(e) => {
