@@ -41,7 +41,8 @@ export default function IngresoProducto({ onAdd }) {
                     id: productoEncontrado._id,
                     nombre: productoEncontrado.nombre,
                     precio: productoEncontrado.precioVenta,
-                    stock: productoEncontrado.stock
+                    stock: productoEncontrado.stock,
+                    tieneIva: productoEncontrado.tieneIva ?? false
                 })
                 }
 
@@ -109,7 +110,8 @@ export default function IngresoProducto({ onAdd }) {
         id: producto._id,
         nombre: producto.nombre,
         precio: producto.precioVenta,
-        stock: producto.stock
+        stock: producto.stock,
+        tieneIva:producto.tieneIva ?? false
     })
 
         setCodigo("")

@@ -9,20 +9,32 @@ export default function ResumenPago({
     if (!carrito && !esPedidoFoto) {
         return <p>Cargando resumen...</p>;
     }
-    console.log("ResumenPago props:", { carrito, esPedidoFoto, totalPedidoFoto, resumenDatos });
+
     if (!resumenDatos && (!carrito || carrito.length === 0) && totalPedidoFoto === 0) {
         return <div className="p-4 text-red-500">No se encontraron datos de pago.</div>;
     }
 
-    const baseAmount = Number(totalPedidoFoto) || 0;    
+    const esDomicilio =
+        tipoEntrega === "domicilio" ||
+        tipoEntrega === "ENVIO_DOMICILIO";
 
-    const subtotal = resumenDatos?.subtotalProductos || (esPedidoFoto ? totalPedidoFoto / 1.15 : carrito?.subtotalGeneral || 0);
-    const iva = resumenDatos?.ivaProductos || (esPedidoFoto ? totalPedidoFoto - subtotal : carrito?.ivaGeneral || 0);
-    const totalBase = resumenDatos?.totalPagar || (esPedidoFoto ? totalPedidoFoto : carrito?.totalGeneral || 0);
+    const subtotal = resumenDatos?.subtotalProductos
+        || (esPedidoFoto ? totalPedidoFoto / 1.15 : carrito?.subtotalGeneral || 0);
 
-    const costoEnvio = tipoEntrega === "domicilio" ? 3.50 : 0;
-    const esDomicilio = tipoEntrega === "domicilio";
-    const totalFinal = (Number(totalBase) || 0) + costoEnvio;
+    const iva = resumenDatos?.ivaProductos
+        || (esPedidoFoto ? totalPedidoFoto - subtotal : carrito?.ivaGeneral || 0);
+
+    const totalBase = resumenDatos?.totalPagar
+        || (esPedidoFoto ? totalPedidoFoto : carrito?.totalGeneral || 0);
+
+    const costoEnvio = resumenDatos?.costoEnvio != null
+        ? resumenDatos.costoEnvio
+        : esDomicilio ? 3.50 : 0;
+
+    const totalYaIncluyeEnvio = resumenDatos?.costoEnvio != null;
+    const totalFinal = totalYaIncluyeEnvio
+        ? Number(totalBase)
+        : Number(totalBase) + costoEnvio;
 
     if (isNaN(subtotal) || isNaN(totalFinal)) {
         return <p>Cargando resumen...</p>;
@@ -31,7 +43,6 @@ export default function ResumenPago({
     if (totalFinal <= 0 && !esPedidoFoto) {
         return <div className="p-4 text-red-500">Error: No se pudo obtener el total.</div>;
     }
-
 
     return (
         <div className="bg-white rounded-2xl shadow-sm p-6 flex flex-col gap-4">
@@ -50,12 +61,10 @@ export default function ResumenPago({
                 <span>${iva.toFixed(2)}</span>
             </div>
 
-            {esDomicilio && (
+            {(esDomicilio || costoEnvio > 0) && (
                 <div className="flex justify-between text-gray-600">
                     <span>Comisión de envío</span>
-                    <span>
-                        ${costoEnvio.toFixed(2)}
-                    </span>
+                    <span>${costoEnvio.toFixed(2)}</span>
                 </div>
             )}
 

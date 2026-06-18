@@ -17,16 +17,6 @@ export default function VentaPage() {
         setFactura
     } = useVentaStore();
 
-useEffect(() => {
-    if (!pedidoSeleccionado) return;
-
-    if (factura.length === 0) {
-        setFactura(
-            pedidoSeleccionado.articulos || []
-        );
-    }
-
-}, [pedidoSeleccionado]);
 
     return (
         <VentaLayout

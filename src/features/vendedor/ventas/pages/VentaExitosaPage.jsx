@@ -121,7 +121,7 @@ export default function VentaExitosaPage() {
                             <span>${(venta.resumenPago?.subtotal || venta.resumenPago?.subtotalProductos || 0).toFixed(2)}</span>                        </div>
 
                         <div className="flex justify-between text-gray-800">
-                            <span>IVA</span>
+                            <span>IVA (15%)</span>
                             <span>${(venta.resumenPago?.iva || venta.resumenPago?.ivaProductos || 0).toFixed(2)}</span>
                         </div>
 

@@ -31,7 +31,12 @@ export default function FacturaPanel({
         return acc + (precio * cantidad);
     }, 0);
 
-    const iva = subtotal * 0.15
+    const iva = factura.reduce((acc, p) => {
+        const precio = Number(p.precioUnitario ?? p.precio ?? 0);
+        const cantidad = Number(p.cantidad || 0);
+        const subtotalItem = precio * cantidad;
+        return acc + (p.tieneIva ? subtotalItem * 0.15 : 0);
+    }, 0);
     const esDomicilio =
         pedidoSeleccionado?.tipoEntrega === "ENVIO_DOMICILIO"
 
@@ -144,7 +149,7 @@ export default function FacturaPanel({
                     Subtotal: ${subtotal.toFixed(2)}
                 </h3>
                 <h3 className="text-lg font-semibold text-emerald-900">
-                    IVA: ${iva.toFixed(2)}
+                    IVA (15%): ${iva.toFixed(2)}
                 </h3>
                 {costoEnvio > 0 && (
                     <h3 className="text-lg font-semibold text-emerald-900">

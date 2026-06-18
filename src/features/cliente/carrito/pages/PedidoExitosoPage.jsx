@@ -40,7 +40,6 @@ export default function PedidoExitosoPage() {
         window.print()
     }
     useEffect(() => {
-        // Si no tenemos el pedido completo, lo buscamos por ID
         if (!pedido && location.state?.pedidoId) {
             // Llama a tu API para obtener los detalles: getPedidoById(location.state.pedidoId)
         }
@@ -236,7 +235,7 @@ console.log("DEBUG pedido en exitoso:", JSON.stringify(location.state?.pedido));
                         </div>
 
                         <div className="flex justify-between text-gray-800">
-                            <span>IVA</span>
+                            <span>IVA (15%)</span>
                             <span>${iva.toFixed(2)}</span>
                         </div>
 

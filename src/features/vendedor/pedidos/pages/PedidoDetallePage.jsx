@@ -18,6 +18,34 @@ import IngresoProducto from "../../ventas/components/IngresoProducto";
 import FacturaPanel from "../../ventas/components/Factura";
 import { io } from "socket.io-client";
 const socket = io("https://grupo-moreno.onrender.com/api");
+const DRAFT_KEY_PREFIX = "cotizacion_draft_";
+
+const obtenerBorrador = (pedidoId) => {
+    try {
+        const raw = localStorage.getItem(`${DRAFT_KEY_PREFIX}${pedidoId}`);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        console.error("Error al leer borrador de cotización:", error);
+        return null;
+    }
+};
+
+const guardarBorrador = (pedidoId, articulos) => {
+    try {
+        localStorage.setItem(`${DRAFT_KEY_PREFIX}${pedidoId}`, JSON.stringify(articulos));
+    } catch (error) {
+        console.error("Error al guardar borrador de cotización:", error);
+    }
+};
+
+const borrarBorrador = (pedidoId) => {
+    try {
+        localStorage.removeItem(`${DRAFT_KEY_PREFIX}${pedidoId}`);
+    } catch (error) {
+        console.error("Error al borrar borrador de cotización:", error);
+    }
+};
+
 
 export default function PedidoDetallePage() {
 
@@ -76,6 +104,14 @@ export default function PedidoDetallePage() {
 
     useEffect(() => {
         if (pedido?.articulos && articulosSeleccionados.length === 0) {
+            const borrador = obtenerBorrador(id);
+
+            if (borrador && borrador.length > 0) {
+                // El vendedor dejó una cotización a medias, la recuperamos
+                setArticulosSeleccionados(borrador);
+                return;
+            }
+
             const articulosParaEdicion = pedido.articulos.map(item => ({
                 id: item.producto,
                 nombre: item.nombreProducto,
@@ -86,6 +122,20 @@ export default function PedidoDetallePage() {
         }
     }, [pedido]);
 
+    useEffect(() => {
+        if (!id || !pedido) return;
+
+        if (pedido.metodoPago !== null) {
+            borrarBorrador(id);
+            return;
+        }
+
+        if (articulosSeleccionados.length > 0) {
+            guardarBorrador(id, articulosSeleccionados);
+        } else {
+            borrarBorrador(id);
+        }
+    }, [articulosSeleccionados, id, pedido?.metodoPago]);
 
     const handleIniciarVenta = async () => {
         if (!pedido) return;
@@ -94,7 +144,7 @@ export default function PedidoDetallePage() {
             setLoading(true);
             const data = await ventaDesdePedido(id, { observaciones: pedido.observaciones });
             console.log("DEBUG data completa:", JSON.stringify(data));
-            setVentaId(data.venta.id); 
+            setVentaId(data.venta.id);
             limpiarVenta();
             const esPagoTarjeta = data.venta.metodoPago === 'TARJETA';
             const urlPago = data.venta.stripe?.urlPago;
@@ -105,9 +155,10 @@ export default function PedidoDetallePage() {
                 data.venta.articulos.map(item => ({
                     id: item.producto?._id || item.producto || item.id,
                     nombre: item.nombreProducto,
-                    precio: item.precioUnitario,
+                    precioUnitario: item.precioUnitario,
                     cantidad: item.cantidad,
-                    stock: 999
+                    stock: 999,
+                    tieneIva: item.tieneIva ?? false
                 }))
             );
 
@@ -160,6 +211,7 @@ export default function PedidoDetallePage() {
             setLoading(true);
             await armarPedidoFoto(id, articulosFormateados);
             toast.success("Pedido armado y cotizado con éxito");
+            borrarBorrador(id);
             const data = await obtenerDetallesPedido(id);
             setPedido(data.pedido);
         } catch (error) {
@@ -193,23 +245,23 @@ export default function PedidoDetallePage() {
         );
     };
 
-const handleIrAPago = () => {
-    if (!pedido) return;
+    const handleIrAPago = () => {
+        if (!pedido) return;
 
-    navigate("/dashboard/mis-pedidos/pago", {
-        state: {
-            checkout: {
-                pedido: pedido,                              // objeto pedido completo
-                tipoEntrega: pedido.tipoEntrega || (pedido.direccionEntrega ? "domicilio" : "local"),
-                carrito: pedido.articulos,
-                datosFacturacion: pedido.datosFacturacion,
-                resumenPago: pedido.resumenPago,
-                esPedidoFoto: pedido.tipoPedido === "FOTO_LISTA",
-                metodoPago: pedido.metodoPago               // null en este caso, el usuario lo elegirá
+        navigate("/dashboard/mis-pedidos/pago", {
+            state: {
+                checkout: {
+                    pedido: pedido,                              // objeto pedido completo
+                    tipoEntrega: pedido.tipoEntrega || (pedido.direccionEntrega ? "domicilio" : "local"),
+                    carrito: pedido.articulos,
+                    datosFacturacion: pedido.datosFacturacion,
+                    resumenPago: pedido.resumenPago,
+                    esPedidoFoto: pedido.tipoPedido === "FOTO_LISTA",
+                    metodoPago: pedido.metodoPago               // null en este caso, el usuario lo elegirá
+                }
             }
-        }
-    });
-};
+        });
+    };
 
 
     const getBotonConfig = () => {
@@ -230,10 +282,16 @@ const handleIrAPago = () => {
 
     if (loading) return <div>Cargando...</div>;
 
-    // Añade esto para inspeccionar el objeto
     console.log("DEBUG: Objeto Pedido completo:", JSON.parse(JSON.stringify(pedido)));
     const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
     const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
+
+
+    const limpiarFacturaArmado = () => {
+        setArticulosSeleccionados([]);
+        borrarBorrador(id);
+    };
+    const limpiarPedidoArmado = () => { };
 
     return (
 
@@ -467,7 +525,6 @@ const handleIrAPago = () => {
             }
 
             {
-                // Cambia la condición aquí para incluir ambos tipos
                 (esPedidoCarrito || (esPedidoLista && pedido?.articulos?.length > 0)) && (
 
                     <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl">
@@ -511,7 +568,7 @@ const handleIrAPago = () => {
                             </div>
 
                             <div className="flex justify-between">
-                                <span>IVA</span>
+                                <span>IVA (15%)</span>
                                 <span>${iva.toFixed(2)}</span>
                             </div>
 
@@ -571,7 +628,7 @@ const handleIrAPago = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                {esPedidoLista && (
+                {esPedidoLista && pedido.metodoPago === null && (
                     <>
                         {!esCliente && (
                             <div className="space-y-6">
@@ -582,9 +639,12 @@ const handleIrAPago = () => {
                             <FacturaPanel
                                 factura={articulosSeleccionados}
                                 modo="ARMADO_FOTO"
-                                esEditable={!esCliente && (pedido.estado === 'EN_PROCESO' || pedido.estado === 'COTIZADO')} eliminarProducto={quitarDelArray}
+                                esEditable={!esCliente && (pedido.estado === 'EN_PROCESO' || pedido.estado === 'COTIZADO')}
                                 eliminarProducto={quitarDelArray}
                                 cambiarCantidad={actualizarCantidad}
+                                limpiarFactura={limpiarFacturaArmado}
+                                limpiarPedido={limpiarPedidoArmado}
+                                pedidoSeleccionado={pedido}
                             />
                         )}
                     </>
