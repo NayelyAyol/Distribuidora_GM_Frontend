@@ -5,8 +5,8 @@ const columnHelper = createColumnHelper()
 
 export const pedidosDisponiblesColumns = (onToggle) => [
 
-    columnHelper.accessor((row) => row, { 
-        id: "cliente", 
+    columnHelper.accessor((row) => row, {
+        id: "cliente",
         header: "Cliente",
         cell: (info) => {
             const pedido = info.getValue();
@@ -20,6 +20,24 @@ export const pedidosDisponiblesColumns = (onToggle) => [
             return info.getValue() || "Sin nombre";
         }
     }),
+
+    columnHelper.accessor("tipoPedido",
+        {
+            header: "Tipo de Pedido",
+            cell: (info) => {
+                const tipo = info.getValue();
+                return tipo || "N/A";
+            }
+        }),
+
+    columnHelper.accessor("tipoEntrega",
+        {
+            header: "Tipo de Entrega",
+            cell: (info) => {
+                const tipo = info.getValue();
+                return tipo || "N/A";
+            }
+        }),
 
     columnHelper.accessor("createdAt", {
         header: "Fecha",

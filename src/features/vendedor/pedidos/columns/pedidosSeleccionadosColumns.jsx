@@ -12,8 +12,8 @@ export const pedidosSeleccionadosColumns = (
 ) => {
 
     const columnas = [
-        columnHelper.accessor((row) => row, { 
-            id: "cliente", 
+        columnHelper.accessor((row) => row, {
+            id: "cliente",
             header: "Cliente",
             cell: (info) => {
                 const pedido = info.getValue();
@@ -27,16 +27,26 @@ export const pedidosSeleccionadosColumns = (
                 return info.getValue() || "Sin nombre";
             }
         }),
-        
-        columnHelper.accessor("tipoPedido", 
-            { 
+
+        columnHelper.accessor("tipoPedido",
+            {
                 header: "Tipo de Pedido",
                 cell: (info) => {
                     const tipo = info.getValue();
                     return tipo || "N/A";
                 }
             }),
-        columnHelper.accessor("createdAt", { 
+
+        columnHelper.accessor("tipoEntrega",
+            {
+                header: "Tipo de Entrega",
+                cell: (info) => {
+                    const tipo = info.getValue();
+                    return tipo || "N/A";
+                }
+            }),
+
+        columnHelper.accessor("createdAt", {
             header: "Fecha",
             cell: (info) => {
                 const fecha = info.getValue();
@@ -105,7 +115,7 @@ export const pedidosSeleccionadosColumns = (
                             >
                                 <FiMessageCircle />
                             </button>
-                                {pedido.estado === "EN_PROCESO" && (
+                            {pedido.estado === "EN_PROCESO" && (
                                 <button
                                     onClick={() => onCancelar(pedido)}
                                     className="

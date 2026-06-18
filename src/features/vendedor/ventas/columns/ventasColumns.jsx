@@ -17,6 +17,11 @@ export const ventasColumns = (onVerDetalle, onCancelar) => [
         header: "Estado Venta",
         cell: (info) => <span className="font-semibold">{info.getValue()}</span>
     }),
+    columnHelper.accessor("metodoPago", {
+        header: "Método de Pago",
+        cell: (info) => <span className="font-semibold">{info.getValue()}</span>
+    }),
+
     columnHelper.accessor("estadoPago", {
         header: "Pago",
         cell: (info) => (
