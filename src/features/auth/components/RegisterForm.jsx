@@ -26,6 +26,19 @@ const RegisterForm = () => {
         confirmPassword: "",
     });
 
+    const [errors, setErrors] = useState({
+        nombre: "",
+        apellido: "",
+        cedula: "",
+        fecha_nacimiento: "",
+        telefono: "",
+        ciudad: "",
+        direccion: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -35,6 +48,9 @@ const RegisterForm = () => {
 
     const onlyNumbers = (value) =>
         /^\d*$/.test(value);
+
+    const isValidEmail = (email) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     const validatePassword = (password) => {
         return (
@@ -79,49 +95,98 @@ const RegisterForm = () => {
             ...prev,
             [name]: value
         }));
+
+        setErrors((prev) => ({
+            ...prev,
+            [name]: ""
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (loading) return;
 
-        if (!e.target.checkValidity()) {
-            e.target.reportValidity();
-            return;
+        setErrors({
+            nombre: "",
+            apellido: "",
+            cedula: "",
+            fecha_nacimiento: "",
+            telefono: "",
+            ciudad: "",
+            direccion: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+        });
+
+        const newErrors = {};
+
+        if (!form.nombre) {
+            newErrors.nombre = "El nombre es obligatorio";
+        } else if (!onlyLetters(form.nombre)) {
+            newErrors.nombre = "El nombre solo debe contener letras";
         }
 
-        if (!onlyLetters(form.nombre) || !onlyLetters(form.apellido) || !onlyLetters(form.ciudad)) {
-            toast.error("Nombre, apellido y ciudad solo deben contener letras");
-            return;
+        if (!form.apellido) {
+            newErrors.apellido = "El apellido es obligatorio";
+        } else if (!onlyLetters(form.apellido)) {
+            newErrors.apellido = "El apellido solo debe contener letras";
         }
 
-        if (!/^\d{10}$/.test(form.cedula)) {
-            toast.error("La cédula debe tener 10 dígitos");
-            return;
-        }
-
-        if (!/^\d{10}$/.test(form.telefono)) {
-            toast.error("El teléfono debe tener 10 dígitos");
-            return;
+        if (!form.cedula) {
+            newErrors.cedula = "La cédula es obligatoria";
+        } else if (!/^\d{10}$/.test(form.cedula)) {
+            newErrors.cedula = "La cédula debe tener 10 dígitos";
         }
 
         if (!form.fecha_nacimiento) {
-            toast.error("Fecha requerida");
-            return;
+            newErrors.fecha_nacimiento = "La fecha de nacimiento es obligatoria";
+        } else if (calculateAge(form.fecha_nacimiento) < 18) {
+            newErrors.fecha_nacimiento = "Debes ser mayor de edad";
         }
 
-        if (calculateAge(form.fecha_nacimiento) < 18) {
-            toast.error("Debe ser mayor de edad");
-            return;
+        if (!form.telefono) {
+            newErrors.telefono = "El teléfono es obligatorio";
+        } else if (!/^\d{10}$/.test(form.telefono)) {
+            newErrors.telefono = "El teléfono debe tener 10 dígitos";
         }
 
-        if (form.password !== form.confirmPassword) {
-            toast.error("Contraseñas no coinciden");
-            return;
+        if (!form.ciudad) {
+            newErrors.ciudad = "La ciudad es obligatoria";
+        } else if (!onlyLetters(form.ciudad)) {
+            newErrors.ciudad = "La ciudad solo debe contener letras";
         }
 
-        if (!validatePassword(form.password)) {
-            toast.error("Contraseña inválida");
+        if (!form.direccion) {
+            newErrors.direccion = "La dirección es obligatoria";
+        }
+
+        if (!form.email) {
+            newErrors.email = "El correo es obligatorio";
+        } else if (!isValidEmail(form.email)) {
+            newErrors.email = "Ingresa un correo válido";
+        } else if (form.email.length > 200) {
+            newErrors.email = "El correo es demasiado largo";
+        }
+
+        if (!form.password) {
+            newErrors.password = "La contraseña es obligatoria";
+        } else if (!validatePassword(form.password)) {
+            newErrors.password =
+                "Debe tener entre 8 y 16 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales";
+        }
+
+        if (!form.confirmPassword) {
+            newErrors.confirmPassword = "Confirma tu contraseña";
+        } else if (form.password !== form.confirmPassword) {
+            newErrors.confirmPassword = "Las contraseñas no coinciden";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors((prev) => ({
+                ...prev,
+                ...newErrors
+            }));
             return;
         }
 
@@ -146,6 +211,19 @@ const RegisterForm = () => {
                 ciudad: "",
             });
 
+            setErrors({
+                nombre: "",
+                apellido: "",
+                cedula: "",
+                fecha_nacimiento: "",
+                telefono: "",
+                ciudad: "",
+                direccion: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+            });
+
         } catch (error) {
             console.error(error);
             toast.error(error.message);
@@ -155,121 +233,179 @@ const RegisterForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div className="space-y-2">
-                <Label className={labelClass}>Nombre</Label>
+                <Label 
+                htmlFor="nombre"
+                className={labelClass}>Nombre</Label>
                 <Input
+                    id="nombre"
                     name="nombre"
                     value={form.nombre}
                     onChange={handleChange}
                     placeholder="Carlos"
                     className={inputClass}
-                    required
                     maxLength={50}
                 />
+                {errors.nombre && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.nombre}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2">
-                <Label className={labelClass}>Apellido</Label>
+                <Label 
+                htmlFor="apellido"
+                className={labelClass}>Apellido</Label>
                 <Input
+                    id="apellido"
                     name="apellido"
                     value={form.apellido}
                     onChange={handleChange}
                     placeholder="Ruiz"
                     className={inputClass}
-                    required
                     maxLength={50}
                 />
+                {errors.apellido && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.apellido}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2">
-                <Label className={labelClass}>Cédula</Label>
+                <Label 
+                htmlFor="cedula"
+                className={labelClass}>Cédula</Label>
                 <Input
+                    id="cedula"
                     name="cedula"
                     value={form.cedula}
                     onChange={handleChange}
                     placeholder="1725841230"
                     className={inputClass}
-                    required
                     maxLength={10}
                 />
+                {errors.cedula && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.cedula}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2">
-                <Label className={labelClass}>Fecha de nacimiento</Label>
+                <Label 
+                htmlFor="fecha_nacimiento"
+                className={labelClass}>Fecha de nacimiento</Label>
                 <Input
+                    id="fecha_nacimiento"
                     type="date"
                     name="fecha_nacimiento"
                     value={form.fecha_nacimiento}
                     onChange={handleChange}
                     className={inputClass}
-                    required
                 />
+                {errors.fecha_nacimiento && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.fecha_nacimiento}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2">
-                <Label className={labelClass}>Teléfono</Label>
+                <Label 
+                htmlFor="telefono"
+                className={labelClass}>Teléfono</Label>
                 <Input
+                    id="telefono"
                     name="telefono"
                     value={form.telefono}
                     onChange={handleChange}
                     placeholder="0984512367"
                     className={inputClass}
-                    required
                     maxLength={10}
                 />
+                {errors.telefono && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.telefono}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2">
-                <Label className={labelClass}>Ciudad</Label>
+                <Label 
+                htmlFor="ciudad"
+                className={labelClass}>Ciudad</Label>
                 <Input
+                    id="ciudad"
                     name="ciudad"
                     value={form.ciudad}
                     onChange={handleChange}
                     placeholder="Quito"
                     className={inputClass}
-                    required
                     maxLength={50}
                 />
+                {errors.ciudad && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.ciudad}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2">
-                <Label className={labelClass}>Dirección</Label>
+                <Label 
+                htmlFor="direccion"
+                className={labelClass}>Dirección</Label>
                 <Input
+                    id="direccion"
                     name="direccion"
                     value={form.direccion}
                     onChange={handleChange}
                     placeholder="Av. de los Granados"
                     className={inputClass}
-                    required
                     maxLength={100}
                 />
+                {errors.direccion && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.direccion}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2">
-                <Label className={labelClass}>Correo electrónico</Label>
+                <Label 
+                htmlFor="email"
+                className={labelClass}>Correo electrónico</Label>
                 <Input
+                    id="email"
                     type="email"
                     name="email"
                     value={form.email}
                     onChange={handleChange}
                     placeholder="correo@gmail.com"
                     className={inputClass}
-                    required
                     maxLength={200}
                 />
+                {errors.email && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.email}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2 relative">
-                <Label className={labelClass}>Contraseña</Label>
+                <Label 
+                htmlFor="password"
+                className={labelClass}>Contraseña</Label>
                 <Input
+                    id="password"
                     type={showPassword ? "text" : "password"}
                     name="password"
                     value={form.password}
                     onChange={handleChange}
                     className={`${inputClass} pr-12`}
-                    required
                     maxLength={16}
                 />
                 <button
@@ -279,17 +415,24 @@ const RegisterForm = () => {
                 >
                     {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
                 </button>
+                {errors.password && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.password}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-2 relative">
-                <Label className={labelClass}>Confirmar contraseña</Label>
+                <Label 
+                htmlFor="confirmPassword"
+                className={labelClass}>Confirmar contraseña</Label>
                 <Input
+                    id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
                     value={form.confirmPassword}
                     onChange={handleChange}
                     className={`${inputClass} pr-12`}
-                    required
                     maxLength={16}
                 />
                 <button
@@ -299,6 +442,11 @@ const RegisterForm = () => {
                 >
                     {showConfirmPassword ? <MdVisibilityOff /> : <MdVisibility />}
                 </button>
+                {errors.confirmPassword && (
+                    <p className="text-red-500 text-sm font-medium">
+                        {errors.confirmPassword}
+                    </p>
+                )}
             </div>
 
             <div className="md:col-span-2 pt-4">
