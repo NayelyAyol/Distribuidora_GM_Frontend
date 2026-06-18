@@ -109,7 +109,9 @@ export default function VentaExitosaPage() {
                             {venta.articulos.map((item, index) => (
                                 <div key={index} className="flex justify-between text-gray-800 border-b border-gray-200 pb-2">
                                     <span>{item.producto.nombre || item.nombreProducto}</span>
-                                    <span>x{item.cantidad}</span>
+                                        <span className="text-sm text-white bg-emerald-600 rounded-full px-3 py-1 font-semibold">
+                                            x{item.cantidad}
+                                        </span>
                                 </div>
                             ))}
                         </div>

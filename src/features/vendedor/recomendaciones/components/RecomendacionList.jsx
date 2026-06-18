@@ -8,7 +8,7 @@ import { toast } from "react-toastify"
 import { obtenerMisQuejasSugerencias } from "@/features/cliente/quejasysugerencias/services/quejasSugerenciasService"
 
 export default function RecomendacionList({
-    placeholder = "Buscar recomendación...",
+    placeholder,
     recargar,
     onCargar,
     dataKey
@@ -18,11 +18,12 @@ export default function RecomendacionList({
 
     const [filter, setFilter] = useState("SIN_RESPUESTA")
     const [search, setSearch] = useState("")
+    const [tipoFilter, setTipoFilter] = useState("")
 
     const cargar = async () => {
         try {
             const estado = filter === "SIN_RESPUESTA" ? "PENDIENTE" : "FINALIZADA"
-            const response = await onCargar(estado)
+            const response = await onCargar(estado, tipoFilter)
             setData(response[dataKey] || [])
         } catch (error) {
             toast.error(error.message)
@@ -31,7 +32,7 @@ export default function RecomendacionList({
 
     useEffect(() => {
         cargar()
-    }, [filter, recargar])
+    }, [filter,tipoFilter,recargar])
 
     return (
         <div className="grid gap-4">
@@ -90,52 +91,43 @@ export default function RecomendacionList({
 
             </div>*/}
 
-        <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2">
+                    <Button
+                        onClick={() => setFilter("SIN_RESPUESTA")}
+                        className={filter === "SIN_RESPUESTA" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
+                    >
+                        Pendientes
+                    </Button>
+                    <Button
+                        onClick={() => setFilter("CON_RESPUESTA")}
+                        className={filter === "CON_RESPUESTA" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
+                    >
+                        Finalizadas
+                    </Button>
+                </div>
 
-            <Button
-                onClick={() => setFilter("SIN_RESPUESTA")}
-                className={
-                    filter === "SIN_RESPUESTA"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-gray-200 text-gray-600"
-                }
-            >
-                Pendientes
-            </Button>
+                {/* Filtro por tipo */}
+                <div className="flex flex-wrap gap-2">
+                    {[["", "Todas"], ["QUEJA", "Quejas"], ["SUGERENCIA", "Sugerencias"]].map(([val, label]) => (
+                        <Button
+                            key={val}
+                            onClick={() => setTipoFilter(val)}
+                            className={tipoFilter === val ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
+                        >
+                            {label}
+                        </Button>
+                    ))}
+                </div>
 
-            <Button
-                onClick={() => setFilter("CON_RESPUESTA")}
-                className={
-                    filter === "CON_RESPUESTA"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-gray-200 text-gray-600"
-                }
-            >
-                Finalizadas
-            </Button>
-
-        </div>
-
-    </div>
-
+            </div>
 
             {data.length > 0 ? (
-                data.map(item => (
-                    <RecomendacionCard
-                        key={item._id}
-                        item={item}
-                    />
-                ))
+                data.map(item => <RecomendacionCard key={item._id} item={item} />)
             ) : (
-                <div className="
-                    text-center
-                    py-10
-                    text-gray-500
-                ">
-                    No se encontraron recomendaciones
+                <div className="text-center py-10 text-gray-500">
+                    No se encontraron registros
                 </div>
             )}
-
         </div>
     )
 }

@@ -23,34 +23,18 @@ export const crearQuejaSugerencia = async (data) => {
 };
 
 // Obtener mis quejas o sugerencias
-export const obtenerMisQuejasSugerencias = async (
-    estado = ""
-) => {
+export const obtenerMisQuejasSugerencias = async (estado = "", tipo = "") => {
     try {
-
-        const query = estado
-            ? `?estado=${estado}`
-            : "";
-
-        const response = await api.get(
-            `/quejas-sugerencias/mis${query}`
-        );
-
-        return response.data;
-
+        const params = []
+        if (estado) params.push(`estado=${estado}`)
+        if (tipo) params.push(`tipo=${tipo}`)
+        const query = params.length > 0 ? `?${params.join("&")}` : ""
+        const response = await api.get(`/quejas-sugerencias/mis${query}`)
+        return response.data
     } catch (error) {
-
-        console.error(
-            "Error obteniendo quejas o sugerencias:",
-            error
-        );
-
-        throw new Error(
-            error.response?.data?.msg ||
-            "Error al obtener las quejas o sugerencias"
-        );
+        throw new Error(error.response?.data?.msg || "Error al obtener las quejas o sugerencias")
     }
-};
+}
 
 // Obtener todas las quejas y sugerencias (ADMIN)
 export const obtenerQuejasSugerenciasAdmin = async (

@@ -35,7 +35,8 @@ export default function FacturaPanel({
         const precio = Number(p.precioUnitario ?? p.precio ?? 0);
         const cantidad = Number(p.cantidad || 0);
         const subtotalItem = precio * cantidad;
-        return acc + (p.tieneIva ? subtotalItem * 0.15 : 0);
+        const aplicaIva = p.tieneIva === true || p.tipoIVA === "15%";
+        return acc + (aplicaIva ? subtotalItem * 0.15 : 0);
     }, 0);
     const esDomicilio =
         pedidoSeleccionado?.tipoEntrega === "ENVIO_DOMICILIO"
