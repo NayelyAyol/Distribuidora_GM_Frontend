@@ -116,9 +116,10 @@ export default function CatalogoPage() {
 
                     <div className="flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
                         
-                        <div className="flex flex-col md:flex-row gap-3 w-full lg:w-auto items-center">
+                        <div className="flex flex-col md:flex-row items-center gap-3 w-full">
                             <SearchBar search={search} setSearch={setSearch} />
                             
+                            <div className="ml-auto">
                             <Filtros
                                 categorias={categorias}
                                 categoriaActiva={categoriaActiva}
@@ -127,6 +128,7 @@ export default function CatalogoPage() {
                                 marca={marca}
                                 setMarca={setMarca}
                             />
+                            </div>
                         </div>
                     </div>
 

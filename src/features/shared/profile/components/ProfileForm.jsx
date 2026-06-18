@@ -35,12 +35,29 @@ export default function ProfileForm({ user, onRefresh }) {
     const handleChange = (e) => {
         const { name, value } = e.target
 
-        if (name === "nombre" || name === "apellido") {
+        if (name === "nombre") {
             if (!/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/.test(value)) return
+            if (value.length > 15) return
+        }
+
+        if (name === "apellido") {
+            if (!/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/.test(value)) return
+            if (value.length > 20) return
         }
 
         if (name === "telefono") {
             if (!/^\d*$/.test(value) || value.length > 10) return
+        }
+
+        if (name === "direccion") {
+
+            if (value.length > 50) return
+
+            if (
+                !/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]*$/.test(value)
+            ) {
+                return
+            }
         }
 
         setForm({
@@ -52,16 +69,42 @@ export default function ProfileForm({ user, onRefresh }) {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(form.nombre)) {
+        // Nombre
+        if (form.nombre.trim().length < 3 || form.nombre.trim().length > 15) {
+            toast.error("El nombre debe tener entre 3 y 15 caracteres")
+            return
+        }
+
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.nombre)) {
             toast.error("El nombre solo debe contener letras")
             return
         }
 
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(form.apellido)) {
+        // Apellido
+        if (form.apellido.trim().length < 3 || form.apellido.trim().length > 20) {
+            toast.error("El apellido debe tener entre 3 y 20 caracteres")
+            return
+        }
+
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.apellido)) {
             toast.error("El apellido solo debe contener letras")
             return
         }
 
+        // Dirección
+        if (form.direccion.trim().length < 5 || form.direccion.trim().length > 50) {
+            toast.error("La dirección debe tener entre 5 y 50 caracteres")
+            return
+        }
+
+        if (
+            !/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]+$/.test(form.direccion)
+        ) {
+            toast.error("La dirección contiene caracteres no válidos")
+            return
+        }
+
+        // Teléfono
         if (!/^\d{10}$/.test(form.telefono)) {
             toast.error("El teléfono debe tener exactamente 10 dígitos")
             return
@@ -110,8 +153,10 @@ export default function ProfileForm({ user, onRefresh }) {
                     <Input
                         name="nombre"
                         required
+                        minLength={3}
+                        maxLength={15}
                         pattern="^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$"
-                        title="Solo se permiten letras"
+                        title="Solo se permiten letras. Entre 3 y 15 caracteres."
                         onChange={handleChange}
                         value={form.nombre}
                         className={inputClass}
@@ -123,8 +168,10 @@ export default function ProfileForm({ user, onRefresh }) {
                     <Input
                         name="apellido"
                         required
+                        minLength={3}
+                        maxLength={20}
                         pattern="^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$"
-                        title="Solo se permiten letras"
+                        title="Solo letras. Entre 3 y 20 caracteres."
                         onChange={handleChange}
                         value={form.apellido}
                         className={inputClass}
@@ -147,6 +194,11 @@ export default function ProfileForm({ user, onRefresh }) {
                     <Input
                         name="direccion"
                         required
+                        minLength={5}
+                        maxLength={50}
+                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]+$"
+                        title="Entre 5 y 50 caracteres. Solo letras, números y # . , - °"
+
                         onChange={handleChange}
                         value={form.direccion}
                         className={inputClass}
@@ -158,6 +210,8 @@ export default function ProfileForm({ user, onRefresh }) {
                     <Input
                         name="telefono"
                         required
+                        minLength={10}
+                        maxLength={10}
                         pattern="^\d{10}$"
                         title="Debe tener exactamente 10 dígitos"
                         onChange={handleChange}

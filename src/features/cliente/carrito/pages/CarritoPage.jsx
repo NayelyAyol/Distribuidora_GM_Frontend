@@ -70,7 +70,7 @@ export default function CarritoPage() {
         <div className="p-6 flex flex-col gap-6">
             <div>
                 <p className="text-gray-500">
-                    Este módulo te permite visualizar productos en tu carrito
+                    Este módulo te permite visualizar los productos en tu carrito
                 </p>
             </div>
 
