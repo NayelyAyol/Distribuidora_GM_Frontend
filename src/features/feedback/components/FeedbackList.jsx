@@ -151,7 +151,8 @@ export default function FeedbackList() {
                             onChange={(e) => setRespuesta(e.target.value)}
                             placeholder="Escribe tu respuesta..."
                             className={`${inputClass} h-[120px] resize-none`}
-                            maxLength={400}
+                            minLength={5}
+                            maxLength={500}
                         />
 
                         <div className="flex justify-end gap-3 mt-4">
