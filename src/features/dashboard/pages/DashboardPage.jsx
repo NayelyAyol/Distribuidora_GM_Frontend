@@ -34,6 +34,17 @@ export default function DashboardPage() {
     const rol = user?.rol
     const esVendedor = rol?.toUpperCase() === "VENDEDOR"
 
+const fechaHoy = new Date().toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+});
+
+/*    const fechaHoy = new Date().toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short" // O "long" si quieres el mes completo (ej: "junio")
+});*/
+
     useEffect(() => {
             if (!user) return;
 
@@ -76,12 +87,12 @@ export default function DashboardPage() {
         },
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ingresos del Mes",
+            title: "Ingresos Mensuales",
             subtitle: `$${dashboard.resumen.ingresosMes}`
         },
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ingresos de Hoy",
+            title: `${fechaHoy}`,
             subtitle: `$${dashboard.resumen.ingresosHoy}`
         },
         {
@@ -112,12 +123,12 @@ export default function DashboardPage() {
         },
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ventas del Mes",
+            title: "Ventas Mensuales",
             subtitle: `$${dashboard.resumen.ventasMes}`
         },
         {
             icon: <MdBarChart className="text-xl" />,
-            title: "Ventas de Hoy",
+            title: `${fechaHoy}`,
             subtitle: `$${dashboard.resumen.ventasHoy}`
         },
         {

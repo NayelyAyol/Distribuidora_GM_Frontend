@@ -57,7 +57,9 @@ export default function ProductoItemFactura({
 
             <div>
 
-                <p className="font-semibold text-emerald-900">
+                <p className="font-semibold text-emerald-900 truncate max-w-[150px]"
+                title={nombreMostrado}
+                >
                     {nombreMostrado}
                 </p>
 
@@ -73,7 +75,7 @@ export default function ProductoItemFactura({
 
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-shrink-0">
 
             {esEditable && (
                 <div
