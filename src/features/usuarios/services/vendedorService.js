@@ -16,14 +16,26 @@ export const registrarVendedor = async (data) => {
     }
 };
 
-export const activarVendedor = async (id) => {
-    const res = await api.put(`/admin/activar-vendedor/${id}`)
-    return res.data
+export const desactivarVendedor = async (id) => {
+    try {
+        const res = await api.put(`/admin/desactivar-vendedor/${id}`)
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al desactivar vendedor"
+        )
+    }
 }
 
-export const desactivarVendedor = async (id) => {
-    const res = await api.put(`/admin/desactivar-vendedor/${id}`)
-    return res.data
+export const activarVendedor = async (id) => {
+    try {
+        const res = await api.put(`/admin/activar-vendedor/${id}`)
+        return res.data
+    } catch (error) {
+        throw new Error(
+            error.response?.data?.msg || "Error al activar vendedor"
+        )
+    }
 }
 
 export const buscarVendedor = async (cedula) => {
