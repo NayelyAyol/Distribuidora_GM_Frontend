@@ -6,6 +6,7 @@ import { obtenerPedidosSeleccionados, tomarPedido } from "../services/pedidosSel
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { buttonOutlineClass, buttonPrimaryClass } from "@/utils/styles"
+import { createPortal } from "react-dom"
 
 export default function PedidosDisponiblesPage() {
     const [pedidos, setPedidos] = useState([])
@@ -85,7 +86,7 @@ export default function PedidosDisponiblesPage() {
                 )}
             </div>
 
-            {pedidoToConfirm && (
+            {pedidoToConfirm && createPortal(
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
                     <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
                         <h2 className="text-lg font-bold text-gray-800 mb-2">
@@ -115,7 +116,8 @@ export default function PedidosDisponiblesPage() {
                             </Button>
                         </div>
                     </Card>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     )

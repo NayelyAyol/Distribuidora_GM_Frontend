@@ -37,46 +37,22 @@ export const obtenerMisQuejasSugerencias = async (estado = "", tipo = "") => {
 }
 
 // Obtener todas las quejas y sugerencias (ADMIN)
-export const obtenerQuejasSugerenciasAdmin = async (
-    estado = "",
-    rolUsuario = ""
-) => {
+export const obtenerQuejasSugerenciasAdmin = async (estado = "", tipo = "") => {
     try {
+        const params = new URLSearchParams()
+        if (estado) params.append("estado", estado)
+        if (tipo) params.append("tipo", tipo)
 
-        const params = [];
-
-        if (estado) {
-            params.push(`estado=${estado}`);
-        }
-
-        if (rolUsuario) {
-            params.push(`rolUsuario=${rolUsuario}`);
-        }
-
-        const query =
-            params.length > 0
-                ? `?${params.join("&")}`
-                : "";
-
-        const response = await api.get(
-            `/quejas-sugerencias/admin${query}`
-        );
-
-        return response.data;
-
+        const query = params.toString() ? `?${params.toString()}` : ""
+        const response = await api.get(`/quejas-sugerencias/admin${query}`)
+        return response.data
     } catch (error) {
-
-        console.error(
-            "Error obteniendo quejas y sugerencias:",
-            error
-        );
-
+        console.error("Error obteniendo quejas y sugerencias:", error)
         throw new Error(
-            error.response?.data?.msg ||
-            "Error al obtener las quejas y sugerencias"
-        );
+            error.response?.data?.msg || "Error al obtener las quejas y sugerencias"
+        )
     }
-};
+}
 
 // Responder queja o sugerencia (ADMIN)
 export const responderQuejaSugerencia = async (

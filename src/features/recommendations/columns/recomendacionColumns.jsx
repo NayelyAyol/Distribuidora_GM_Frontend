@@ -28,7 +28,7 @@ export const recomendacionColumns = (onResponder) => [
             const estado = getValue()
             return (
                 <StatusBadge
-                    label={estado === "FINALIZADA" ? "Finalizada" : "Pendiente"}
+                    label={estado === "FINALIZADA" ? "Atendida" : "Pendiente"}
                     isActivo={estado === "FINALIZADA"}
                 />
             )
@@ -43,7 +43,6 @@ export const recomendacionColumns = (onResponder) => [
                 <button
                     onClick={() => onResponder(row.original)}
                     className="text-emerald-700 hover:text-emerald-900"
-                    disabled={row.original.estado === "FINALIZADA"}
                 >
                     <FiMessageCircle />
                 </button>

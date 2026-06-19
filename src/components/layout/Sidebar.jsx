@@ -177,7 +177,7 @@ const Sidebar = ({ open, onClose }) => {
                     )}
                 </div>
 
-                <p className="text-emerald-950 font-bold">
+                <p className="text-emerald-950 font-bold text-center">
                     {[user?.nombre, user?.apellido].filter(Boolean).join(" ") ||
                         user?.email ||
                         "Usuario"}

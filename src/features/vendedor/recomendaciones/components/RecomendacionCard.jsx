@@ -52,7 +52,7 @@ export default function RecomendacionCard({ item }) {
                         }`}
                 >
                     {item.estado === "FINALIZADA"
-                        ? "Finalizada"
+                        ? "Atendida"
                         : "Pendiente"}
                 </span>
 

@@ -1,8 +1,9 @@
-import { useRef, useState } from "react"
-import { toast } from "react-toastify"
-import { crearPedido } from "../services/pedidoService"
+import { useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { crearPedido } from "../services/pedidoService";
 
 export default function usePedidoForm() {
+    const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
         nombrePedido: "",
@@ -10,189 +11,148 @@ export default function usePedidoForm() {
         identificacion: "",
         correo: "",
         telefono: "",
-        tipoEntrega: "RETIRO_LOCAL", 
+        tipoEntrega: "RETIRO_LOCAL",
         direccion: "",
         referencia: "",
-        observaciones: ""
-    })
+        observaciones: "",
+    });
 
-    const [metodoPago, setMetodoPago] = useState("")
-    const [imagen, setImagen] = useState(null)
-    const [preview, setPreview] = useState(null)
+    const [metodoPago, setMetodoPago] = useState("");
+    const [imagen, setImagen] = useState(null);
+    const [preview, setPreview] = useState(null);
 
-    const fileInputRef = useRef(null)
+    const fileInputRef = useRef(null);
 
     const handleChange = (e) => {
-
-        const { name, value } = e.target
+        const { name, value } = e.target;
 
         if (name === "nombreCompleto") {
-
-            if (!/^[\p{L}\s]*$/u.test(value)) {
-                return;
-            }
-
+        if (!/^[\p{L}\s]*$/u.test(value)) return;
+        if (value.length > 80) return;
         }
 
         if (name === "telefono") {
-
-            if (!/^\d*$/.test(value)) return
-
-            if (value.length > 10) return
+        if (!/^\d*$/.test(value)) return;
+        if (value.length > 10) return;
         }
-        
+
         if (name === "identificacion") {
-
-            if (!/^\d*$/.test(value)) return
-
-            if (value.length > 13) return
+        if (!/^\d*$/.test(value)) return;
+        if (value.length > 13) return;
         }
 
-        setForm(prev => ({
-            ...prev,
-            [name]: value
-        }))
-    }
+        if (name === "nombrePedido" && value.length > 60) return;
+        if (name === "direccion" && value.length > 80) return;
+        if (name === "referencia" && value.length > 80) return;
+
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
 
     const handleImagenChange = (e) => {
+        const file = e.target.files[0];
 
-        const file = e.target.files[0]
+        if (!file) return;
 
-        if (!file) return
-
-        const tiposPermitidos = [
-            "image/png",
-            "image/jpeg",
-            "image/jpg"
-        ]
+        const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg"];
 
         if (!tiposPermitidos.includes(file.type)) {
+        toast.error("Solo se permiten imágenes PNG o JPG");
 
-            toast.error(
-                "Solo se permiten imágenes PNG o JPG"
-            )
-
-            return
+        return;
         }
 
-        setImagen(file)
+        setImagen(file);
 
-        const reader = new FileReader()
+        const reader = new FileReader();
 
         reader.onloadend = () => {
-            setPreview(reader.result)
-        }
+        setPreview(reader.result);
+        };
 
-        reader.readAsDataURL(file)
-    }
+        reader.readAsDataURL(file);
+    };
 
     const validarFormulario = () => {
-
         if (!form.nombrePedido.trim()) {
-
-            toast.error(
-                "Ingrese el nombre del pedido"
-            )
-
-            return false
+        toast.error("Ingrese el nombre del pedido");
+        return false;
+        }
+        if (form.nombrePedido.trim().length < 5) {
+        toast.error("El nombre del pedido debe tener mínimo 5 caracteres");
+        return false;
         }
 
         if (!form.nombreCompleto.trim()) {
-
-            toast.error(
-                "Ingrese el nombre completo"
-            )
-
-            return false
+        toast.error("Ingrese el nombre completo");
+        return false;
+        }
+        if (form.nombreCompleto.trim().length < 3) {
+        toast.error("El nombre completo debe tener mínimo 3 caracteres");
+        return false;
         }
 
         if (!form.identificacion.trim()) {
-
-            toast.error(
-                "Ingrese el numero de cédula o RUC"
-            )
-
-            return false
+        toast.error("Ingrese la cédula o RUC");
+        return false;
+        }
+        if (
+        form.identificacion.length !== 10 &&
+        form.identificacion.length !== 13
+        ) {
+        toast.error(
+            "La identificación debe tener 10 (cédula) o 13 (RUC) dígitos",
+        );
+        return false;
         }
 
         if (!form.correo.trim()) {
-
-            toast.error(
-                "Ingrese el correo"
-            )
-
-            return false
+        toast.error("Ingrese el correo");
+        return false;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo)) {
+        toast.error("Ingrese un correo válido");
+        return false;
         }
 
         if (!form.telefono.trim()) {
-
-            toast.error(
-                "Ingrese el teléfono"
-            )
-
-            return false
+        toast.error("Ingrese el teléfono");
+        return false;
+        }
+        if (!/^09\d{8}$/.test(form.telefono)) {
+        toast.error("Ingrese un celular ecuatoriano válido (09XXXXXXXX)");
+        return false;
         }
 
         if (!imagen) {
-
-            toast.error(
-                "Debe subir una imagen"
-            )
-
-            return false
+        toast.error("Debe subir una imagen de la lista");
+        return false;
         }
 
-        if (form.tipoEntrega === "ENVIO_DOMICILIO" && !form.direccion.trim()) {
-                toast.error("Ingrese una dirección para el envío");
-                return false;
-            }
-        
-        if (form.tipoEntrega === "ENVIO_DOMICILIO" && !form.referencia.trim()) {
-                toast.error("Ingrese una referencia para el envío");
-                return false;
-            }
-
-        const id = form.identificacion.trim();
-
-        if (!/^\d+$/.test(id)) {
-            toast.error("La identificación solo debe contener números");
+        if (form.tipoEntrega === "ENVIO_DOMICILIO") {
+        if (!form.direccion.trim()) {
+            toast.error("Ingrese una dirección para el envío");
             return false;
         }
-
-        if (id.length !== 10 && id.length !== 13) {
-            toast.error("La identificación debe tener 10 (cédula) o 13 (RUC) dígitos");
+        if (!form.referencia.trim()) {
+            toast.error("Ingrese una referencia para el envío");
             return false;
         }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(form.correo)) {
-            toast.error("Ingrese un correo electrónico válido");
-            return false;
         }
 
-        if (!/^\d{10}$/.test(form.telefono)) {
-
-            toast.error(
-                "El teléfono debe tener 10 dígitos"
-            )
-
-            return false
-        }
-
-        return true
-    }
+        return true;
+    };
 
     const resetForm = () => {
         setForm({
-            nombrePedido: "",
-            nombreCompleto: "",
-            identificacion: "",
-            correo: "",
-            telefono: "",
-            tipoEntrega: "RETIRO_LOCAL",
-            direccion: "",
-            referencia: "",
-            observaciones: ""
+        nombrePedido: "",
+        nombreCompleto: "",
+        identificacion: "",
+        correo: "",
+        telefono: "",
+        tipoEntrega: "RETIRO_LOCAL",
+        direccion: "",
+        referencia: "",
+        observaciones: "",
         });
         setMetodoPago("");
         setImagen(null);
@@ -202,6 +162,7 @@ export default function usePedidoForm() {
     const handleSubmit = async () => {
         if (!validarFormulario()) return;
 
+        setLoading(true);
         const formData = new FormData();
 
         formData.append("nombrePedido", form.nombrePedido);
@@ -215,24 +176,27 @@ export default function usePedidoForm() {
         formData.append("telefono", form.telefono);
 
         if (form.tipoEntrega === "ENVIO_DOMICILIO") {
-            formData.append("direccion", form.direccion);
-            formData.append("referencia", form.referencia);
+        formData.append("direccion", form.direccion);
+        formData.append("referencia", form.referencia);
         }
 
         try {
-            await crearPedido(formData);
-            toast.success("Pedido enviado correctamente");
-            resetForm();
-            return true
+        await crearPedido(formData);
+        toast.success("Pedido enviado correctamente");
+        resetForm();
+        return true;
         } catch (error) {
-            toast.error(error.message);
-            return false
+        toast.error(error.message);
+        return false;
+        } finally {
+        setLoading(false);
         }
-    }
+    };
 
     return {
         form,
         setForm,
+        loading,
         metodoPago,
         setMetodoPago,
         imagen,
@@ -240,6 +204,6 @@ export default function usePedidoForm() {
         fileInputRef,
         handleChange,
         handleImagenChange,
-        handleSubmit
-    }
+        handleSubmit,
+    };
 }

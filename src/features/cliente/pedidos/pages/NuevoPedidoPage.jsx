@@ -16,6 +16,7 @@ export default function NuevoPedidoPage() {
 
     const {
         form,
+        loading,
         preview,
         fileInputRef,
         handleChange,
@@ -137,9 +138,10 @@ export default function NuevoPedidoPage() {
                     <Button
                         type="button"
                         onClick={handleEnviarFormulario}
+                        disabled={loading}
                         className={buttonPrimaryClass}
                     >
-                        Enviar
+                        {loading ? "Enviando":"Enviar"}
                     </Button>
 
                 </div>

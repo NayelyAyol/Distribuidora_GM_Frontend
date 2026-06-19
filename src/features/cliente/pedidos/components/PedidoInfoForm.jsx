@@ -4,12 +4,6 @@ import { Input } from "@/components/ui/input"
 
 export default function PedidoInfoForm({ form, handleChange }) {
     const navigate = useNavigate()
-    
-    const fechaHoy = new Date().toLocaleDateString('es-EC', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    }).split('/').reverse().join('-');
 
     return (
         <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/20 p-6 space-y-8">
@@ -26,18 +20,15 @@ export default function PedidoInfoForm({ form, handleChange }) {
 
                 <div className="grid md:grid-cols-2 gap-4">
                     <Input
-                        placeholder="Nombre del pedido"
+                        placeholder="Nombre del pedido (mín. 5 caracteres)"
                         name="nombrePedido"
                         value={form.nombrePedido}
                         onChange={handleChange}
-                        maxLength={30}
+                        maxLength={60}
                         className="h-12 rounded-xl"
                     />
-
-                <div className="h-12 rounded-xl border border-input bg-white/50 px-4 flex items-center text-gray-500 shadow-sm">
-                        <span className=" text-black">
-                            {new Date().toLocaleDateString('es-EC')}
-                        </span>
+                    <div className="h-12 rounded-xl border border-input bg-white/50 px-4 flex items-center shadow-sm">
+                        <span className="text-black">{new Date().toLocaleDateString('es-EC')}</span>
                     </div>
                 </div>
             </div>

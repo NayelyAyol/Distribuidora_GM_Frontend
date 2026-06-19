@@ -6,6 +6,7 @@ import RecomendacionCard from "./RecomendacionCard"
 import { inputClass } from "@/utils/styles"
 import { toast } from "react-toastify"
 import { obtenerMisQuejasSugerencias } from "@/features/cliente/quejasysugerencias/services/quejasSugerenciasService"
+import useAuthStore from "@/context/useAuthStore"
 
 export default function RecomendacionList({
     placeholder,
@@ -20,6 +21,10 @@ export default function RecomendacionList({
     const [search, setSearch] = useState("")
     const [tipoFilter, setTipoFilter] = useState("")
 
+    const user = useAuthStore((state) => state.user)
+    const rol = user?.rol?.toUpperCase()
+    const esVendedor = rol === "VENDEDOR"
+
     const cargar = async () => {
         try {
             const estado = filter === "SIN_RESPUESTA" ? "PENDIENTE" : "FINALIZADA"
@@ -32,12 +37,12 @@ export default function RecomendacionList({
 
     useEffect(() => {
         cargar()
-    }, [filter,tipoFilter,recargar])
+    }, [filter, tipoFilter, recargar])
 
     return (
         <div className="grid gap-4">
 
-            
+
             <div className="
                 flex flex-col
                 md:flex-row
@@ -102,13 +107,13 @@ export default function RecomendacionList({
                         onClick={() => setFilter("CON_RESPUESTA")}
                         className={filter === "CON_RESPUESTA" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
                     >
-                        Finalizadas
+                        Atendidas
                     </Button>
                 </div>
 
-                {/* Filtro por tipo */}
+            {!esVendedor && (
                 <div className="flex flex-wrap gap-2">
-                    {[["", "Todas"], ["QUEJA", "Quejas"], ["SUGERENCIA", "Sugerencias"]].map(([val, label]) => (
+                    {[["QUEJA", "Quejas"], ["SUGERENCIA", "Sugerencias"]].map(([val, label]) => (
                         <Button
                             key={val}
                             onClick={() => setTipoFilter(val)}
@@ -118,6 +123,7 @@ export default function RecomendacionList({
                         </Button>
                     ))}
                 </div>
+                )}
 
             </div>
 

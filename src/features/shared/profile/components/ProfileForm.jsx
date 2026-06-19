@@ -2,11 +2,7 @@ import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import {
-    inputClass,
-    labelClass,
-    buttonPrimaryClass
-} from "@/utils/styles"
+import { inputClass, labelClass, buttonPrimaryClass } from "@/utils/styles"
 import { updateProfile } from "../services/profileService"
 import { toast } from "react-toastify"
 
@@ -20,6 +16,9 @@ export default function ProfileForm({ user, onRefresh }) {
         telefono: ""
     })
 
+    const [errors, setErrors] = useState({})
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         if (user) {
             setForm({
@@ -31,6 +30,10 @@ export default function ProfileForm({ user, onRefresh }) {
             })
         }
     }, [user])
+
+    const clearError = (name) => {
+        setErrors(prev => ({ ...prev, [name]: "" }))
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -50,89 +53,68 @@ export default function ProfileForm({ user, onRefresh }) {
         }
 
         if (name === "direccion") {
-
+            if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]*$/.test(value)) return
             if (value.length > 50) return
-
-            if (
-                !/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]*$/.test(value)
-            ) {
-                return
-            }
         }
 
-        setForm({
-            ...form,
-            [name]: value
-        })
+        clearError(name)
+        setForm(prev => ({ ...prev, [name]: value }))
+    }
+
+    const validate = () => {
+        const newErrors = {}
+
+        // Nombre
+        if (!form.nombre.trim()) {
+            newErrors.nombre = "El nombre es obligatorio"
+        } else if (form.nombre.trim().length < 3) {
+            newErrors.nombre = "El nombre debe tener mínimo 3 caracteres"
+        }
+
+        // Apellido
+        if (!form.apellido.trim()) {
+            newErrors.apellido = "El apellido es obligatorio"
+        } else if (form.apellido.trim().length < 3) {
+            newErrors.apellido = "El apellido debe tener mínimo 3 caracteres"
+        }
+
+        // Dirección
+        if (!form.direccion.trim()) {
+            newErrors.direccion = "La dirección es obligatoria"
+        } else if (form.direccion.trim().length < 5) {
+            newErrors.direccion = "La dirección debe tener mínimo 5 caracteres"
+        }
+
+        // Teléfono
+        if (!form.telefono.trim()) {
+            newErrors.telefono = "El teléfono es obligatorio"
+        } else if (!/^\d{10}$/.test(form.telefono)) {
+            newErrors.telefono = "El teléfono debe tener exactamente 10 dígitos"
+        }
+
+        return newErrors
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        // Nombre
-        if (form.nombre.trim().length < 3 || form.nombre.trim().length > 15) {
-            toast.error("El nombre debe tener entre 3 y 15 caracteres")
+        const newErrors = validate()
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors)
             return
         }
-
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.nombre)) {
-            toast.error("El nombre solo debe contener letras")
-            return
-        }
-
-        // Apellido
-        if (form.apellido.trim().length < 3 || form.apellido.trim().length > 20) {
-            toast.error("El apellido debe tener entre 3 y 20 caracteres")
-            return
-        }
-
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.apellido)) {
-            toast.error("El apellido solo debe contener letras")
-            return
-        }
-
-        // Dirección
-        if (form.direccion.trim().length < 5 || form.direccion.trim().length > 50) {
-            toast.error("La dirección debe tener entre 5 y 50 caracteres")
-            return
-        }
-
-        if (
-            !/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]+$/.test(form.direccion)
-        ) {
-            toast.error("La dirección contiene caracteres no válidos")
-            return
-        }
-
-        // Teléfono
-        if (!/^\d{10}$/.test(form.telefono)) {
-            toast.error("El teléfono debe tener exactamente 10 dígitos")
-            return
-        }
-
-        if (!e.target.checkValidity()) {
-            e.target.reportValidity()
-            return
-        }
-
-        const loadingToast = toast.loading("Actualizando perfil...")
 
         try {
+            setLoading(true)
             await updateProfile(form)
-
-            toast.dismiss(loadingToast)
             toast.success("Perfil actualizado")
-
-            if (onRefresh) {
-                await onRefresh()
-            }
-
+            if (onRefresh) await onRefresh()
         } catch (error) {
-            toast.dismiss(loadingToast)
-
-            const msg = error.response?.data?.message || "Error al actualizar perfil"
+            const msg = error.response?.data?.msg || "Error al actualizar perfil"
             toast.error(msg)
-            console.error("Error al actualizar perfil:", error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -143,42 +125,38 @@ export default function ProfileForm({ user, onRefresh }) {
                 Actualizar información
             </h2>
 
-            <form
-                onSubmit={handleSubmit}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            >
+            <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <div>
+                {/* Nombre */}
+                <div className="space-y-1">
                     <Label className={`${labelClass} mb-3`}>Nombre</Label>
                     <Input
                         name="nombre"
-                        required
-                        minLength={3}
-                        maxLength={15}
-                        pattern="^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$"
-                        title="Solo se permiten letras. Entre 3 y 15 caracteres."
-                        onChange={handleChange}
                         value={form.nombre}
+                        onChange={handleChange}
                         className={inputClass}
+                        placeholder="Ej: Juan"
+                        maxLength={15}
                     />
+                    {errors.nombre && <p className="text-red-500 text-sm font-medium">{errors.nombre}</p>}
                 </div>
 
-                <div>
+                {/* Apellido */}
+                <div className="space-y-1">
                     <Label className={`${labelClass} mb-3`}>Apellido</Label>
                     <Input
                         name="apellido"
-                        required
-                        minLength={3}
-                        maxLength={20}
-                        pattern="^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$"
-                        title="Solo letras. Entre 3 y 20 caracteres."
-                        onChange={handleChange}
                         value={form.apellido}
+                        onChange={handleChange}
                         className={inputClass}
+                        placeholder="Ej: Pérez"
+                        maxLength={20}
                     />
+                    {errors.apellido && <p className="text-red-500 text-sm font-medium">{errors.apellido}</p>}
                 </div>
 
-                <div className="md:col-span-2">
+                {/* Email — solo lectura */}
+                <div className="md:col-span-2 space-y-1">
                     <Label className={`${labelClass} mb-3`}>Email</Label>
                     <Input
                         type="email"
@@ -189,40 +167,38 @@ export default function ProfileForm({ user, onRefresh }) {
                     />
                 </div>
 
-                <div className="md:col-span-2">
+                {/* Dirección */}
+                <div className="md:col-span-2 space-y-1">
                     <Label className={`${labelClass} mb-3`}>Dirección</Label>
                     <Input
                         name="direccion"
-                        required
-                        minLength={5}
-                        maxLength={50}
-                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]+$"
-                        title="Entre 5 y 50 caracteres. Solo letras, números y # . , - °"
-
-                        onChange={handleChange}
                         value={form.direccion}
+                        onChange={handleChange}
                         className={inputClass}
+                        placeholder="Ej: Av. Amazonas 123"
+                        maxLength={50}
                     />
+                    {errors.direccion && <p className="text-red-500 text-sm font-medium">{errors.direccion}</p>}
                 </div>
 
-                <div className="md:col-span-2">
+                {/* Teléfono */}
+                <div className="md:col-span-2 space-y-1">
                     <Label className={`${labelClass} mb-3`}>Teléfono</Label>
                     <Input
                         name="telefono"
-                        required
-                        minLength={10}
-                        maxLength={10}
-                        pattern="^\d{10}$"
-                        title="Debe tener exactamente 10 dígitos"
-                        onChange={handleChange}
                         value={form.telefono}
+                        onChange={handleChange}
                         className={inputClass}
+                        placeholder="10 dígitos"
+                        maxLength={10}
                     />
+                    {errors.telefono && <p className="text-red-500 text-sm font-medium">{errors.telefono}</p>}
                 </div>
 
+                {/* Submit */}
                 <div className="md:col-span-2">
-                    <Button className={buttonPrimaryClass} type="submit">
-                        Guardar
+                    <Button type="submit" disabled={loading} className={buttonPrimaryClass}>
+                        {loading ? "Guardando..." : "Guardar"}
                     </Button>
                 </div>
 

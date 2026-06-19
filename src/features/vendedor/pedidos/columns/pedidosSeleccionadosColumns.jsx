@@ -16,16 +16,22 @@ export const pedidosSeleccionadosColumns = (
             id: "cliente",
             header: "Cliente",
             cell: (info) => {
-                const pedido = info.getValue();
-                return pedido.datosFacturacion?.nombreCompleto || "Sin nombre";
+                const pedido = info.getValue()
+                return (
+                    <span className="truncate max-w-[150px] inline-block align-middle" title={pedido.datosFacturacion?.nombreCompleto}>
+                        {pedido.datosFacturacion?.nombreCompleto || "Sin nombre"}
+                    </span>
+                )
             }
         }),
 
         columnHelper.accessor("nombrePedido", {
             header: "Nombre del Pedido",
-            cell: (info) => {
-                return info.getValue() || "Sin nombre";
-            }
+            cell: (info) => (
+                <span className="truncate max-w-[150px] inline-block align-middle" title={info.getValue()}>
+                    {info.getValue() || "Sin nombre"}
+                </span>
+            )
         }),
 
         columnHelper.accessor("tipoPedido",

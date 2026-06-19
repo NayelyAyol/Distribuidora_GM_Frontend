@@ -16,6 +16,7 @@ import { toast } from "react-toastify"
 import { inputClass, buttonOutlineClass, buttonPrimaryClass } from "@/utils/styles"
 import useAuthStore from "@/context/useAuthStore"
 import { obtenerMisPedidos, cambiarEstadoPedido } from "../../../cliente/pedidos/services/pedidoService"
+import { createPortal } from "react-dom"
 
 export default function PedidosPage() {
     const [filtro, setFiltro] = useState("pendientes")
@@ -300,7 +301,7 @@ return (
                 }
                 pedidoNombre={pedidoSeleccionado?.nombrePedido}
             />
-{pedidoACancelar && (
+{pedidoACancelar && createPortal(
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
                     <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
                         <h2 className="text-lg font-bold text-gray-800 mb-2">Confirmar cancelación</h2>
@@ -324,7 +325,8 @@ return (
                             </Button>
                         </div>
                     </Card>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     
