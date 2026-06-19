@@ -35,9 +35,11 @@ export const buscarCliente = async (cedula) => {
 
 }
 
-export const listarClientesActivos = async () => {
+export const listarClientesActivos = async ({ page = 1, limit = 15 } = {}) => {
     try {
-        const res = await api.get("/admin/listar-clientes-activos")
+        const res = await api.get("/admin/listar-clientes-activos", {
+            params: { page, limit }
+        })
         return res.data
     } catch (error) {
         throw new Error(
@@ -46,9 +48,11 @@ export const listarClientesActivos = async () => {
     }
 }
 
-export const listarClientesInactivos = async () => {
+export const listarClientesInactivos = async ({ page = 1, limit = 15 } = {}) => {
     try {
-        const res = await api.get("/admin/listar-clientes-inactivos")
+        const res = await api.get("/admin/listar-clientes-inactivos", {
+            params: { page, limit }
+        })
         return res.data
     } catch (error) {
         throw new Error(

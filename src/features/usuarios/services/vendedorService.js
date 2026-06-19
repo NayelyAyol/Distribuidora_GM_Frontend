@@ -9,11 +9,10 @@ export const registrarVendedor = async (data) => {
 
         return res.data;
     } catch (error) {
-        console.error("Error registrando vendedor:", error.response?.data || error.message);
-
-        throw new Error(
-            error.response?.data?.msg || "Error al registrar vendedor",
-        );
+        const data = error.response?.data
+        const mensaje = data?.error || data?.msg || "Error al registrar vendedor"
+        console.error("Error registrando vendedor:", data)
+        throw new Error(mensaje)
     }
 };
 
@@ -40,9 +39,11 @@ export const buscarVendedor = async (cedula) => {
     }
 }
 
-export const listarVendedoresActivos = async () => {
+export const listarVendedoresActivos = async ({ page = 1, limit = 15 } = {}) => {
     try {
-        const res = await api.get("/admin/listar-vendedores-activos")
+        const res = await api.get("/admin/listar-vendedores-activos", {
+            params: { page, limit }
+        })
         return res.data
     } catch (error) {
         throw new Error(
@@ -51,9 +52,11 @@ export const listarVendedoresActivos = async () => {
     }
 }
 
-export const listarVendedoresInactivos = async () => {
+export const listarVendedoresInactivos = async ({ page = 1, limit = 15 } = {}) => {
     try {
-        const res = await api.get("/admin/listar-vendedores-inactivos")
+        const res = await api.get("/admin/listar-vendedores-inactivos", {
+            params: { page, limit }
+        })
         return res.data
     } catch (error) {
         throw new Error(

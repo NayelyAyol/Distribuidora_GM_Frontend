@@ -36,101 +36,79 @@ export default function UsuariosPage() {
     const [filtro, setFiltro] = useState("activos")
     const [userToToggle, setUserToToggle] = useState(null)
 
+    const [page, setPage] = useState(1)
+    const [totalPaginas, setTotalPaginas] = useState(1)
+    const LIMITE = 15
+
     const user = useAuthStore((state) => state.user)
     const rol = user?.perfilId?.rol?.toUpperCase()
-
     const esVendedor = rol === "VENDEDOR"
 
-    const fetchVendedoresActivos = async () => {
-        try {
-            const data = await listarVendedoresActivos()
-            setVendedores(data.usuarios || data)
-        } catch (error) {
-            toast.error(error.message)
-        }
+    const fetchVendedoresActivos = async (pagina = 1) => {
+        const data = await listarVendedoresActivos({ page: pagina, limit: LIMITE })
+        setVendedores(data.usuarios || data)
+        setTotalPaginas(data.totalPaginas || 1)
     }
 
-    const fetchVendedoresInactivos = async () => {
-        try {
-            const data = await listarVendedoresInactivos()
-            setVendedores(data.usuarios || data)
-        } catch (error) {
-            toast.error(error.message)
-        }
+    const fetchVendedoresInactivos = async (pagina = 1) => {
+        const data = await listarVendedoresInactivos({ page: pagina, limit: LIMITE })
+        setVendedores(data.usuarios || data)
+        setTotalPaginas(data.totalPaginas || 1)
     }
 
-    const fetchClientesActivos = async () => {
-        try {
-            const data = await listarClientesActivos()
-            setClientes(data.usuarios || data)
-        } catch (error) {
-            toast.error(error.message)
-        }
+    const fetchClientesActivos = async (pagina = 1) => {
+        const data = await listarClientesActivos({ page: pagina, limit: LIMITE })
+        setClientes(data.usuarios || data)
+        setTotalPaginas(data.totalPaginas || 1)
     }
 
-    const fetchClientesInactivos = async () => {
-        try {
-            const data = await listarClientesInactivos()
-            setClientes(data.usuarios || data)
-        } catch (error) {
-            toast.error(error.message)
-        }
+    const fetchClientesInactivos = async (pagina = 1) => {
+        const data = await listarClientesInactivos({ page: pagina, limit: LIMITE })
+        setClientes(data.usuarios || data)
+        setTotalPaginas(data.totalPaginas || 1)
     }
 
     useEffect(() => {
-
         const loadData = async () => {
-
             setLoading(true)
-            setSearch("")
-            setFiltro("activos")
-
             try {
-
                 if (esVendedor) {
-                    await fetchClientesActivos()
+                    await fetchClientesActivos(page)
+                } else if (tab === "vendedores") {
+                    filtro === "activos"
+                        ? await fetchVendedoresActivos(page)
+                        : await fetchVendedoresInactivos(page)
                 } else {
-
-                    if (tab === "vendedores") {
-                        await fetchVendedoresActivos()
-                    } else {
-                        await fetchClientesActivos()
-                    }
-
+                    filtro === "activos"
+                        ? await fetchClientesActivos(page)
+                        : await fetchClientesInactivos(page)
                 }
-
+            } catch (error) {
+                toast.error(error.message)
             } finally {
                 setLoading(false)
             }
-
         }
 
         loadData()
+    }, [tab, filtro, page, esVendedor])
 
-    }, [tab, esVendedor])
+    const handleTabChange = (nuevaTab) => {
+        setTab(nuevaTab)
+        setSearch("")
+        setPage(1)
+    }
 
-    if (loading) {
-        return <p className="p-6">Cargando usuarios...</p>
+    const handleFiltroChange = async (nuevoFiltro) => {
+        setFiltro(nuevoFiltro)
+        setSearch("")
+        setPage(1)
     }
 
     const handleBuscar = async () => {
-
         if (!search.trim()) {
             setSearch("")
-            if (tab === "vendedores") {
-
-                filtro === "activos"
-                    ? await fetchVendedoresActivos()
-                    : await fetchVendedoresInactivos()
-
-            } else {
-
-                filtro === "activos"
-                    ? await fetchClientesActivos()
-                    : await fetchClientesInactivos()
-
-            }
-
+            setPage(1)
             return
         }
 
@@ -142,44 +120,38 @@ export default function UsuariosPage() {
         try {
             setLoading(true)
             if (tab === "vendedores") {
-
                 const data = await buscarVendedor(search)
                 const resultados = data.usuarios || (data ? [data] : [])
                 if (resultados.length === 0) toast.info("No se encontró el vendedor")
                 setVendedores(resultados)
-
+                setTotalPaginas(1) 
             } else {
-
                 const data = await buscarCliente(search)
                 const resultados = data.usuarios || (data ? [data] : [])
                 if (resultados.length === 0) toast.info("No se encontró el cliente")
                 setClientes(resultados)
-
+                setTotalPaginas(1)
             }
-
         } catch (error) {
             toast.error(error.message)
         } finally {
             setLoading(false)
         }
-
     }
 
-    const handleCloseToggle = () => {
-        setUserToToggle(null)
-    }
+    const handleCloseToggle = () => setUserToToggle(null)
 
     const handleConfirmToggle = async () => {
         try {
             const esTabVendedor = tab === "vendedores"
             const esActivo = userToToggle.estado
-            
+
             if (esTabVendedor) {
                 esActivo ? await desactivarVendedor(userToToggle._id) : await activarVendedor(userToToggle._id)
             } else {
                 esActivo ? await desactivarCliente(userToToggle._id) : await activarCliente(userToToggle._id)
             }
-            
+
             toast.success(`Usuario ${esActivo ? "desactivado" : "activado"} correctamente`)
             await refreshData()
             handleCloseToggle()
@@ -189,26 +161,18 @@ export default function UsuariosPage() {
     }
 
     const refreshData = async () => {
-
         if (tab === "vendedores") {
-
-            if (filtro === "activos") {
-                await fetchVendedoresActivos()
-            } else {
-                await fetchVendedoresInactivos()
-            }
-
+            filtro === "activos"
+                ? await fetchVendedoresActivos(page)
+                : await fetchVendedoresInactivos(page)
         } else {
-
-            if (filtro === "activos") {
-                await fetchClientesActivos()
-            } else {
-                await fetchClientesInactivos()
-            }
-
+            filtro === "activos"
+                ? await fetchClientesActivos(page)
+                : await fetchClientesInactivos(page)
         }
-
     }
+
+    if (loading) return <p className="p-6">Cargando usuarios...</p>
 
     return (
         <div className="p-6 space-y-6">
@@ -222,31 +186,28 @@ export default function UsuariosPage() {
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
 
                 <div className="flex border-b bg-white">
-
                     {!esVendedor && (
                         <button
                             type="button"
-                            onClick={() => setTab("vendedores")}
+                            onClick={() => handleTabChange("vendedores")}
                             className={`px-6 py-3 text-sm font-medium transition ${tab === "vendedores"
-                                    ? "bg-emerald-100 text-emerald-800"
-                                    : "text-gray-600 hover:bg-gray-100"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "text-gray-600 hover:bg-gray-100"
                                 }`}
                         >
                             Vendedores
                         </button>
                     )}
-
                     <button
                         type="button"
-                        onClick={() => setTab("clientes")}
+                        onClick={() => handleTabChange("clientes")}
                         className={`px-6 py-3 text-sm font-medium transition ${tab === "clientes"
-                                ? "bg-emerald-100 text-emerald-800"
-                                : "text-gray-600 hover:bg-gray-100"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "text-gray-600 hover:bg-gray-100"
                             }`}
                     >
                         {esVendedor ? "Mis Clientes" : "Clientes"}
                     </button>
-
                 </div>
 
                 <div className="p-6 space-y-4">
@@ -254,19 +215,15 @@ export default function UsuariosPage() {
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-5">
 
                         <div className="flex items-center bg-white rounded-full w-full md:w-[260px] border border-gray-100 shadow-sm">
-
                             <Input
                                 type="text"
                                 placeholder="Buscar por cédula..."
                                 maxLength={10}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value.replace(/\D/g, ""))}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleBuscar()
-                                }}
+                                onKeyDown={(e) => { if (e.key === "Enter") handleBuscar() }}
                                 className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1 placeholder:text-sm`}
                             />
-
                             <button
                                 onClick={handleBuscar}
                                 disabled={loading}
@@ -274,61 +231,26 @@ export default function UsuariosPage() {
                             >
                                 <FiSearch className="text-emerald-900 text-xl" />
                             </button>
-
                         </div>
 
                         <div className="flex flex-wrap gap-3">
-
                             <Button
-                                onClick={async () => {
-
-                                    setFiltro("activos")
-                                    setSearch("")
-
-                                    if (tab === "vendedores") {
-                                        await fetchVendedoresActivos()
-                                    } else {
-                                        await fetchClientesActivos()
-                                    }
-
-                                }}
-                                className={
-                                    filtro === "activos"
-                                        ? "bg-emerald-100 text-emerald-700"
-                                        : "bg-gray-200 text-gray-600"
-                                }
+                                onClick={() => handleFiltroChange("activos")}
+                                className={filtro === "activos" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
                             >
                                 Activos
                             </Button>
-
                             <Button
-                                onClick={async () => {
-
-                                    setFiltro("inactivos")
-                                    setSearch("")
-
-                                    if (tab === "vendedores") {
-                                        await fetchVendedoresInactivos()
-                                    } else {
-                                        await fetchClientesInactivos()
-                                    }
-
-                                }}
-                                className={
-                                    filtro === "inactivos"
-                                        ? "bg-emerald-100 text-emerald-700"
-                                        : "bg-gray-200 text-gray-600"
-                                }
+                                onClick={() => handleFiltroChange("inactivos")}
+                                className={filtro === "inactivos" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
                             >
                                 Inactivos
                             </Button>
-
                         </div>
 
                     </div>
 
                     <div className="w-full overflow-x-auto">
-
                         <DataTable
                             data={
                                 esVendedor
@@ -339,8 +261,27 @@ export default function UsuariosPage() {
                             }
                             columns={usuarioColumns(refreshData, (usuario) => setUserToToggle(usuario))}
                         />
-
                     </div>
+
+                        <div className="flex justify-center items-center gap-2 p-4 flex-wrap">
+                            {Array.from({ length: totalPaginas }, (_, index) => {
+                                const numero = index + 1
+                                const activa = numero === page
+                                return (
+                                    <button
+                                        key={numero}
+                                        onClick={() => setPage(numero)}
+                                        className={`min-w-[40px] h-[40px] px-3 rounded-xl border transition font-medium
+                                            ${activa
+                                                ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+                                                : "text-gray-600 hover:bg-gray-100 border-gray-200"
+                                            }`}
+                                    >
+                                        {numero}
+                                    </button>
+                                )
+                            })}
+                        </div>
 
                 </div>
 
@@ -352,14 +293,12 @@ export default function UsuariosPage() {
                         <h2 className="text-lg font-bold text-gray-800 mb-2">
                             Confirmar {userToToggle.estado ? "desactivación" : "activación"}
                         </h2>
-
                         <p className="text-[15px] text-gray-500 mb-4">
                             ¿Está seguro que desea {userToToggle.estado ? "desactivar" : "activar"} al usuario{" "}
                             <span className="font-semibold text-emerald-800">
                                 {userToToggle.perfilId?.nombre} {userToToggle.perfilId?.apellido}
                             </span>?
                         </p>
-
                         <div className="flex justify-end gap-3">
                             <Button
                                 variant="ghost"
