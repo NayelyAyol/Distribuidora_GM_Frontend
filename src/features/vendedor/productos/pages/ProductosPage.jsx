@@ -158,7 +158,7 @@ export default function ProductosPage() {
         setProductos((prev) =>
             prev.map((p) =>
                 p._id === id &&
-                p.stock > 0
+                    p.stock > 0
                     ? {
                         ...p,
                         stock: p.stock - 1
@@ -170,7 +170,7 @@ export default function ProductosPage() {
 
     const handleEdit = (producto) => {
         navigate(
-            `/dashboard/categorias/${categoriaId}/productos/actualizar/${producto._id}`, 
+            `/dashboard/categorias/${categoriaId}/productos/actualizar/${producto._id}`,
             { state: { productoSelec: producto } } // Pasamos todo el objeto en el state
         )
     }
@@ -330,8 +330,8 @@ export default function ProductosPage() {
                                         px-4 py-2 border transition font-medium
 
                                         ${estadoActivo === estado.key
-                                                    ? "bg-emerald-100 text-emerald-700"
-                                                    : "text-gray-600 hover:bg-gray-100"
+                                            ? "bg-emerald-100 text-emerald-700"
+                                            : "text-gray-600 hover:bg-gray-100"
                                         }
                                     `}
                                 >
@@ -355,6 +355,12 @@ export default function ProductosPage() {
                         esVendedor={esVendedor}
                         esCliente={esCliente}
                     />
+
+                    {productos.length === 0 && (
+                        <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                            <p className="text-lg">No hay productos disponibles</p>
+                        </div>
+                    )}
 
                     <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
 
@@ -385,8 +391,8 @@ export default function ProductosPage() {
                                             font-medium
 
                                             ${activa
-                                                    ? "bg-emerald-100 text-emerald-700"
-                                                    : "text-gray-600 hover:bg-gray-100"
+                                                ? "bg-emerald-100 text-emerald-700"
+                                                : "text-gray-600 hover:bg-gray-100"
                                             }
                                         `}
                                     >

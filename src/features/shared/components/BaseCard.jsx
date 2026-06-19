@@ -68,7 +68,8 @@ export default function BaseCard({
             </div>
 
             <div className="mt-3 flex-1 flex flex-col">
-                <h3 className="font-bold text-gray-800">
+                <h3 className="font-bold text-gray-800 text-sm line-clamp-2 break-words"
+                title={title}>
                     {title}
                 </h3>
 

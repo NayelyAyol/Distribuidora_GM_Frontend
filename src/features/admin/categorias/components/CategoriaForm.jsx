@@ -66,8 +66,13 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
 
-        if (!form.nombre.trim() || !form.descripcion.trim()) {
-            toast.error("Todos los campos son obligatorios");
+        if (!form.nombre.trim()) {
+            toast.error("El nombre es obligatorio");
+            return;
+        }
+
+        if (form.nombre.trim().length < 3) {
+            toast.error("El nombre debe tener mínimo 3 caracteres");
             return;
         }
 
@@ -105,8 +110,8 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                 toast.success("Categoría creada correctamente");
             }
 
-            if (onSuccess) await onSuccess(); 
-            
+            if (onSuccess) await onSuccess();
+
             setSelectedCategory(null);
             setForm({ nombre: "", descripcion: "", imagen: null });
             setPreview(null);
@@ -200,7 +205,8 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                             value={form.nombre}
                             onChange={handleChange}
                             className={inputClass}
-                            maxlength={25}
+                            maxLength={30}
+                            placeholder="Mínimo 3 caracteres"
                         />
                     </div>
 
@@ -211,15 +217,20 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                             value={form.descripcion}
                             onChange={handleChange}
                             className={inputClass}
-                            maxlength={100}
+                            maxlength={70}
+                            placeholder="Opcional (máx. 70 caracteres)"
                         />
                     </div>
 
                     <Button
                         type="button"
                         onClick={handleSubmit}
-                        className={buttonPrimaryClass}>
-                        {selectedCategory ? "Actualizar" : "Aceptar"}
+                        className={buttonPrimaryClass}
+                        disabled={loading}>
+                        {loading 
+                            ? "Procesando..." 
+                            : (selectedCategory ? "Actualizar" : "Aceptar")
+                        }
                     </Button>
 
                     {selectedCategory && (
