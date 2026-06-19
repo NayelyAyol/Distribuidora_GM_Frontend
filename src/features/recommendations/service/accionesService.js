@@ -43,3 +43,13 @@ export const ejecutarPromocionSugerida = async () => {
         throw new Error(error.response?.data?.msg || "Error al ejecutar la promoción sugerida");
     }
 };
+
+export const ejecutarFechaFestiva = async () => {
+    try {
+        const response = await api.post("/acciones-admin/ejecutar/fecha-festiva");
+        return response.data;
+    } catch (error) {
+        console.error("Error al ejecutar fecha festiva:", error);
+        throw new Error(error.response?.data?.msg || "Error al ejecutar la campaña de fecha festiva");
+    }
+};

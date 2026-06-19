@@ -5,7 +5,8 @@ import NotificationItem from "../components/NotificationItem"
 import {
     listarAccionesAdmin,
     finalizarAccionAdmin,
-    ejecutarPromocionSugerida
+    ejecutarPromocionSugerida,
+    ejecutarFechaFestiva
 } from "../service/accionesService"
 
 const labels = {
@@ -74,6 +75,22 @@ export default function NotificationPage() {
         }
     }
 
+    const handleEjecutarFechaFestiva = async (tipo) => {
+        try {
+            await ejecutarFechaFestiva()
+            setAcciones(prev =>
+                prev.map(item =>
+                    item.tipo === tipo
+                        ? { ...item, estado: "FINALIZADA" }
+                        : item
+                )
+            )
+            toast.success("Campaña de fecha festiva ejecutada correctamente")
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
     if (loading) {
         return (
             <div className="space-y-4">
@@ -97,9 +114,16 @@ export default function NotificationPage() {
                             label={labels[accion.tipo] || accion.tipo}
                             tipo={accion.tipo}
                             estado={accion.estado}
-                            showButton={accion.tipo === "PROMOCION_SUGERIDA"}
+                            showButton={
+                                accion.tipo === "PROMOCION_SUGERIDA" || 
+                                accion.tipo === "FECHA_FESTIVA"
+                            }
                             onFinalizar={handleFinalizar}
-                            onEjecutar={handleEjecutar}
+                            onEjecutar={
+                                accion.tipo === "FECHA_FESTIVA"
+                                    ? handleEjecutarFechaFestiva
+                                    : handleEjecutar
+                            }
                         />
                     ))}
                 </div>
