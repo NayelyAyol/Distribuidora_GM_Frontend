@@ -15,6 +15,13 @@ export default function CantidadSelector({
         setCantidad(prev => Math.min(max, prev + 1))
     }
 
+    if (max < min) {
+        return (
+            <div className="mt-4 text-sm text-red-500 font-medium">
+                Sin unidades disponibles para agregar
+            </div>
+        )
+    }
     return (
         <div className="flex items-center gap-3 mt-4">
 

@@ -9,10 +9,10 @@ export default function CarritoList({
 }) {
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
             {editable && (
                 <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-xl font-bold text-gray-800">Productos</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-800">Productos</h2>
                     {carrito.length > 0 && (
                         <button
                             onClick={onVaciar}
@@ -21,6 +21,12 @@ export default function CarritoList({
                             Vaciar carrito
                         </button>
                     )}
+                </div>
+            )}
+
+            {carrito.length === 0 && (
+                <div className="text-center py-10 text-gray-400 border border-dashed rounded-2xl text-sm">
+                    Tu carrito está vacío
                 </div>
             )}
 

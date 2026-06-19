@@ -34,14 +34,11 @@ export default function ProductoDetallePage() {
         }
 
         try {
-            // Usamos el ID del producto (que ya tienes por useParams) y la cantidad del estado
             const respuesta = await agregarAlCarrito(id, cantidad);
             
             console.log("Respuesta del servidor:", respuesta);
             toast.success(respuesta.msg || "Producto agregado al carrito");
             
-            // Opcional: navegar al carrito o limpiar cantidad
-            // navigate("/carrito"); 
         } catch (error) {
             toast.error(error.message);
         }
@@ -98,6 +95,10 @@ export default function ProductoDetallePage() {
             </p>
         )
     }
+
+    // Agrega esta línea junto a los otros datos del producto
+const maxPermitido = Math.max(0, producto.stock - 10)
+const sinStock = maxPermitido === 0
 
     return (
         <div className="p-6 flex flex-col gap-8">
@@ -185,20 +186,36 @@ export default function ProductoDetallePage() {
                             Marca: {producto.marca}
                         </span>
 
-                        <span className="
+                        {/*<span className="
                             px-4 py-2 rounded-xl
                             bg-gray-100 text-gray-700
                             text-sm font-medium
                         ">
                             Color: {producto.color}
-                        </span>
+                        </span>*/}
 
                         <span className="
                             px-4 py-2 rounded-xl
                             bg-gray-100 text-gray-700
                             text-sm font-medium
                         ">
+                            IVA: {producto.tipoIVA}
+                        </span>
+
+                        {/*<span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
                             Tamaño: {producto.tamanio}
+                        </span>^*/}
+
+                        <span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Categoría: {producto.categoria?.nombre}
                         </span>
 
                         <span className="
@@ -209,21 +226,29 @@ export default function ProductoDetallePage() {
                             Unidad: {producto.unidadMedida}
                         </span>
 
-                        <span className="
+                        {/*<span className="
                             px-4 py-2 rounded-xl
                             bg-gray-100 text-gray-700
                             text-sm font-medium
                         ">
                             Presentación: {producto.presentacion}
-                        </span>
+                        </span>*/}
 
                         <span className="
                             px-4 py-2 rounded-xl
                             bg-gray-100 text-gray-700
                             text-sm font-medium
                         ">
-                            Material: {producto.material}
+                            Marca: {producto.marca}
                         </span>
+
+                        {/*<span className="
+                            px-4 py-2 rounded-xl
+                            bg-gray-100 text-gray-700
+                            text-sm font-medium
+                        ">
+                            Material: {producto.material}
+                        </span>*/}
 
                         <span className="
                             px-4 py-2 rounded-xl
@@ -240,21 +265,22 @@ export default function ProductoDetallePage() {
                         cantidad={cantidad}
                         setCantidad={setCantidad}
                         min={1}
-                        max={producto.stock}
+                        max={maxPermitido}
                     />
 
                     <button
                         onClick={handleAgregarAlCarrito}
-                        className="
-                            mt-4
-                            w-full
-                            bg-black
-                            text-white
-                            py-2
-                            rounded-xl
-                        "
+                        disabled={sinStock}
+                        className={`
+                            mt-4 w-full py-2 rounded-xl
+                            text-white transition
+                            ${sinStock
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-black hover:bg-gray-800"
+                            }
+                        `}
                     >
-                        Agregar al carrito
+                        {sinStock ? "Sin disponibilidad" : "Agregar al carrito"}
                     </button>
 
                 </div>

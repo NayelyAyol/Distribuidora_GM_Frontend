@@ -177,10 +177,17 @@ const Sidebar = ({ open, onClose }) => {
                     )}
                 </div>
 
+{/*<p className="text-emerald-950 font-bold text-center truncate row-2"> {[user?.nombre, user?.apellido].filter(Boolean).join(" ") || user?.email || "Usuario"} </p> */}
+
                 <p className="text-emerald-950 font-bold text-center">
-                    {[user?.nombre, user?.apellido].filter(Boolean).join(" ") ||
-                        user?.email ||
-                        "Usuario"}
+                    {user?.nombre || user?.apellido ? (
+                        <>
+                            <span className="block">{user?.nombre}</span>
+                            <span className="block">{user?.apellido}</span>
+                        </>
+                    ) : (
+                        user?.email || "Usuario"
+                    )}
                 </p>
 
                 <p className="text-xs text-emerald-900/70">
