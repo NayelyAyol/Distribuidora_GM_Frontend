@@ -77,30 +77,39 @@ const RegisterForm = () => {
         return age;
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+// handleChange — reemplaza los bloques de nombre, apellido y dirección
+const handleChange = (e) => {
+    const { name, value } = e.target;
 
-        if (name === "nombre" || name === "apellido" || name === "ciudad") {
-            if (!onlyLetters(value)) return;
-        }
+    if (name === "nombre") {
+        if (!onlyLetters(value)) return;
+        if (value.length > 15) return;       // era 50
+    }
 
-        if (name === "telefono" || name === "cedula") {
-            if (!onlyNumbers(value)) return;
-        }
+    if (name === "apellido") {
+        if (!onlyLetters(value)) return;
+        if (value.length > 20) return;       // era 50
+    }
 
-        if (name === "telefono" && value.length > 10) return;
-        if (name === "cedula" && value.length > 10) return;
+    if (name === "ciudad") {
+        if (!onlyLetters(value)) return;
+    }
 
-        setForm((prev) => ({
-            ...prev,
-            [name]: value
-        }));
+    if (name === "direccion") {
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#.,\-°]*$/.test(value)) return;  // agrega caracteres válidos
+        if (value.length > 100) return;
+    }
 
-        setErrors((prev) => ({
-            ...prev,
-            [name]: ""
-        }));
-    };
+    if (name === "telefono" || name === "cedula") {
+        if (!onlyNumbers(value)) return;
+    }
+
+    if (name === "telefono" && value.length > 10) return;
+    if (name === "cedula" && value.length > 10) return;
+
+    setForm(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: "" }));
+};
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -121,17 +130,28 @@ const RegisterForm = () => {
 
         const newErrors = {};
 
-        if (!form.nombre) {
-            newErrors.nombre = "El nombre es obligatorio";
-        } else if (!onlyLetters(form.nombre)) {
-            newErrors.nombre = "El nombre solo debe contener letras";
-        }
+// handleSubmit — reemplaza las validaciones de nombre, apellido y dirección
+if (!form.nombre) {
+    newErrors.nombre = "El nombre es obligatorio";
+} else if (!onlyLetters(form.nombre)) {
+    newErrors.nombre = "El nombre solo debe contener letras";
+} else if (form.nombre.trim().length < 3) {
+    newErrors.nombre = "El nombre debe tener mínimo 3 caracteres";   // nuevo
+}
 
-        if (!form.apellido) {
-            newErrors.apellido = "El apellido es obligatorio";
-        } else if (!onlyLetters(form.apellido)) {
-            newErrors.apellido = "El apellido solo debe contener letras";
-        }
+if (!form.apellido) {
+    newErrors.apellido = "El apellido es obligatorio";
+} else if (!onlyLetters(form.apellido)) {
+    newErrors.apellido = "El apellido solo debe contener letras";
+} else if (form.apellido.trim().length < 3) {
+    newErrors.apellido = "El apellido debe tener mínimo 3 caracteres"; // nuevo
+}
+
+if (!form.direccion) {
+    newErrors.direccion = "La dirección es obligatoria";
+} else if (form.direccion.trim().length < 5) {
+    newErrors.direccion = "La dirección debe tener mínimo 5 caracteres"; // nuevo
+}
 
         if (!form.cedula) {
             newErrors.cedula = "La cédula es obligatoria";
@@ -155,10 +175,6 @@ const RegisterForm = () => {
             newErrors.ciudad = "La ciudad es obligatoria";
         } else if (!onlyLetters(form.ciudad)) {
             newErrors.ciudad = "La ciudad solo debe contener letras";
-        }
-
-        if (!form.direccion) {
-            newErrors.direccion = "La dirección es obligatoria";
         }
 
         if (!form.email) {
@@ -246,7 +262,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Carlos"
                     className={inputClass}
-                    maxLength={50}
+                    maxLength={15}
                 />
                 {errors.nombre && (
                     <p className="text-red-500 text-sm font-medium">
@@ -266,7 +282,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Ruiz"
                     className={inputClass}
-                    maxLength={50}
+                    maxLength={20}
                 />
                 {errors.apellido && (
                     <p className="text-red-500 text-sm font-medium">
@@ -365,7 +381,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Av. de los Granados"
                     className={inputClass}
-                    maxLength={100}
+                    maxLength={50}
                 />
                 {errors.direccion && (
                     <p className="text-red-500 text-sm font-medium">

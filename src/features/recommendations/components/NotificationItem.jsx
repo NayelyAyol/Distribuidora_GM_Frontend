@@ -20,7 +20,7 @@ export default function NotificationItem({
     const handleChange = () => {
         // Solo se permite apagar (finalizar). Encenderse de nuevo
         // depende de que el evento vuelva a estar vigente (backend/n8n).
-        if (active) {
+        if (active && !showButton) {
             onFinalizar?.(tipo)
         }
     }
@@ -65,7 +65,7 @@ export default function NotificationItem({
                     id={id}
                     color="emerald"
                     checked={active}
-                    disabled={!active}
+                    disabled={!active || showButton}
                     onChange={handleChange}
                 />
 

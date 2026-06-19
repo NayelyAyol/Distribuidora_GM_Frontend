@@ -59,7 +59,6 @@ export default function NotificationPage() {
     const handleEjecutar = async (tipo) => {
         try {
             await ejecutarPromocionSugerida()
-            await finalizarAccionAdmin(tipo)
 
             setAcciones(prev =>
                 prev.map(item =>
