@@ -121,7 +121,7 @@ export const pedidosSeleccionadosColumns = (
                             >
                                 <FiMessageCircle />
                             </button>
-                            {pedido.estado === "EN_PROCESO" && (
+                            {pedido.estado === "EN_PROCESO" && pedido.metodoPago !== "TARJETA" && (
                                 <button
                                     onClick={() => onCancelar(pedido)}
                                     className="

@@ -116,7 +116,8 @@ export default function PedidoDetallePage() {
                 id: item.producto,
                 nombre: item.nombreProducto,
                 cantidad: item.cantidad,
-                precio: item.precioUnitario
+                precio: item.precioUnitario,
+                tieneIva: item.porcentajeIva === 0.15  
             }));
             setArticulosSeleccionados(articulosParaEdicion);
         }
@@ -158,7 +159,7 @@ export default function PedidoDetallePage() {
                     precioUnitario: item.precioUnitario,
                     cantidad: item.cantidad,
                     stock: 999,
-                    tieneIva: item.tieneIva ?? false
+                    tieneIva: item.porcentajeIva === 0.15 || item.tieneIva === true
                 }))
             );
 

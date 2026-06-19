@@ -90,7 +90,7 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago, onCancelar) => 
                         </button>
                     )}
                     
-                    {pedido.estado === "PENDIENTE" && (
+                    {pedido.estado === "PENDIENTE" && pedido.metodoPago !== "TARJETA" &&  (
                         <button
                             onClick={() => onCancelar(pedido)}
                             className="
