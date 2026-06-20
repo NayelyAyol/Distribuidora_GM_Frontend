@@ -82,12 +82,6 @@ export default function ProductoDetallePage() {
         return <p>Cargando...</p>
     }
 
-    const recomendados = productos.filter(
-        (p) =>
-            p.categoria?._id === producto.categoria?._id &&
-            p._id !== producto._id
-    )
-
     if (!producto) {
         return (
             <p className="p-6">
@@ -288,18 +282,8 @@ const sinStock = maxPermitido === 0
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow">
-
-                <div
-                    className="
-                    max-h-[400px]
-                    overflow-y-auto
-                    custom-scroll
-                    pr-2
-                "
-                >
-                    <ProductosRecomendados
-                        productos={recomendados}
-                    />
+                <div className="max-h-[400px] overflow-y-auto custom-scroll pr-2">
+                    <ProductosRecomendados productoId={id} />
                 </div>
             </div>
 
