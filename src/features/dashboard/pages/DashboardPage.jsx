@@ -157,7 +157,7 @@ const fechaHoy = new Date().toLocaleDateString("es-ES", {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-5">
+            <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
 
                 {widgets.map((w) => (
                     <Widget

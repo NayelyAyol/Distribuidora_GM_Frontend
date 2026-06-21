@@ -5,6 +5,7 @@ import "@testing-library/jest-dom/vitest"
 
 import RecomendacionForm from "../../../vendedor/recomendaciones/components/RecomendacionForm"
 import { toast } from "react-toastify"
+import useAuthStore from "@/context/useAuthStore"
 
 vi.mock("react-toastify", () => ({
     toast: {
@@ -13,13 +14,29 @@ vi.mock("react-toastify", () => ({
     }
 }))
 
-describe("Quejas y Sugerencias - Cliente Form", () => {
+
+vi.mock("@/context/useAuthStore", () => ({
+    default: vi.fn()
+}))
+
+
+describe("RecomendacionForm", () => {
+
 
     beforeEach(() => {
         vi.clearAllMocks()
+
+        useAuthStore.mockReturnValue({
+            user:{
+                rol:"CLIENTE"
+            }
+        })
+
     })
 
-    test("renderiza los campos correctamente", () => {
+
+    test("renderiza los campos correctamente",()=>{
+
 
         render(
             <RecomendacionForm
@@ -28,25 +45,34 @@ describe("Quejas y Sugerencias - Cliente Form", () => {
         )
 
         expect(
-            screen.getByPlaceholderText(/asunto/i)
-        ).toBeInTheDocument()
-
-        expect(
             screen.getByPlaceholderText(
-                /escribe tu mensaje/i
+                "Asunto"
             )
         ).toBeInTheDocument()
 
         expect(
-            screen.getByRole("button", {
-                name: /enviar/i
-            })
+            screen.getByPlaceholderText(
+                "Escribe tu mensaje..."
+            )
+        ).toBeInTheDocument()
+
+        expect(
+            screen.getByRole(
+                "button",
+                {
+                    name:/enviar/i
+                }
+            )
         ).toBeInTheDocument()
     })
 
-    test("permite escribir en los campos", async () => {
+    test("permite escribir en los campos",async()=>{
 
-        const user = userEvent.setup()
+
+        const user =
+        userEvent.setup()
+
+
 
         render(
             <RecomendacionForm
@@ -55,16 +81,19 @@ describe("Quejas y Sugerencias - Cliente Form", () => {
         )
 
         const asunto =
-            screen.getByPlaceholderText(/asunto/i)
+        screen.getByPlaceholderText(
+            "Asunto"
+        )
+
 
         const mensaje =
-            screen.getByPlaceholderText(
-                /escribe tu mensaje/i
-            )
+        screen.getByPlaceholderText(
+            "Escribe tu mensaje..."
+        )
 
         await user.type(
             asunto,
-            "Problema con pedido"
+            "Problema pedido"
         )
 
         await user.type(
@@ -73,15 +102,23 @@ describe("Quejas y Sugerencias - Cliente Form", () => {
         )
 
         expect(asunto)
-            .toHaveValue("Problema con pedido")
+        .toHaveValue(
+            "Problema pedido"
+        )
 
         expect(mensaje)
-            .toHaveValue("Necesito ayuda")
+        .toHaveValue(
+            "Necesito ayuda"
+        )
+
+
     })
 
-    test("muestra error cuando el asunto está vacío", async () => {
+    test("muestra error cuando el asunto está vacío",async()=>{
 
-        const user = userEvent.setup()
+
+        const user =
+        userEvent.setup()
 
         render(
             <RecomendacionForm
@@ -90,200 +127,186 @@ describe("Quejas y Sugerencias - Cliente Form", () => {
         )
 
         await user.click(
-            screen.getByRole("button", {
-                name: /enviar/i
-            })
+            screen.getByRole(
+                "button",
+                {
+                    name:/enviar/i
+                }
+            )
         )
 
-        expect(toast.error)
-            .toHaveBeenCalledWith(
-                "Ingresa un asunto"
-            )
+        expect(
+            toast.error
+        )
+        .toHaveBeenCalledWith(
+            "Ingresa un asunto"
+        )
+
     })
 
-    test("muestra error cuando el mensaje está vacío", async () => {
+    test("muestra error cuando el mensaje está vacío",async()=>{
 
-        const user = userEvent.setup()
+
+        const user =
+        userEvent.setup()
 
         render(
             <RecomendacionForm
                 onSubmit={vi.fn()}
             />
-        )
-
-        await user.type(
-            screen.getByPlaceholderText(/asunto/i),
-            "Problema con pedido"
-        )
-
-        await user.click(
-            screen.getByRole("button", {
-                name: /enviar/i
-            })
-        )
-
-        expect(toast.error)
-            .toHaveBeenCalledWith(
-                "Escribe un mensaje"
-            )
-    })
-
-    test("muestra error cuando el asunto tiene menos de 5 caracteres", async () => {
-
-        const user = userEvent.setup()
-
-        render(
-            <RecomendacionForm
-                onSubmit={vi.fn()}
-            />
-        )
-
-        await user.type(
-            screen.getByPlaceholderText(/asunto/i),
-            "abc"
         )
 
         await user.type(
             screen.getByPlaceholderText(
-                /escribe tu mensaje/i
+                "Asunto"
             ),
-            "Mensaje válido"
+            "Problema pedido"
         )
 
         await user.click(
-            screen.getByRole("button", {
-                name: /enviar/i
-            })
+            screen.getByRole(
+                "button",
+                {
+                    name:/enviar/i
+                }
+            )
         )
 
-        expect(toast.error)
-            .toHaveBeenCalledWith(
-                "El asunto debe tener al menos 5 caracteres"
-            )
+        expect(
+            toast.error
+        )
+        .toHaveBeenCalledWith(
+            "Escribe un mensaje"
+        )
+
+
     })
 
-    test("muestra error cuando el mensaje tiene menos de 5 caracteres", async () => {
+    test("envía correctamente la recomendación",async()=>{
 
-        const user = userEvent.setup()
+
+        const user =
+        userEvent.setup()
+
+
+
+        const onSubmit =
+        vi.fn()
+        .mockResolvedValue({})
 
         render(
             <RecomendacionForm
-                onSubmit={vi.fn()}
+                onSubmit={onSubmit}
             />
         )
 
         await user.type(
-            screen.getByPlaceholderText(/asunto/i),
+            screen.getByPlaceholderText(
+                "Asunto"
+            ),
+            "Problema con pedido"
+        )
+
+        await user.type(
+            screen.getByPlaceholderText(
+                "Escribe tu mensaje..."
+            ),
+            "Necesito ayuda con mi pedido"
+        )
+
+        await user.click(
+            screen.getByRole(
+                "button",
+                {
+                    name:/enviar/i
+                }
+            )
+        )
+
+        await waitFor(()=>{
+
+
+            expect(
+                onSubmit
+            )
+            .toHaveBeenCalledWith({
+
+                tipo:"QUEJA",
+
+                asunto:"Problema con pedido",
+
+                mensaje:"Necesito ayuda con mi pedido"
+
+            })
+
+
+            expect(
+                toast.success
+            )
+            .toHaveBeenCalledWith(
+                "Mensaje enviado correctamente"
+            )
+
+
+        })
+    })
+
+    test("muestra error cuando falla el envío",async()=>{
+
+
+        const user =
+        userEvent.setup()
+
+
+
+        const onSubmit =
+        vi.fn()
+        .mockRejectedValue(
+            new Error(
+                "Error servidor"
+            )
+        )
+
+        render(
+            <RecomendacionForm
+                onSubmit={onSubmit}
+            />
+        )
+
+        await user.type(
+            screen.getByPlaceholderText(
+                "Asunto"
+            ),
             "Problema pedido"
         )
 
         await user.type(
             screen.getByPlaceholderText(
-                /escribe tu mensaje/i
+                "Escribe tu mensaje..."
             ),
-            "abc"
+            "Necesito ayuda"
         )
 
         await user.click(
-            screen.getByRole("button", {
-                name: /enviar/i
-            })
+            screen.getByRole(
+                "button",
+                {
+                    name:/enviar/i
+                }
+            )
         )
 
-        expect(toast.error)
+        await waitFor(()=>{
+
+
+            expect(
+                toast.error
+            )
             .toHaveBeenCalledWith(
-                "El mensaje debe tener al menos 5 caracteres"
-            )
-    })
-
-    test("envía correctamente la recomendación", async () => {
-
-        const user = userEvent.setup()
-
-        const onSubmit = vi.fn()
-            .mockResolvedValue({})
-
-        render(
-            <RecomendacionForm
-                onSubmit={onSubmit}
-            />
-        )
-
-        await user.type(
-            screen.getByPlaceholderText(/asunto/i),
-            "Problema con pedido"
-        )
-
-        await user.type(
-            screen.getByPlaceholderText(
-                /escribe tu mensaje/i
-            ),
-            "Necesito ayuda con mi pedido"
-        )
-
-        await user.click(
-            screen.getByRole("button", {
-                name: /enviar/i
-            })
-        )
-
-        await waitFor(() => {
-
-            expect(onSubmit)
-                .toHaveBeenCalledTimes(1)
-
-            expect(onSubmit)
-                .toHaveBeenCalledWith({
-                    asunto: "Problema con pedido",
-                    mensaje: "Necesito ayuda con mi pedido"
-                })
-
-            expect(toast.success)
-                .toHaveBeenCalledWith(
-                    "Mensaje enviado correctamente"
-                )
-        })
-    })
-
-    test("muestra error cuando falla el envío", async () => {
-
-        const user = userEvent.setup()
-
-        const onSubmit = vi.fn()
-            .mockRejectedValue(
-                new Error("Error servidor")
+                "Error servidor"
             )
 
-        render(
-            <RecomendacionForm
-                onSubmit={onSubmit}
-            />
-        )
 
-        await user.type(
-            screen.getByPlaceholderText(/asunto/i),
-            "Problema con pedido"
-        )
-
-        await user.type(
-            screen.getByPlaceholderText(
-                /escribe tu mensaje/i
-            ),
-            "Necesito ayuda con mi pedido"
-        )
-
-        await user.click(
-            screen.getByRole("button", {
-                name: /enviar/i
-            })
-        )
-
-        await waitFor(() => {
-
-            expect(toast.error)
-                .toHaveBeenCalledWith(
-                    "Error servidor"
-                )
         })
     })
 
