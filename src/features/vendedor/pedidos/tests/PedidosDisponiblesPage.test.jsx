@@ -264,4 +264,60 @@ describe("PedidosDisponiblesPage", () => {
         })
     })
 
+    test("cambia de página y carga nuevos pedidos", async () => {
+
+    const user = userEvent.setup()
+
+
+    obtenerPedidosSeleccionados
+        .mockResolvedValueOnce({
+            pedidos: [pedidoMock],
+            totalPaginas: 2
+        })
+        .mockResolvedValueOnce({
+            pedidos: [
+                {
+                    ...pedidoMock,
+                    _id:"2",
+                    datosFacturacion:{
+                        nombreCompleto:"María López"
+                    }
+                }
+            ],
+            totalPaginas:2
+        })
+
+
+    render(<PedidosDisponiblesPage />)
+
+
+    expect(
+        await screen.findByText("Juan Pérez")
+    ).toBeInTheDocument()
+
+
+
+    const botonPagina2 =
+        screen.getByRole(
+            "button",
+            { name:"2" }
+        )
+
+
+    await user.click(botonPagina2)
+
+
+
+    expect(
+        await screen.findByText("María López")
+    ).toBeInTheDocument()
+
+
+
+    expect(
+        obtenerPedidosSeleccionados
+    ).toHaveBeenCalledTimes(2)
+
+})
+
 })

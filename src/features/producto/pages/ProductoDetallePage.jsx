@@ -282,7 +282,7 @@ const sinStock = maxPermitido === 0
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow">
-                <div className="max-h-[400px] overflow-y-auto custom-scroll pr-2">
+                <div className="max-h-[450px] overflow-y-auto custom-scroll pr-2">
                     <ProductosRecomendados productoId={id} />
                 </div>
             </div>
