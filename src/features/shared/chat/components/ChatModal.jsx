@@ -15,18 +15,6 @@ export default function ChatModal({ isOpen, onClose, pedidoId, otherUserName, pe
 
 
 useEffect(() => {
-    socket.on("connect", () => {
-        console.log("SOCKET CONECTADO", socket.id);
-    });
-
-    socket.on("disconnect", () => {
-        console.log("SOCKET DESCONECTADO");
-    });
-
-    socket.on("connect_error", (err) => {
-        console.log("ERROR SOCKET", err);
-    });
-
     return () => {
         socket.off("connect");
         socket.off("disconnect");
@@ -40,7 +28,6 @@ useEffect(() => {
     socket.emit("unirse-chat-pedido", pedidoId);
 
     const handleNuevoMensaje = (nuevoMensaje) => {
-        console.log("MENSAJE RECIBIDO:", nuevoMensaje);
         setMensajes((prev) => [...prev, nuevoMensaje]);
     };
 

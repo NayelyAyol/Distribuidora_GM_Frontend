@@ -29,6 +29,7 @@ export default function CategoriaCard({
             ) : (
                 <div className="flex flex-wrap justify-between items-center w-full gap-4 mt-4 border-t pt-3">
                     <button
+                        aria-label="Editar"
                         onClick={() => onEdit(categoria)}
                         className="flex items-center gap-1 text-emerald-600 hover:text-emerald-800 font-medium text-sm transition-colors"
                     >
@@ -37,6 +38,7 @@ export default function CategoriaCard({
                     </button>
 
                     <button
+                        aria-label="Activar o Desactivar"
                         onClick={() => onDelete(categoria)}
                         className={`flex items-center gap-1 font-medium text-sm transition-colors ${
                             isActive ? "text-red-500 hover:text-red-700" : "text-emerald-600 hover:text-emerald-800"

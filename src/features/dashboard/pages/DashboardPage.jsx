@@ -57,8 +57,6 @@ const fechaHoy = new Date().toLocaleDateString("es-ES", {
                     ? await obtenerDashboardVendedor()
                     : await obtenerDashboardAdmin();
 
-                console.log("Dashboard:", response);
-
                 setDashboard(response);
 
             } catch (error) {

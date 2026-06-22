@@ -36,7 +36,6 @@ export default function ProductoDetallePage() {
         try {
             const respuesta = await agregarAlCarrito(id, cantidad);
             
-            console.log("Respuesta del servidor:", respuesta);
             toast.success(respuesta.msg || "Producto agregado al carrito");
             
         } catch (error) {

@@ -22,9 +22,6 @@ export default function VentaExitosaPage() {
     const location = useLocation()
     const venta = location.state?.venta
 
-    console.log("Estructura completa de la venta:", venta);
-    console.log("Estructura del primer artículo:", venta?.articulos?.[0]);
-
     if (!venta) {
         return (
             <div className="p-6 flex flex-col gap-4">

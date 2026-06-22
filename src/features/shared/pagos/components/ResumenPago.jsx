@@ -14,7 +14,6 @@ export default function ResumenPago({
         tipoEntrega === "domicilio" ||
         tipoEntrega === "ENVIO_DOMICILIO";
 
-    // ✅ Si viene resumenDatos del backend, úsalo directamente sin recalcular nada
     if (resumenDatos) {
         const subtotal = resumenDatos.subtotalProductos || 0;
         const iva = resumenDatos.ivaProductos || 0;
@@ -46,7 +45,6 @@ export default function ResumenPago({
         );
     }
 
-    // ✅ Fallback solo para flujo de carrito sin resumenDatos
     if (!carrito || carrito.length === 0) {
         return <div className="p-4 text-red-500">No se encontraron datos de pago.</div>;
     }

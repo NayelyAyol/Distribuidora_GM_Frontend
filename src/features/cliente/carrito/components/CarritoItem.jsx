@@ -59,6 +59,7 @@ export default function CarritoItem({
                 {editable && (
                     <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                         <button
+                            aria-label="Disminuir"
                             onClick={() => actualizarCantidad(cantidadLocal - 1)}
                             disabled={cantidadLocal <= 1}
                             className="p-1.5 sm:p-2 hover:bg-gray-100 text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
@@ -69,6 +70,7 @@ export default function CarritoItem({
                             {cantidadLocal}
                         </span>
                         <button
+                            aria-label="Aumentar"
                             onClick={() => actualizarCantidad(cantidadLocal + 1)}
                             disabled={enLimiteStock}
                             className="p-1.5 sm:p-2 hover:bg-gray-100 text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
@@ -84,6 +86,7 @@ export default function CarritoItem({
 
                 {editable && (
                     <button
+                        aria-label="Eliminar"
                         onClick={() => onRemove(producto.producto)}
                         className="text-red-500 hover:text-red-700 p-1.5 sm:p-2"
                     >

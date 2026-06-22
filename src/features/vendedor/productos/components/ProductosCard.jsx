@@ -23,6 +23,7 @@ export default function ProductoCard({
         <div className="relative">
             {esVendedor && (
                 <button
+                    aria-label="Activar o Desactivar"
                     onClick={(e) => {
                         e.stopPropagation()
                         onToggleEstado(producto)
@@ -54,6 +55,7 @@ export default function ProductoCard({
                 {esCliente ? (
 
                     <button
+                        aria-label="Agregar al carrito"
                         onClick={(e) => {
                             e.stopPropagation()
                             onAddCart({ productoId: producto._id, cantidad: 1 })

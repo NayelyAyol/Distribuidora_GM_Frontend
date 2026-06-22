@@ -91,6 +91,7 @@ export default function ProductoItemFactura({
                 >
 
                     <button
+                        aria-label="Disminuir"
                         onClick={disminuirCantidad}
                         className="
                             p-1
@@ -106,6 +107,7 @@ export default function ProductoItemFactura({
                     </span>
 
                     <button
+                        aria-label="Aumentar"
                         onClick={aumentarCantidad}
                         className="
                             p-1
@@ -121,6 +123,7 @@ export default function ProductoItemFactura({
 
             {esEditable && (
                 <button
+                    aria-label="Eliminar"
                     onClick={() => onDelete(producto.id)}
                     className="
                         text-red-500

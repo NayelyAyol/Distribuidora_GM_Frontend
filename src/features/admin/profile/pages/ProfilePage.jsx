@@ -4,6 +4,7 @@ import PasswordCard from "../../../shared/profile/components/PasswordCard"
 import { getProfile } from "../../../shared/profile/services/profileService"
 import { useEffect, useState } from "react"
 import useAuthStore from "@/context/useAuthStore"
+import { toast } from "react-toastify"
 
 export default function ProfilePage() {
     const [user, setUser] = useState(null)
@@ -37,7 +38,7 @@ export default function ProfilePage() {
                 }
             })
         } catch (error) {
-            console.error("Error al cargar perfil:", error)
+            toast.error("Error al cargar pefil")
         }
     }
 

@@ -38,7 +38,10 @@ export default function MejoresProductos({
             )}
 
             <div className="relative w-full flex items-center gap-4 sm:gap-9">
-                <button onClick={scrollLeft} className="z-20 bg-white/90 hover:bg-white shadow-md rounded-full p-2 sm:p-3 ml-1 sm:ml-2 transition-colors">
+                <button
+                    aria-label="Volver atras"
+                    onClick={scrollLeft} 
+                    className="z-20 bg-white/90 hover:bg-white shadow-md rounded-full p-2 sm:p-3 ml-1 sm:ml-2 transition-colors">
                     <FiChevronLeft className="text-xl sm:text-2xl text-gray-700" />
                 </button>
 
@@ -59,11 +62,16 @@ export default function MejoresProductos({
                                         navigate(`${basePath}/${p._id}`)
                                     }}
                                 >
-                                    <button onClick={(e) => { e.stopPropagation(); console.log("Favorito", p); }} className="absolute top-3 right-3 z-10">
+                                    <button 
+                                    aria-label="Favorito"
+                                    onClick={(e) => { e.stopPropagation(); 
+                                    }} 
+                                    className="absolute top-3 right-3 z-10">
                                         <FiStar className="text-yellow-500 bg-white text-xl" />
                                     </button>
 
                                     <button 
+                                            aria-label="Agregar al carrito"
                                             onClick={(e) => { 
                                                 e.stopPropagation(); 
                                                 onAddCart({ productoId: p._id, cantidad: 1 }); 
@@ -78,7 +86,10 @@ export default function MejoresProductos({
                     </div>
                 </div>
 
-                <button onClick={scrollRight} className="z-20 bg-white/90 hover:bg-white shadow-md rounded-full p-2 sm:p-3 mr-1 sm:mr-2 transition-colors">
+                <button 
+                    aria-label="Volver atras"
+                    onClick={scrollRight} 
+                    className="z-20 bg-white/90 hover:bg-white shadow-md rounded-full p-2 sm:p-3 mr-1 sm:mr-2 transition-colors">
                     <FiChevronRight className="text-xl sm:text-2xl text-gray-700" />
                 </button>
             </div>

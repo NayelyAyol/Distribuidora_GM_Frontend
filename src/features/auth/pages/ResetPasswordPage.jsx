@@ -17,8 +17,12 @@ export default function ResetPasswordPage() {
 
                 <div className={imageWrapperClass}>
                     <img
-                        src="/images/Login/ImgResetPassword.webp"
-                        alt="reset-password"
+                        src="/images/login/ImgResetPassword.webp"
+                        alt="Restablecimiento de contraseña"
+                        onError={(e) => {
+                            e.currentTarget.src = "/images/categories/default.webp"
+                        }}
+                        loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover"
                     />
                 </div>

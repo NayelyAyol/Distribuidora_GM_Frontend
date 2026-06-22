@@ -109,11 +109,14 @@ export default function Navbar({ onOpenSidenav }) {
                         rounded-[40px] px-3 py-2 shadow-lg shadow-gray-200/40 dark:shadow-black/30 backdrop-blur-xl
                         flex-nowrap shrink min-w-0 relative z-50">
 
-
-                                <FiAlignJustify
-                                    className="text-xl text-gray-600 cursor-pointer block xl:hidden"
-                                    onClick={onOpenSidenav}
-                                />
+                        <button
+                            aria-label="Abrir menú"
+                            onClick={onOpenSidenav}
+                        >
+                            <FiAlignJustify
+                                className="text-xl text-gray-600 cursor-pointer block xl:hidden"
+                            />
+                        </button>
 
                                 {/*
                             <Dropdown

@@ -122,7 +122,6 @@ export default function RecomendacionesPage() {
                     </h2>
                         <p className="text-[15px] text-gray-500 mb-3">{selectedRec.mensaje}</p>
                         {selectedRec.estado === "FINALIZADA" ? (
-                            console.log(selectedRec), 
                             <div className="bg-white rounded-xl border border-emerald-200 p-4">
                                 <p className="text-sm text-gray-600">{selectedRec.respuestaAdmin || "Sin respuesta registrada"}</p>
                             </div>

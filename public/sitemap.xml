@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url>
+        <loc>https://distribuidoragm.netlify.app/</loc>
+    </url>
+
+    <url>
+        <loc>https://distribuidoragm.netlify.app/producto</loc>
+    </url>
+
+    <url>
+        <loc>https://distribuidoragm.netlify.app/login</loc>
+    </url>
+
+    <url>
+        <loc>https://distribuidoragm.netlify.app/registro</loc>
+    </url>
+
+</urlset>

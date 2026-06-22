@@ -1,360 +1,162 @@
-import { Routes, Route } from "react-router-dom"
+import { lazy, Suspense } from "react"
+import { Routes, Route, Navigate } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 import NavigationSetter from "./components/NavigationSetter"
+import PrivateRoute from "./routes/ProtectedRoute"
 
-import Landing from "./pages/Landing"
-import Login from "./features/auth/pages/LoginPage"
-import Register from "./features/auth/pages/RegisterPage"
-import ForgotPassword from "./features/auth/pages/ForgotPassword"
-import Confirm from "./features/auth/pages/Confirm"
-import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage"
-
-import ProtectedRoute from "./routes/ProtectedRoute"
+// Layouts
 import MainLayout from "./components/layout/MainLayout"
-
-// Pages
-import Dashboard from "./features/dashboard/pages/DashboardPage"
-import UsuariosCreatePage from "./features/usuarios/pages/UsuariosCreatePage"
-import ProfilePage from "./features/admin/profile/pages/ProfilePage"
-import UsuariosPage from "./features/usuarios/pages/UsuariosPage"
-import CategoriasPage from "./features/admin/categorias/pages/CategoriaPage"
-import FeedbackPage from "./features/feedback/pages/FeedbackPage"
-import RecomendacionesPage from "./features/recommendations/pages/RecomendacionPage"
-import ProductosPage from "./features/vendedor/productos/pages/ProductosPage"
-import RecomendacionesVendedorPage from "./features/vendedor/recomendaciones/pages/RecomendacionPage"
-import NotFound from "./features/notfound/NotFound"
-import PedidosDisponiblesPage from "./features/vendedor/pedidos/pages/PedidosDisponiblesPage"
-import PedidosPage from "./features/vendedor/pedidos/pages/PedidosPage"
-import PedidoDetallePage from "./features/vendedor/pedidos/pages/PedidoDetallePage"
-import CrearProductoPage from "./features/vendedor/productos/pages/CrearProductoPage"
-import ActualizarProductoPage from "./features/vendedor/productos/pages/ActualizarProductoPage"
-import VentaPage from "./features/vendedor/ventas/pages/VentaPage"
-import CarritoPage from "./features/cliente/carrito/pages/CarritoPage"
-import SeleccionMetodoPagoPage from "./features/cliente/carrito/pages/SeleccionMetodoPago"
-import ConfirmacionPedidoPage from "./features/cliente/carrito/pages/ConfirmacionPedidoPage"
-import PedidoExitosoPage from "./features/cliente/carrito/pages/PedidoExitosoPage"
-import CobroPage from "./features/vendedor/ventas/pages/CobroPage"
-import ConfirmacionVentaPage from "./features/vendedor/ventas/pages/ConfirmacionVentaPage"
-import VentaExitosaPage from "./features/vendedor/ventas/pages/VentaExitosaPage"
-import NuevoPedidoPage from "./features/cliente/pedidos/pages/NuevoPedidoPage"
-import QuejasSugerenciasClientePage from "./features/cliente/quejasysugerencias/pages/QuejasSugerenciasClientePage"
-import CatalogoPage from "./features/catalogo/pages/CatalogoPage"
-import ProductoDetallePage from "./features/producto/pages/ProductoDetallePage"
 import PublicLayout from "./layouts/PublicLayout"
-import MisVentasPage from "./features/vendedor/ventas/pages/MisVentasPage"
-import VentaDetallePage from "./features/vendedor/ventas/pages/VentaDetallePage"
 
-function App() {
+// Páginas públicas
+const Landing             = lazy(() => import("./pages/Landing"))
+const Login               = lazy(() => import("./features/auth/pages/LoginPage"))
+const Register            = lazy(() => import("./features/auth/pages/RegisterPage"))
+const ForgotPassword      = lazy(() => import("./features/auth/pages/ForgotPassword"))
+const Confirm             = lazy(() => import("./features/auth/pages/Confirm"))
+const ResetPasswordPage   = lazy(() => import("./features/auth/pages/ResetPasswordPage"))
+const CatalogoPage        = lazy(() => import("./features/catalogo/pages/CatalogoPage"))
+const ProductoDetallePage = lazy(() => import("./features/producto/pages/ProductoDetallePage"))
+const NotFound            = lazy(() => import("./features/notfound/NotFound"))
+
+// Páginas privadas compartidas
+const Dashboard     = lazy(() => import("./features/dashboard/pages/DashboardPage"))
+const ProfilePage   = lazy(() => import("./features/admin/profile/pages/ProfilePage"))
+const CategoriasPage = lazy(() => import("./features/admin/categorias/pages/CategoriaPage"))
+const ProductosPage = lazy(() => import("./features/vendedor/productos/pages/ProductosPage"))
+
+// Administrador
+const UsuariosPage        = lazy(() => import("./features/usuarios/pages/UsuariosPage"))
+const UsuariosCreatePage  = lazy(() => import("./features/usuarios/pages/UsuariosCreatePage"))
+const FeedbackPage        = lazy(() => import("./features/feedback/pages/FeedbackPage"))
+const RecomendacionesPage = lazy(() => import("./features/recommendations/pages/RecomendacionPage"))
+
+// Vendedor
+const CrearProductoPage          = lazy(() => import("./features/vendedor/productos/pages/CrearProductoPage"))
+const ActualizarProductoPage     = lazy(() => import("./features/vendedor/productos/pages/ActualizarProductoPage"))
+const PedidosDisponiblesPage     = lazy(() => import("./features/vendedor/pedidos/pages/PedidosDisponiblesPage"))
+const PedidosPage                = lazy(() => import("./features/vendedor/pedidos/pages/PedidosPage"))
+const PedidoDetallePage          = lazy(() => import("./features/vendedor/pedidos/pages/PedidoDetallePage"))
+const VentaPage                  = lazy(() => import("./features/vendedor/ventas/pages/VentaPage"))
+const CobroPage                  = lazy(() => import("./features/vendedor/ventas/pages/CobroPage"))
+const ConfirmacionVentaPage      = lazy(() => import("./features/vendedor/ventas/pages/ConfirmacionVentaPage"))
+const VentaExitosaPage           = lazy(() => import("./features/vendedor/ventas/pages/VentaExitosaPage"))
+const MisVentasPage              = lazy(() => import("./features/vendedor/ventas/pages/MisVentasPage"))
+const VentaDetallePage           = lazy(() => import("./features/vendedor/ventas/pages/VentaDetallePage"))
+const RecomendacionesVendedorPage = lazy(() => import("./features/vendedor/recomendaciones/pages/RecomendacionPage"))
+
+// Cliente
+const CarritoPage                 = lazy(() => import("./features/cliente/carrito/pages/CarritoPage"))
+const SeleccionMetodoPagoPage     = lazy(() => import("./features/cliente/carrito/pages/SeleccionMetodoPago"))
+const ConfirmacionPedidoPage      = lazy(() => import("./features/cliente/carrito/pages/ConfirmacionPedidoPage"))
+const PedidoExitosoPage           = lazy(() => import("./features/cliente/carrito/pages/PedidoExitosoPage"))
+const NuevoPedidoPage             = lazy(() => import("./features/cliente/pedidos/pages/NuevoPedidoPage"))
+const QuejasSugerenciasClientePage = lazy(() => import("./features/cliente/quejasysugerencias/pages/QuejasSugerenciasClientePage"))
+
+
+const ALL   = ["ADMINISTRADOR", "VENDEDOR", "CLIENTE"]
+const ADM   = ["ADMINISTRADOR"]
+const VEN   = ["VENDEDOR"]
+const CLI   = ["CLIENTE"]
+const ADM_VEN = ["ADMINISTRADOR", "VENDEDOR"]
+const ADM_VEN_CLI = ALL
+const VEN_CLI = ["VENDEDOR", "CLIENTE"]
+
+const privateRoutes = [
+  // Compartidas
+  { path: "/dashboard",          roles: ADM_VEN,     element: <Dashboard /> },
+  { path: "/dashboard/perfil",   roles: ALL,         element: <ProfilePage /> },
+  { path: "/dashboard/categorias", roles: ALL,       element: <CategoriasPage /> },
+  { path: "/dashboard/categorias/:categoriaId/productos",                      roles: ALL,     element: <ProductosPage /> },
+  { path: "/dashboard/categorias/:categoriaId/productos/crear",                roles: ADM_VEN, element: <CrearProductoPage /> },
+  { path: "/dashboard/categorias/:categoriaId/productos/actualizar/:id",       roles: ADM_VEN, element: <ActualizarProductoPage /> },
+
+  // Administrador
+  { path: "/dashboard/usuarios",          roles: ADM, element: <UsuariosPage /> },
+  { path: "/dashboard/vendedores",        roles: ADM, element: <UsuariosCreatePage tipo="VENDEDOR" /> },
+  { path: "/dashboard/quejas-sugerencias",roles: ADM, element: <FeedbackPage /> },
+  { path: "/dashboard/recomendaciones",   roles: ADM, element: <RecomendacionesPage /> },
+
+  // Vendedor
+  { path: "/dashboard/pedidos",                                         roles: VEN,     element: <PedidosDisponiblesPage /> },
+  { path: "/dashboard/ventas",                                          roles: VEN,     element: <VentaPage /> },
+  { path: "/dashboard/ventas/cobro",                                    roles: VEN,     element: <CobroPage /> },
+  { path: "/dashboard/ventas/cobro/confirmacion-venta",                 roles: VEN,     element: <ConfirmacionVentaPage /> },
+  { path: "/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa",   roles: VEN,     element: <VentaExitosaPage /> },
+  { path: "/dashboard/mis-ventas",                                      roles: VEN,     element: <MisVentasPage /> },
+  { path: "/dashboard/mis-ventas/detalle/:id",                          roles: VEN,     element: <VentaDetallePage /> },
+  { path: "/dashboard/recomendaciones-vendedor",                        roles: VEN,     element: <RecomendacionesVendedorPage /> },
+
+  // Compartidas Vendedor + Cliente
+  { path: "/dashboard/mis-pedidos",       roles: VEN_CLI, element: <PedidosPage /> },
+  { path: "/dashboard/mis-pedidos/:id",   roles: VEN_CLI, element: <PedidoDetallePage /> },
+
+  // Cliente
+  { path: "/dashboard/catalogo",                                              roles: CLI, element: <CatalogoPage /> },
+  { path: "/dashboard/producto/:id",                                           roles: CLI, element: <ProductoDetallePage /> },
+  { path: "/dashboard/mi-carrito",                                             roles: CLI, element: <CarritoPage /> },
+  { path: "/dashboard/mi-carrito/pago",                                        roles: CLI, element: <SeleccionMetodoPagoPage /> },
+  { path: "/dashboard/mi-carrito/pago/confirmar-pago",                         roles: CLI, element: <ConfirmacionPedidoPage /> },
+  { path: "/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso",          roles: CLI, element: <PedidoExitosoPage /> },
+  { path: "/dashboard/mis-pedidos/nuevo-pedido",                               roles: CLI, element: <NuevoPedidoPage /> },
+  { path: "/dashboard/mis-pedidos/pago",                                        roles: CLI, element: <SeleccionMetodoPagoPage /> },
+  { path: "/dashboard/mis-pedidos/pago/confirmar-pago",                         roles: CLI, element: <ConfirmacionPedidoPage /> },
+  { path: "/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso",          roles: CLI, element: <PedidoExitosoPage /> },
+  { path: "/dashboard/mis-quejas-y-sugerencias",                               roles: CLI, element: <QuejasSugerenciasClientePage /> },
+]
+
+function LoadingScreen() {
+  return <div className="p-6 text-gray-500">Cargando...</div>
+}
+
+export default function App() {
   return (
     <>
       <ToastContainer />
-      <NavigationSetter/>
+      <NavigationSetter />
 
-      <Routes>
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
 
-        {/* PUBLICAS */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/confirm" element={<Confirm />} />
-        <Route path="/registro" element={<Register />} />
-        <Route path="/resetear-password" element={<ForgotPassword />} />
-        <Route path="/recuperar-password/:token" element={<ResetPasswordPage />} />
-        <Route element={<PublicLayout />}>
-            <Route path="/catalogo" element={<CatalogoPage />} />
-            <Route path="/producto/:id" element={<ProductoDetallePage />}/>
-            <Route path="/" element={<Landing />} />
-        </Route>
+          {/* Públicas */}
+          <Route path="/login"                        element={<Login />} />
+          <Route path="/confirm"                      element={<Confirm />} />
+          <Route path="/registro"                     element={<Register />} />
+          <Route path="/resetear-password"            element={<ForgotPassword />} />
+          <Route path="/recuperar-password/:token"    element={<ResetPasswordPage />} />
 
+          <Route element={<PublicLayout />}>
+            <Route path="/"           element={<Landing />} />
+            <Route path="/catalogo"   element={<CatalogoPage />} />
+            <Route path="/producto/:id" element={<ProductoDetallePage />} />
+          </Route>
 
-        {/* PRIVADAS */}
-        <Route
-          element={
-            <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR", "CLIENTE"]}>
-              <MainLayout />
-            </ProtectedRoute>
-          }
-        >
-
-          <Route path="/dashboard" 
-          element={
-            <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR"]}>
-              <Dashboard />
-            </ProtectedRoute>} 
-          />
-
-          <Route path="/dashboard/perfil" 
-          element={
-          <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR", "CLIENTE"]}>
-              <ProfilePage />
-          </ProtectedRoute> }
-          />
-
+          {/* Privadas */}
           <Route
-            path="/dashboard/usuarios"
             element={
-              <ProtectedRoute roles={["ADMINISTRADOR"]}>
-                <UsuariosPage />
-              </ProtectedRoute>
+              <PrivateRoute roles={ALL}>
+                <MainLayout />
+              </PrivateRoute>
             }
-          />
+          >
+            {privateRoutes.map(({ path, roles, element }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <PrivateRoute roles={roles}>
+                    {element}
+                  </PrivateRoute>
+                }
+              />
+            ))}
+          </Route>
 
-          <Route
-            path="/dashboard/categorias"
-            element={
-              <ProtectedRoute roles={["ADMINISTRADOR", "VENDEDOR", "CLIENTE"]}>
-                <CategoriasPage />
-              </ProtectedRoute>
-            }
-          />
+          {/* Not Found */}
+          <Route path="*" element={<NotFound />} />
 
-          <Route
-            path="/dashboard/categorias/:categoriaId/productos"
-            element={
-              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR", "CLIENTE"]}>
-                <ProductosPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/categorias/:categoriaId/productos/crear"
-            element={
-              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
-                <CrearProductoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/categorias/:categoriaId/productos/actualizar/:id"
-            element={
-              <ProtectedRoute roles={["VENDEDOR", "ADMINISTRADOR"]}>
-                <ActualizarProductoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/catalogo"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <CatalogoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/producto/:id"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <ProductoDetallePage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mi-carrito"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <CarritoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mi-carrito/pago"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <SeleccionMetodoPagoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mi-carrito/pago/confirmar-pago"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <ConfirmacionPedidoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <PedidoExitosoPage />
-              </ProtectedRoute>
-            }
-          />
-
-            <Route
-              path="/dashboard/mis-quejas-y-sugerencias"
-              element={
-                <ProtectedRoute roles={["CLIENTE"]}>
-                  <QuejasSugerenciasClientePage />
-                </ProtectedRoute>
-              }
-            />
-
-          <Route
-            path="/dashboard/pedidos"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <PedidosDisponiblesPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mis-pedidos"
-            element={
-              <ProtectedRoute roles={["VENDEDOR", "CLIENTE"]}>
-                <PedidosPage />
-              </ProtectedRoute>
-            }
-          />
-          
-          <Route
-            path="/dashboard/mis-pedidos/nuevo-pedido"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <NuevoPedidoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mis-pedidos/pago"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <SeleccionMetodoPagoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mis-pedidos/pago/confirmar-pago"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <ConfirmacionPedidoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso"
-            element={
-              <ProtectedRoute roles={["CLIENTE"]}>
-                <PedidoExitosoPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/ventas"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <VentaPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mis-ventas"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <MisVentasPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/mis-ventas/detalle/:id"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <VentaDetallePage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/ventas/cobro"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <CobroPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/ventas/cobro/confirmacion-venta"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <ConfirmacionVentaPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <VentaExitosaPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-              path="/dashboard/mis-pedidos/:id"
-              element={
-                <ProtectedRoute roles={["VENDEDOR","CLIENTE"]}>
-                  <PedidoDetallePage />
-                </ProtectedRoute>
-              }
-            />
-
-          <Route
-            path="/dashboard/vendedores"
-            element={
-              <ProtectedRoute roles={["ADMINISTRADOR"]}>
-                <UsuariosCreatePage tipo="VENDEDOR" />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/quejas-sugerencias"
-            element={
-              <ProtectedRoute roles={["ADMINISTRADOR"]}>
-                <FeedbackPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/recomendaciones"
-            element={
-              <ProtectedRoute roles={["ADMINISTRADOR"]}>
-                <RecomendacionesPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/dashboard/recomendaciones-vendedor"
-            element={
-              <ProtectedRoute roles={["VENDEDOR"]}>
-                <RecomendacionesVendedorPage />
-              </ProtectedRoute>
-            }
-          />
-
-        </Route>
-      {/* NOT FOUND */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </>
   )
 }
-
-export default App

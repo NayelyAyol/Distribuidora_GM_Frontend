@@ -25,7 +25,11 @@ export default function Hero() {
             </div>
 
             <div className="h-[420px]">
-                <img src="/images/landing/ImgLanding.webp" className="w-full h-full object-contain" />
+                <img 
+                    src="/images/landing/ImgLanding.webp"
+                    alt="Distribuidora Grupo Moreno"
+                    loading="lazy"
+                    className="w-full h-full object-contain" />
             </div>
 
         </section>

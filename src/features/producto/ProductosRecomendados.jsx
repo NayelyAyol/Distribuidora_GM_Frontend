@@ -26,7 +26,7 @@ export default function ProductosRecomendados({ productoId }) {
                 setRecomendaciones(data?.recomendaciones || [])
                 setTitulo(data?.titulo || "Productos que te pueden interesar")
             } catch (error) {
-                console.error("Error al cargar recomendaciones IA:", error)
+                toast.error("Error al cargar recomendaciones IA")
                 setRecomendaciones([])
             } finally {
                 setLoading(false)
@@ -99,6 +99,7 @@ export default function ProductosRecomendados({ productoId }) {
                             onClick={() => navigate(`${basePath}/${p._id}`)}
                         >
                             <button
+                                aria-label="Agregar al carrito"
                                 onClick={(e) => handleAddCart(e, p)}
                                 className="
                                     w-[42px] h-[42px]

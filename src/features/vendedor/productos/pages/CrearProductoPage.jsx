@@ -14,7 +14,6 @@ export default function CrearProductoPage() {
 
     const handleSave = async (data) => {
 
-        console.log(data)
         try {
             await crearProducto(data);
             navigate(-1)

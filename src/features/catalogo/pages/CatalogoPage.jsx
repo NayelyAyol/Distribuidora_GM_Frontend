@@ -60,7 +60,6 @@ export default function CatalogoPage() {
                 setDestacados(filtradosDestacados)
 
             } catch (error) {
-                console.error(error)
                 toast.error(error.message || "Error al explorar productos")
             }
         }

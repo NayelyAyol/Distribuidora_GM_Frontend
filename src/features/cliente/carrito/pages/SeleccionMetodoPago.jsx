@@ -265,11 +265,6 @@ export default function SeleccionMetodoPagoPage() {
         }
     };
 
-    console.log(
-        "DEBUG: location.state en SeleccionMetodoPagoPage:",
-        location.state
-    );
-
     return (
         <div className="p-4 md:p-6 max-w-7xl mx-auto flex flex-col gap-6">
             <div>

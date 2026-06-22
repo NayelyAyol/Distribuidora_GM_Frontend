@@ -38,13 +38,15 @@ export default function BaseCard({
             <div className="relative w-full h-32">
 
                 <img
-                    src={getImagen()}
+                    src={getImagen() || "/images/categories/default.webp"}
                     alt={title}
+                    loading="lazy"
                     className="w-full h-32 object-cover rounded-lg"
                 />
 
                 {onEdit && esVendedor && (
                     <button
+                        aria-label="Editar producto"
                         onClick={(e) => {
                             e.stopPropagation()
                             onEdit()

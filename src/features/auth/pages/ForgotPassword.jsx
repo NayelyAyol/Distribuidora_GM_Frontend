@@ -47,8 +47,12 @@ export default function ForgotPassword() {
 
                 <div className={imageWrapperClass}>
                     <img
-                        src="/images/Login/ImgLogin.webp"
-                        alt="recover"
+                        src="/images/login/ImgLogin.webp"
+                        alt="Recuperación de contraseña"
+                        loading="lazy"
+                        onError={(e) => {
+                            e.currentTarget.src = "/images/categories/default.webp"
+                        }}
                         className="absolute inset-0 w-full h-full object-cover"
                     />
                 </div>

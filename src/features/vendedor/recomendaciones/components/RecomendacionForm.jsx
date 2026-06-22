@@ -20,7 +20,6 @@ export default function RecomendacionForm({
     const rol = user?.rol?.toUpperCase()
     const esVendedor = rol === "VENDEDOR"
 
-    console.log(user)
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!asunto.trim()) { toast.error("Ingresa un asunto"); return }

@@ -118,7 +118,6 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
             if (fileInputRef.current) fileInputRef.current.value = "";
 
         } catch (error) {
-            console.error(error);
             toast.error(error.message || "Error al procesar la categoría");
         } finally {
             setLoading(false);
@@ -140,7 +139,6 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
             toast.error("La imagen no debe superar los 2MB");
             return;
         }
-        console.log(file)
 
         setForm((prev) => ({
             ...prev,

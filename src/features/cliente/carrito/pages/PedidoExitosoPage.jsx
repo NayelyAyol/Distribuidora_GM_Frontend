@@ -20,7 +20,6 @@ export default function PedidoExitosoPage() {
 
     const navigate = useNavigate()
     const location = useLocation()
-    console.log("DEBUG: Contenido de location.state:", location.state);
 
     const checkout = location.state?.checkout;
     const pedido = location.state?.pedido;
@@ -63,7 +62,7 @@ export default function PedidoExitosoPage() {
     const resumen = pedido?.resumenPago;
 
     const { titulo, descripcion } = getMensaje();
-console.log("DEBUG pedido en exitoso:", JSON.stringify(location.state?.pedido));
+
     return (
 
         <div className="

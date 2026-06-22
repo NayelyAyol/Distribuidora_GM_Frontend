@@ -55,7 +55,6 @@ const handleConfirmar = async () => {
                 return;
             }
             respuesta = await definirPagoPedido(pedido._id, payload);
-console.log("DEBUG respuesta definirPagoPedido:", JSON.stringify(respuesta));
 
         } else if (payload.metodoPago === "TARJETA") {
             // Flujo carrito + tarjeta: usa el endpoint de Stripe
