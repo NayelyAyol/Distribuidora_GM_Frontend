@@ -198,7 +198,7 @@ export default function ProfileForm({ user, onRefresh }) {
                 {/* Submit */}
                 <div className="md:col-span-2">
                     <Button type="submit" disabled={loading} className={buttonPrimaryClass}>
-                        {loading ? "Guardando..." : "Guardar"}
+                        {loading ? "Guardando..." : "Aceptar"}
                     </Button>
                 </div>
 

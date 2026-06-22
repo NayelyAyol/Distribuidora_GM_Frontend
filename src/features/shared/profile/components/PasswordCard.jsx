@@ -221,7 +221,7 @@ export default function PasswordCard() {
                     disabled={loading}
                     className={buttonPrimaryClass}
                 >
-                    {loading ? "Actualizando..." : "Actualizar contraseña"}
+                    {loading ? "Actualizando..." : "Aceptar"}
                 </Button>
 
             </form>
