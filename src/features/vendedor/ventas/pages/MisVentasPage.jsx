@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import { FiSearch, FiRefreshCw } from "react-icons/fi"
 import DataTable from "@/components/ui/DataTable"
@@ -69,6 +69,13 @@ export default function MisVentasPage() {
 
     const filtrosActivos = busqueda || filtroEstadoPago || filtroOrigen
 
+    const columns = useMemo(() =>
+        ventasColumns(
+            (venta) => navigate(`/dashboard/mis-ventas/detalle/${venta._id}`),
+            handleCancelar
+        ),
+    [])
+
     return (
         <div className="p-6 space-y-6">
             <div>
@@ -88,13 +95,16 @@ export default function MisVentasPage() {
                                 }}
                             className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1 placeholder:text-sm`}
                         />
-                        <button className="rounded-full flex items-center justify-center h-12 w-12 px-2 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition">
+                        <button 
+                        aria-label="Buscador"
+                        className="rounded-full flex items-center justify-center h-12 w-12 px-2 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition">
                             <FiSearch className="text-emerald-900 text-xl" />
                         </button>
                     </div>
 
                     {filtrosActivos && (
                         <Button
+                            aria-label="Recargar"
                             onClick={() => { setBusqueda(""); setFiltroEstadoPago(""); setFiltroOrigen(""); }}
                             className="bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm"
                         >
@@ -144,10 +154,7 @@ export default function MisVentasPage() {
                 <div className="w-full overflow-x-auto">
                     <DataTable
                         data={ventas}
-                        columns={ventasColumns(
-                            (venta) => navigate(`/dashboard/mis-ventas/detalle/${venta._id}`),
-                            handleCancelar
-                        )}
+                        columns={columns}
                     />
                 </div>
 

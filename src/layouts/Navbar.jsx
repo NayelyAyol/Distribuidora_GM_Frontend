@@ -35,6 +35,7 @@ export default function Navbar() {
             </button>
 
             <button
+                aria-label="Abrir menú"
                 className="md:hidden fixed top-5 right-5 z-50 bg-white shadow-xl border rounded-full p-3 text-emerald-900 hover:scale-105 transition"
                 onClick={() => setOpen(!open)}
             >

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import DataTable from "@/components/ui/DataTable"
 import { pedidosDisponiblesColumns } from "../columns/pedidosDisponiblesColumns"
 import { toast } from "react-toastify"
@@ -29,6 +29,10 @@ export default function PedidosDisponiblesPage() {
             setCargando(false)
         }
     }
+
+    const columns = useMemo(() =>
+        pedidosDisponiblesColumns((pedido) => setPedidoToConfirm(pedido)),
+    [])
 
     useEffect(() => {
         cargarPedidos()
@@ -61,7 +65,7 @@ export default function PedidosDisponiblesPage() {
                     <div className="flex flex-col border-b bg-white">
                         <DataTable
                             data={pedidos}
-                            columns={pedidosDisponiblesColumns((pedido) => setPedidoToConfirm(pedido))}
+                            columns={columns}
                         />
                         <div className="flex justify-center items-center gap-2 p-4 flex-wrap">
                             {Array.from({ length: totalPaginas }, (_, index) => {

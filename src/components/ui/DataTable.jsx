@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { Card } from "@/components/ui/card"
 import {
     flexRender,
@@ -5,7 +6,7 @@ import {
     useReactTable
 } from "@tanstack/react-table"
 
-export default function DataTable({ data, columns }) {
+function DataTable({ data, columns }) {
 
     const table = useReactTable({
         data: data || [],
@@ -79,3 +80,5 @@ export default function DataTable({ data, columns }) {
         </Card>
     )
 }
+
+export default memo(DataTable)

@@ -4,6 +4,10 @@ import { ToastContainer } from "react-toastify"
 import NavigationSetter from "./components/NavigationSetter"
 import PrivateRoute from "./routes/ProtectedRoute"
 
+// Stripe
+import StripeWrapper from "./features/shared/pagos/components/StripeWrapper"
+
+
 // Layouts
 import MainLayout from "./components/layout/MainLayout"
 import PublicLayout from "./layouts/PublicLayout"
@@ -95,11 +99,19 @@ const privateRoutes = [
   { path: "/dashboard/catalogo",                                              roles: CLI, element: <CatalogoPage /> },
   { path: "/dashboard/producto/:id",                                           roles: CLI, element: <ProductoDetallePage /> },
   { path: "/dashboard/mi-carrito",                                             roles: CLI, element: <CarritoPage /> },
-  { path: "/dashboard/mi-carrito/pago",                                        roles: CLI, element: <SeleccionMetodoPagoPage /> },
+  {
+    path: "/dashboard/mi-carrito/pago",
+    roles: CLI,
+    element: <StripeWrapper><SeleccionMetodoPagoPage /></StripeWrapper>
+  },
   { path: "/dashboard/mi-carrito/pago/confirmar-pago",                         roles: CLI, element: <ConfirmacionPedidoPage /> },
   { path: "/dashboard/mi-carrito/pago/confirmar-pago/pedido-exitoso",          roles: CLI, element: <PedidoExitosoPage /> },
   { path: "/dashboard/mis-pedidos/nuevo-pedido",                               roles: CLI, element: <NuevoPedidoPage /> },
-  { path: "/dashboard/mis-pedidos/pago",                                        roles: CLI, element: <SeleccionMetodoPagoPage /> },
+  {
+    path: "/dashboard/mis-pedidos/pago",
+    roles: CLI,
+    element: <StripeWrapper><SeleccionMetodoPagoPage /></StripeWrapper>
+  },
   { path: "/dashboard/mis-pedidos/pago/confirmar-pago",                         roles: CLI, element: <ConfirmacionPedidoPage /> },
   { path: "/dashboard/mis-pedidos/pago/confirmar-pago/pedido-exitoso",          roles: CLI, element: <PedidoExitosoPage /> },
   { path: "/dashboard/mis-quejas-y-sugerencias",                               roles: CLI, element: <QuejasSugerenciasClientePage /> },

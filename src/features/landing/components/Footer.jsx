@@ -13,6 +13,7 @@ export default function Footer() {
                 <div className="flex gap-4 text-xl">
                     <a
                         href="https://www.facebook.com/grupomorenoecuador/?locale=es_LA"
+                        aria-label="Facebook"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
@@ -21,6 +22,7 @@ export default function Footer() {
 
                     <a
                         href="https://www.tiktok.com/@distribuidoragrupomoreno?_r=1&_t=ZS-96eL0VI0Crx"
+                        aria-label="TikTok"
                         target="_blank"
                         rel="noopener noreferrer"
                     >

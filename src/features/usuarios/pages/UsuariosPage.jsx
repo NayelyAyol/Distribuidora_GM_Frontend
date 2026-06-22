@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { toast } from "react-toastify"
 import { FiSearch } from "react-icons/fi"
 import { Input } from "@/components/ui/input"
@@ -173,6 +173,10 @@ export default function UsuariosPage() {
         }
     }
 
+    const columns = useMemo(() =>
+        usuarioColumns(refreshData, (usuario) => setUserToToggle(usuario)),
+    [filtro, tab])
+
     if (loading) return <p className="p-6">Cargando usuarios...</p>
 
     return (
@@ -226,6 +230,7 @@ export default function UsuariosPage() {
                                 className={`${inputClass} bg-transparent border-0 focus:ring-0 flex-1 placeholder:text-sm`}
                             />
                             <button
+                                aria-label="Buscador"
                                 onClick={handleBuscar}
                                 disabled={loading}
                                 className={`rounded-full flex items-center justify-center max-w-[120px] h-12 px-6 bg-emerald-700/10 hover:bg-emerald-100 text-emerald-800 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -260,7 +265,7 @@ export default function UsuariosPage() {
                                         ? vendedores
                                         : clientes
                             }
-                            columns={usuarioColumns(refreshData, (usuario) => setUserToToggle(usuario))}
+                            columns={columns}
                         />
                     </div>
 

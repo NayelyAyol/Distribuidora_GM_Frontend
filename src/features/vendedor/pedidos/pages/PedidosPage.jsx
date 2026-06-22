@@ -1,7 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { FiSearch, FiPlus, FiGrid, FiLayers, FiRefreshCw } from "react-icons/fi"
 import { useNavigate } from "react-router-dom"
-import { useEffect } from "react"
 
 import DataTable from "@/components/ui/DataTable"
 import { pedidosSeleccionadosColumns } from "../columns/pedidosSeleccionadosColumns"
@@ -147,6 +146,22 @@ export default function PedidosPage() {
         }
     }
 
+    const columns = useMemo(() =>
+        esCliente
+            ? pedidosClienteColumns(
+                (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
+                handleAbrirChat,
+                handleRealizarPago,
+                handleCancelar
+            )
+            : pedidosSeleccionadosColumns(
+                (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
+                handleAbrirChat,
+                filtro !== "cancelados",
+                handleCancelar
+            ),
+    [esCliente, filtro])
+
 return (
         <div className="p-6 space-y-6">
             <div>
@@ -166,6 +181,7 @@ return (
                                 type="text"
                                 placeholder={placeholderTexto}
                                 value={busqueda}
+                                aria-label="Buscar"
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     if (!/^[\p{L}\p{N}\s]*$/u.test(value)) return;
@@ -185,6 +201,7 @@ return (
                         <div className="ml-auto flex items-center gap-2">
                             {(busqueda || tipoPedido) && (
                                 <Button 
+                                    aria-label="Refrescar"
                                     onClick={() => { setBusqueda(""); setTipoPedido(""); }} 
                                     className="bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm"
                                 >
@@ -194,6 +211,7 @@ return (
                             
                             {esCliente && (
                                 <Button
+                                    aria-label="Agregar"
                                     onClick={() => navigate("/dashboard/mis-pedidos/nuevo-pedido")}
                                     className="rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-sm flex items-center transition"
                                 >
@@ -244,21 +262,7 @@ return (
                     <div className="w-full overflow-x-auto">
                         <DataTable
                             data={pedidos}
-                            columns={
-                                esCliente
-                                    ? pedidosClienteColumns(
-                                        (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
-                                        handleAbrirChat,
-                                        handleRealizarPago,
-                                        handleCancelar
-                                    )
-                                    : pedidosSeleccionadosColumns(
-                                        (pedido) => navigate(`/dashboard/mis-pedidos/${pedido._id}`),
-                                        handleAbrirChat,
-                                        filtro !== "cancelados",
-                                        handleCancelar
-                                    )
-                            }
+                            columns={columns}
                         />
                     </div>
                     <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">

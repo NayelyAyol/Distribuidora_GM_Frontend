@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { toast } from "react-toastify"
 import DataTable from "@/components/ui/DataTable"
 import { recomendacionColumns } from "../columns/recomendacionColumns"
@@ -54,6 +54,16 @@ export default function RecomendacionesPage() {
         }
     }
 
+    const columns = useMemo(() =>
+        recomendacionColumns(
+            handleOpenModal,
+            null,
+            async (rec, estado) => {
+                toast.success(`Recomendación ${estado ? "atendida" : "pendiente"}`)
+            }
+        ),
+    [filter])
+
     return (
         <div className="p-6 space-y-6">
             <div>
@@ -98,13 +108,7 @@ export default function RecomendacionesPage() {
 
                             <DataTable
                                 data={data}
-                                columns={recomendacionColumns(
-                                    handleOpenModal,
-                                    null,
-                                    async (rec, estado) => {
-                                        toast.success(`Recomendación ${estado ? "atendida" : "pendiente"}`)
-                                    }
-                                )}
+                                columns={columns}
                             />
                         </>
                     ) : (

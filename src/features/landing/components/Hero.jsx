@@ -28,7 +28,8 @@ export default function Hero() {
                 <img 
                     src="/images/landing/ImgLanding.webp"
                     alt="Distribuidora Grupo Moreno"
-                    loading="lazy"
+                    loading="eager"
+                    fetchPriority="high"
                     className="w-full h-full object-contain" />
             </div>
 
