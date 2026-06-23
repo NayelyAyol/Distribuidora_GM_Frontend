@@ -8,13 +8,13 @@ export default function Stats() {
             </div>
 
             <div>
-                <h2 className="text-4xl font-black text-emerald-950">+800</h2>
-                <p className="text-emerald-900">Clientes corporativos</p>
+                <h2 className="text-4xl font-black text-emerald-950">+5 años</h2>
+                <p className="text-emerald-900">De experiencia trabajando en el mercado</p>
             </div>
 
             <div>
-                <h2 className="text-4xl font-black text-emerald-950">24/7</h2>
-                <p className="text-emerald-900">Soporte logístico</p>
+                <h2 className="text-4xl font-black text-emerald-950">98%</h2>
+                <p className="text-emerald-900">Clientes satisfechos</p>
             </div>
 
         </section>
