@@ -18,7 +18,7 @@ export default function Hero() {
                         onClick={() => navigate("/login")}
                         className="bg-emerald-900 text-white px-8 py-3 rounded-2xl hover:bg-black transition-colors"
                     >
-                        Solicitar cotización
+                        Solicita cotización
                     </button>
                 </div>
             </div>

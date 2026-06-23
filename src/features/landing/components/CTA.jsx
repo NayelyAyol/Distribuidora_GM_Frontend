@@ -17,7 +17,7 @@ export default function CTA() {
             <button 
             onClick={() => navigate("/login")}
             className="mt-8 bg-emerald-900 text-white px-10 py-3 rounded-2xl hover:bg-black">
-                Contactar ventas
+                Contacta ventas
             </button>
 
         </section>
