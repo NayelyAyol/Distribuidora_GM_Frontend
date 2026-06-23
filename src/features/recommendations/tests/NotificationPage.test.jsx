@@ -54,7 +54,7 @@ vi.mock("../components/NotificationItem", () => ({
     )
 }))
 
-describe("NotificationPage", () => {
+describe("Recomendaciones Inteligentes", () => {
 
     beforeEach(() => {
         vi.clearAllMocks()
