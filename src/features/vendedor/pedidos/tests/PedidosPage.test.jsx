@@ -33,19 +33,15 @@ vi.mock("@/context/useAuthStore", () => {
     }
 })
 
-
 vi.mock("../../../cliente/pedidos/services/pedidoService", () => ({
     obtenerMisPedidos: vi.fn(),
     cambiarEstadoPedido: vi.fn()
 }))
 
-
 import {
     obtenerMisPedidos,
     cambiarEstadoPedido
 } from "../../../cliente/pedidos/services/pedidoService"
-
-
 
 vi.mock("react-toastify", () => ({
     toast:{
@@ -53,7 +49,6 @@ vi.mock("react-toastify", () => ({
         error: vi.fn()
     }
 }))
-
 
 vi.mock("@/components/ui/DataTable", () => ({
     default: ({data}) => (
@@ -67,35 +62,24 @@ vi.mock("@/components/ui/DataTable", () => ({
     )
 }))
 
-
 vi.mock("../columns/pedidosSeleccionadosColumns", () => ({
     pedidosSeleccionadosColumns: vi.fn(()=>[])
 }))
-
 
 vi.mock("@/features/cliente/pedidos/columns/pedidosClientesColumns", () => ({
     pedidosClienteColumns: vi.fn(()=>[])
 }))
 
-
 vi.mock("../../../shared/chat/components/ChatModal",()=>({
     default:()=> <div/>
 }))
 
-
-
 describe("Pedidos vendedor",()=>{
-
-
     beforeEach(()=>{
         vi.clearAllMocks()
     })
 
-
-
     test("carga y muestra adecuadamente los pedidos del vendedor", async()=>{
-
-
         obtenerMisPedidos.mockResolvedValue({
             pedidos:[
                 {
@@ -107,34 +91,20 @@ describe("Pedidos vendedor",()=>{
             totalPaginas:1
         })
 
-
         render(<PedidosPage/>)
-
-
 
         expect(
             await screen.findByText("Pedido Laptop")
         ).toBeInTheDocument()
-
-
     })
 
-
-
-
-
     test("muestra mensaje cuando no existen pedidos", async()=>{
-
-
         obtenerMisPedidos.mockResolvedValue({
             pedidos:[],
             totalPaginas:1
         })
 
-
         render(<PedidosPage/>)
-
-
 
         await waitFor(()=>{
 
@@ -142,75 +112,45 @@ describe("Pedidos vendedor",()=>{
             .toHaveBeenCalled()
 
         })
-
-
     })
 
-
-
-
-
     test("busca pedidos por nombre del cliente", async()=>{
-
-
         obtenerMisPedidos.mockResolvedValue({
             pedidos:[],
             totalPaginas:1
         })
 
-
         render(<PedidosPage/>)
-
-
 
         const input =
             screen.getByPlaceholderText(
                 "Buscar por nombre del cliente..."
             )
 
-
-
         await userEvent.type(
             input,
             "Carlos"
         )
 
-
-
         await waitFor(()=>{
 
             expect(obtenerMisPedidos)
             .toHaveBeenCalled()
 
         })
-
-
     })
 
-
-
-
-
-
-
     test("cambia filtro a pedidos finalizados", async()=>{
-
-
         obtenerMisPedidos.mockResolvedValue({
             pedidos:[],
             totalPaginas:1
         })
 
-
         render(<PedidosPage/>)
-
-
 
         await userEvent.click(
             screen.getByText("Finalizados")
         )
-
-
 
         await waitFor(()=>{
 
@@ -218,19 +158,9 @@ describe("Pedidos vendedor",()=>{
             .toHaveBeenCalled()
 
         })
-
-
     })
 
-
-
-
-
-
-
     test("cancela pedido de forma exitosa", async()=>{
-
-
         obtenerMisPedidos.mockResolvedValue({
 
             pedidos:[
@@ -245,46 +175,26 @@ describe("Pedidos vendedor",()=>{
             totalPaginas:1
         })
 
-
         cambiarEstadoPedido.mockResolvedValue({
             msg:"Cancelado"
         })
 
-
-
         render(<PedidosPage/>)
-
-
 
         await waitFor(()=>{
 
             expect(obtenerMisPedidos)
             .toHaveBeenCalled()
-
         })
-
-
     })
 
-
-
-
-
-
-
-
     test("muestra error al cargar pedidos", async()=>{
-
 
         obtenerMisPedidos.mockRejectedValue(
             new Error("Error servidor")
         )
 
-
-
         render(<PedidosPage/>)
-
-
 
         await waitFor(()=>{
 
@@ -292,10 +202,5 @@ describe("Pedidos vendedor",()=>{
             .toHaveBeenCalled()
 
         })
-
-
     })
-
-
-
 })

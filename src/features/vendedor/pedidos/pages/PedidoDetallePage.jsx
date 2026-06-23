@@ -25,7 +25,7 @@ const obtenerBorrador = (pedidoId) => {
         const raw = localStorage.getItem(`${DRAFT_KEY_PREFIX}${pedidoId}`);
         return raw ? JSON.parse(raw) : null;
     } catch (error) {
-        console.error("Error al leer borrador de cotización:", error);
+        console.warn("No se pudo leer el borrador:", error);
         return null;
     }
 };
@@ -34,7 +34,7 @@ const guardarBorrador = (pedidoId, articulos) => {
     try {
         localStorage.setItem(`${DRAFT_KEY_PREFIX}${pedidoId}`, JSON.stringify(articulos));
     } catch (error) {
-        console.error("Error al guardar borrador de cotización:", error);
+        console.warn("No se pudo guardar el borrador:", error);
     }
 };
 
@@ -42,7 +42,7 @@ const borrarBorrador = (pedidoId) => {
     try {
         localStorage.removeItem(`${DRAFT_KEY_PREFIX}${pedidoId}`);
     } catch (error) {
-        console.error("Error al borrar borrador de cotización:", error);
+        console.warn("No se pudo borrar el borrador:", error);
     }
 };
 
@@ -80,7 +80,8 @@ export default function PedidoDetallePage() {
                 const data = await obtenerDetallesPedido(id);
                 setPedido(data.pedido);
             } catch (error) {
-                console.error("Error al cargar:", error);
+                console.error("Error al cargar el detalle del pedido:", error);
+                toast.error("No se pudo cargar el pedido"); 
             } finally {
                 setLoading(false);
             }
@@ -144,7 +145,6 @@ export default function PedidoDetallePage() {
         try {
             setLoading(true);
             const data = await ventaDesdePedido(id, { observaciones: pedido.observaciones });
-            console.log("DEBUG data completa:", JSON.stringify(data));
             setVentaId(data.venta.id);
             limpiarVenta();
             const esPagoTarjeta = data.venta.metodoPago === 'TARJETA';
@@ -183,14 +183,11 @@ export default function PedidoDetallePage() {
                 identificacion:
                     pedido.datosFacturacion?.identificacion || ""
             });
-            console.log("ANTES DE NAVEGAR");
-            console.log(useVentaStore.getState());
             setTimeout(() => {
                 navigate("/dashboard/ventas");
             }, 100);
 
         } catch (error) {
-            console.log("ERROR DETALLADO:", error.message);
             toast.error(error.message || "Ocurrió un error inesperado al iniciar la venta");
         } finally {
             setLoading(false);
@@ -283,7 +280,6 @@ export default function PedidoDetallePage() {
 
     if (loading) return <div>Cargando...</div>;
 
-    console.log("DEBUG: Objeto Pedido completo:", JSON.parse(JSON.stringify(pedido)));
     const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
     const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
 
@@ -620,7 +616,7 @@ export default function PedidoDetallePage() {
                     </h2>
 
                     <p className="text-gray-600 leading-relaxed">
-                        {pedido.observaciones || "No hay observaciones adicionales"}
+                        {pedido?.observaciones || "No hay observaciones adicionales"}
                     </p>
 
                 </div>
@@ -629,7 +625,7 @@ export default function PedidoDetallePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                {esPedidoLista && pedido.metodoPago === null && (
+                {esPedidoLista && pedido?.metodoPago === null && (
                     <>
                         {!esCliente && (
                             <div className="space-y-6">
@@ -640,7 +636,7 @@ export default function PedidoDetallePage() {
                             <FacturaPanel
                                 factura={articulosSeleccionados}
                                 modo="ARMADO_FOTO"
-                                esEditable={!esCliente && (pedido.estado === 'EN_PROCESO' || pedido.estado === 'COTIZADO')}
+                                esEditable={!esCliente && (pedido?.estado === 'EN_PROCESO' || pedido?.estado === 'COTIZADO')}
                                 eliminarProducto={quitarDelArray}
                                 cambiarCantidad={actualizarCantidad}
                                 limpiarFactura={limpiarFacturaArmado}
@@ -682,7 +678,7 @@ export default function PedidoDetallePage() {
             }*/}
 
             {/* Ajuste en tu lógica de botones */}
-            {!esCliente && pedido.tipoPedido === "FOTO_LISTA" && pedido.estado === 'EN_PROCESO' && pedido.metodoPago === null && (
+            {!esCliente && pedido?.tipoPedido === "FOTO_LISTA" && pedido?.estado === 'EN_PROCESO' && pedido?.metodoPago === null && (
                 <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl">
                     <div className="flex flex-wrap gap-4 justify-end">
                         <Button
@@ -691,13 +687,13 @@ export default function PedidoDetallePage() {
                             className="bg-emerald-600 hover:bg-emerald-700 text-white"
                         >
                             {/* Si ya tiene artículos, es una actualización, si no, es la primera vez */}
-                            {pedido.articulos?.length > 0 ? "Actualizar Cotización" : "Armar Pedido"}
+                            {pedido?.articulos?.length > 0 ? "Actualizar Cotización" : "Armar Pedido"}
                         </Button>
                     </div>
                 </Card>
             )}
 
-            {esCliente && pedido.tipoPedido === 'FOTO_LISTA' && pedido.metodoPago === null && pedido.estado === "EN_PROCESO" && (
+            {esCliente && pedido?.tipoPedido === 'FOTO_LISTA' && pedido?.metodoPago === null && pedido?.estado === "EN_PROCESO" && (
                 <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl mt-4">
                     <div className="flex flex-wrap gap-4 justify-between items-center">
                         <p className="text-amber-600 font-medium">
