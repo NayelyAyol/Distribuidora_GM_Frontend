@@ -71,3 +71,23 @@ html, body {
 
 }
 }
+
+/* Para Firefox*/
+@-moz-document url-prefix() {
+    input[type="date"] {
+        line-height: normal;
+        display: flex;
+        align-items: center;
+    }
+
+    input[type="date"]::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+    }
+}
+
+/* Edge */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
