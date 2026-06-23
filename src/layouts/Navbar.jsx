@@ -31,7 +31,7 @@ export default function Navbar() {
                 onClick={() => navigate("/login")}
                 className="hidden md:block bg-emerald-900 text-white px-6 py-2 rounded-xl hover:bg-black transition"
             >
-                Iniciar sesión
+                Inicia sesión
             </button>
 
             <button
