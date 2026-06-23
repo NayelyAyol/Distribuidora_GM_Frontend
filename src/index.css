@@ -77,8 +77,6 @@ html, body {
     input[type="date"] {
         display: flex;
         align-items: center;
-        padding-block: 1rem;
-        box-sizing: border-box;
     }
 
     input[type="date"]::-moz-focus-inner {
