@@ -227,13 +227,6 @@ const sinStock = maxPermitido === 0
                             Presentación: {producto.presentacion}
                         </span>*/}
 
-                        <span className="
-                            px-4 py-2 rounded-xl
-                            bg-gray-100 text-gray-700
-                            text-sm font-medium
-                        ">
-                            Marca: {producto.marca}
-                        </span>
 
                         {/*<span className="
                             px-4 py-2 rounded-xl
@@ -242,14 +235,6 @@ const sinStock = maxPermitido === 0
                         ">
                             Material: {producto.material}
                         </span>*/}
-
-                        <span className="
-                            px-4 py-2 rounded-xl
-                            bg-gray-100 text-gray-700
-                            text-sm font-medium
-                        ">
-                            Categoría: {producto.categoria?.nombre}
-                        </span>
 
                     </div>
 

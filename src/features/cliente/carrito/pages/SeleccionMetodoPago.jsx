@@ -38,9 +38,6 @@ export default function SeleccionMetodoPagoPage() {
         setMetodoPago
     } = usePedidoForm();
 
-    // ========================
-    // SOLO UNA FUENTE DE DATOS
-    // ========================
     const checkout = location.state?.checkout || {};
 
     const {
@@ -59,9 +56,7 @@ export default function SeleccionMetodoPagoPage() {
 
     const [resumenOriginal, setResumenOriginal] = useState(null);
 
-    // ========================
-    // SINCRONIZACIÓN INICIAL
-    // ========================
+
     useEffect(() => {
         if (metodoPagoInicial) {
             setMetodoPago(metodoPagoInicial);
@@ -251,10 +246,10 @@ export default function SeleccionMetodoPagoPage() {
             navigate(rutaConfirmacion, {
                 state: {
                     checkout: {
-                        ...checkout,          // conserva pedido, carrito, resumenPago, tipoEntrega, esPedidoFoto
-                        metodoPago,           // elegido por el usuario
+                        ...checkout,          
+                        metodoPago,           
                         paymentMethodId,
-                        form                  // datos de facturación del form
+                        form                  
                     }
                 }
             });
