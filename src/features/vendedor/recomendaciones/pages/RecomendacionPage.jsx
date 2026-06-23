@@ -11,7 +11,7 @@ export default function RecomendacionesPage() {
 
             <div>
                 <p className="text-gray-500">
-                    Este módulo te permite enviar tus sugerencias y recomendaciones para mejorar la plataforma
+                    Este módulo te permite enviar tus recomendaciones para mejorar la plataforma
                 </p>
             </div>
 
