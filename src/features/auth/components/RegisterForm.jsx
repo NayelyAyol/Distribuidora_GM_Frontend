@@ -320,7 +320,8 @@ if (!form.direccion) {
                     name="fecha_nacimiento"
                     value={form.fecha_nacimiento}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={`${inputClass} [&::-webkit-date-and-time-value]:text-left`}
+
                 />
                 {errors.fecha_nacimiento && (
                     <p className="text-red-500 text-sm font-medium">

@@ -75,11 +75,11 @@ html, body {
 /* Para Firefox*/
 @-moz-document url-prefix() {
     input[type="date"] {
-        line-height: normal;
-        display: flex;
-        align-items: center;
+        line-height: 1;
+        padding-block: 0;
+        height: 58px;
+        box-sizing: border-box;
     }
-
     input[type="date"]::-moz-focus-inner {
         border: 0;
         padding: 0;
