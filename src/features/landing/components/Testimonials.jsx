@@ -1,7 +1,7 @@
 export default function Testimonials() {
 
     const data = [
-        "Entrega rápida y confiable para nuestra empresa.",
+        "Entrega rápida y confiable.",
         "Excelente proveedor de suministros de oficina.",
         "Muy buena atención para pedidos grandes."
     ]

@@ -3,9 +3,9 @@ export default function Features() {
     const items = [
         "Suministro de papelería",
         "Pedidos al por mayor",
-        "Entrega rápida nacional",
+        "Entrega rápida",
         "Gestión de inventario",
-        "Soluciones corporativas personalizadas",
+        "Equipos tecnológicos",
         "Atención a empresas"
     ]
 
