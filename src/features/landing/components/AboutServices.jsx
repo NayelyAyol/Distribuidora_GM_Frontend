@@ -7,7 +7,7 @@ export default function About() {
             </h2>
 
             <p className="text-center text-emerald-900 max-w-3xl mx-auto">
-                Distribuidora GM es una empresa especializada en la distribución de artículos de oficina,
+                Distribuidora GM se especializada en la distribución de artículos de oficina,
                 papelería y suministros corporativos, ofreciendo soluciones eficientes para empresas de todos los tamaños.
             </p>
 

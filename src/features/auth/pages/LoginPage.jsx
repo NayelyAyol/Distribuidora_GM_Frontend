@@ -64,7 +64,7 @@ export default function LoginPage() {
                             e.target.src = "/images/categories/default.webp"
                         }}
                         alt="Login"
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover  object-center"
                     />
                 </div>
 

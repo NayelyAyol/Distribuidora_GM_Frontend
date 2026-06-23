@@ -33,10 +33,10 @@ export const pageClass =
     "flex items-center justify-center min-h-screen bg-white p-4 sm:p-6";
 
 export const containerClass =
-    "relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 items-stretch shadow-2xl overflow-hidden rounded-[3rem] md:rounded-[4rem]";
+    "relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 items-stretch shadow-2xl overflow-hidden rounded-[3rem] md:rounded-[4rem] md:h-[750px]";
 
 export const formContainerClass =
     "bg-white/10 backdrop-blur-2xl border border-gray-200 md:border-r-0 p-6 sm:p-8 md:p-16 flex flex-col justify-center min-h-[600px] md:min-h-[750px]";
 
 export const imageWrapperClass =
-    "relative w-full h-full min-h-[300px] md:min-h-full hidden md:block";
+    "relative w-full hidden md:block md:h-full";

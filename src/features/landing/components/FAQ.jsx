@@ -2,7 +2,7 @@ export default function FAQ() {
 
     const faqs = [
         ["¿Hacen descuentos por volumen?", "Sí, para empresas y compras grandes."],
-        ["¿Realizan entregas a nivel nacional?", "Sí, cubrimos todo el país."],
+        ["¿Realizan entregas a nivel nacional?", "No, lamentablemente solo realizamos entregas en Quito."],
         ["¿Puedo abrir una cuenta empresarial?", "Sí, contacta a nuestro equipo comercial."]
     ]
 
