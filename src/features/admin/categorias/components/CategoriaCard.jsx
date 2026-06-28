@@ -19,14 +19,16 @@ export default function CategoriaCard({
             description={categoria.descripcion}
             className={!isActive ? "opacity-70 grayscale" : ""}
         >
-            {(esVendedor || esCliente) ? (
+        {(esVendedor || esCliente) ? (
+            <div className="w-full flex justify-end border-t pt-3">
                 <div
                     onClick={() => onSelect(categoria)}
-                    className="text-emerald-700 font-bold text-sm cursor-pointer hover:underline justify-self-end mt-auto"
+                    className="text-emerald-700 font-bold text-sm cursor-pointer hover:underline"
                 >
                     Ver productos →
                 </div>
-            ) : (
+            </div>
+        ) : (
                 <div className="flex flex-wrap justify-between items-center w-full gap-4 mt-4 border-t pt-3">
                     <button
                         aria-label="Editar"
