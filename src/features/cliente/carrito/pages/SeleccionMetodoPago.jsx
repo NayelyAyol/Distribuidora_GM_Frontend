@@ -35,7 +35,9 @@ export default function SeleccionMetodoPagoPage() {
         setForm,
         handleChange,
         metodoPago,
-        setMetodoPago
+        setMetodoPago,
+        errors,
+        setErrors
     } = usePedidoForm();
 
     const checkout = location.state?.checkout || {};
@@ -86,85 +88,51 @@ export default function SeleccionMetodoPagoPage() {
         : "/dashboard/mi-carrito/pago/confirmar-pago";
 
     const validarFormulario = () => {
-        if (!form.nombrePedido.trim()) {
-            toast.error("Ingrese el nombre del pedido");
-            return false;
-        }
+        const newErrors = {}
 
-        if (form.nombrePedido.trim().length < 5) {
-            toast.error("El nombre del pedido debe tener mínimo 5 caracteres");
-            return false;
-        }
+        if (!form.nombrePedido.trim())
+            newErrors.nombrePedido = "Ingrese el nombre del pedido"
+        else if (form.nombrePedido.trim().length < 5)
+            newErrors.nombrePedido = "El nombre del pedido debe tener mínimo 5 caracteres"
 
-        if (form.nombrePedido.trim().length > 60) {
-            toast.error("El nombre del pedido no puede exceder los 60 caracteres");
-            return false;
-        }
+        if (!form.nombreCompleto.trim())
+            newErrors.nombreCompleto = "Ingrese el nombre completo"
 
-        if (!form.nombreCompleto.trim()) {
-            toast.error("Ingrese el nombre completo");
-            return false;
-        }
+        if (!form.identificacion.trim())
+            newErrors.identificacion = "Ingrese la identificación"
+        else if (!/^\d+$/.test(form.identificacion))
+            newErrors.identificacion = "Solo debe contener números"
+        else if (form.identificacion.length !== 10 && form.identificacion.length !== 13)
+            newErrors.identificacion = "Debe tener 10 (cédula) o 13 (RUC) dígitos"
 
-        if (!form.identificacion.trim()) {
-            toast.error("Ingrese la identificación");
-            return false;
-        }
+        if (!form.correo.trim())
+            newErrors.correo = "Ingrese el correo"
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo))
+            newErrors.correo = "Ingrese un correo válido"
 
-        if (!/^\d+$/.test(form.identificacion)) {
-            toast.error("La identificación solo debe contener números");
-            return false;
-        }
-
-        if (
-            form.identificacion.length !== 10 &&
-            form.identificacion.length !== 13
-        ) {
-            toast.error(
-                "La identificación debe tener 10 si es una cédula o 13 dígitos si es un RUC"
-            );
-            return false;
-        }
-
-        if (!form.correo.trim()) {
-            toast.error("Ingrese el correo");
-            return false;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(form.correo)) {
-            toast.error("Ingrese un correo válido");
-            return false;
-        }
-
-        if (!form.telefono.trim()) {
-            toast.error("Ingrese el teléfono");
-            return false;
-        }
-
-        if (!/^\d{10}$/.test(form.telefono)) {
-            toast.error("El teléfono debe tener 10 dígitos");
-            return false;
-        }
+        if (!form.telefono.trim())
+            newErrors.telefono = "Ingrese el teléfono"
+        else if (!/^\d{10}$/.test(form.telefono))
+            newErrors.telefono = "El teléfono debe tener 10 dígitos"
 
         if (tipoEntrega === "domicilio") {
-            if (!form.direccion.trim()) {
-                toast.error("Ingrese la dirección");
-                return false;
-            }
-            if (!form.referencia.trim()) {
-                toast.error("Ingrese una referencia");
-                return false;
-            }
+            if (!form.direccion.trim())
+                newErrors.direccion = "Ingrese la dirección"
+            if (!form.referencia.trim())
+                newErrors.referencia = "Ingrese una referencia"
         }
 
         if (!metodoPago) {
-            toast.error("Seleccione un método de pago");
-            return false;
+            toast.error("Seleccione un método de pago") // este sí va como toast, no tiene campo asociado
         }
 
-        return true;
-    };
+        if (Object.keys(newErrors).length > 0 || !metodoPago) {
+            setErrors(newErrors)
+            return false
+        }
+
+        return true
+    }
 
     const handleContinuar = () => {
         if (!validarFormulario()) return;
@@ -272,6 +240,7 @@ export default function SeleccionMetodoPagoPage() {
                 <PedidoInfoForm
                     form={form}
                     handleChange={handleChange}
+                    errors={errors}
                 />
             )}
 
@@ -331,6 +300,7 @@ export default function SeleccionMetodoPagoPage() {
                             <PedidoDatosForm
                                 form={form}
                                 handleChange={handleChange}
+                                errors={errors}
                             />
                         )}
                     </div>
@@ -340,6 +310,7 @@ export default function SeleccionMetodoPagoPage() {
                             <PedidoDireccionForm
                                 form={form}
                                 handleChange={handleChange}
+                                errors={errors}
                             />
                         )}
 

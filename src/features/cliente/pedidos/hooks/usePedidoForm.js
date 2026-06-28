@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { crearPedido } from "../services/pedidoService";
+import { set } from "react-hook-form";
 
 export default function usePedidoForm() {
     const [loading, setLoading] = useState(false);
@@ -187,6 +188,7 @@ const validarFormulario = () => {
         handleChange,
         handleImagenChange,
         handleSubmit,
-        errors
+        errors,
+        setErrors,
     };
 }
