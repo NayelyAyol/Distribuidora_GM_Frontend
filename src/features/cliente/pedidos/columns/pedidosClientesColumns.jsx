@@ -26,6 +26,15 @@ export const pedidosClienteColumns = (onRevisar, onChat, onPago, onCancelar) => 
             }
         }),
 
+    columnHelper.accessor("tipoEntrega",
+        {
+            header: "Tipo de Entrega",
+            cell: (info) => {
+                const tipo = info.getValue();
+                return tipo || "N/A";
+            }
+        }),
+
     columnHelper.accessor("estado", {
         header: "Estado",
         cell: ({ row }) => {
