@@ -20,7 +20,7 @@ export default function FeedbackList() {
     const [selected, setSelected] = useState(null)
     const [respuesta, setRespuesta] = useState("")
     const [filter, setFilter] = useState("Pendiente")
-    const [tipoFilter, setTipoFilter] = useState("") 
+    const [tipoFilter, setTipoFilter] = useState("QUEJA") 
 
     const cargarQuejas = async () => {
         try {
