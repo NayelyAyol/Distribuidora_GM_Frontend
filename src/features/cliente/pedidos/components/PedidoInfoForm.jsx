@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { FiArrowLeft } from "react-icons/fi"
 import { Input } from "@/components/ui/input"
 
-export default function PedidoInfoForm({ form, handleChange }) {
+export default function PedidoInfoForm({ form, handleChange, errors={} }) {
     const navigate = useNavigate()
 
     return (
@@ -19,6 +19,7 @@ export default function PedidoInfoForm({ form, handleChange }) {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
                     <Input
                         placeholder="Nombre del pedido (mín. 5 caracteres)"
                         name="nombrePedido"
@@ -27,6 +28,10 @@ export default function PedidoInfoForm({ form, handleChange }) {
                         maxLength={60}
                         className="h-12 rounded-xl"
                     />
+                    {errors.nombrePedido && (
+                        <p className="text-red-500 text-sm font-medium">{errors.nombrePedido}</p>
+                    )}
+                    </div>
                     <div className="h-12 rounded-xl border border-input bg-white/50 px-4 flex items-center shadow-sm">
                         <span className="text-black">{new Date().toLocaleDateString('es-EC')}</span>
                     </div>

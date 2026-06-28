@@ -17,6 +17,17 @@ export default function usePedidoForm() {
         observaciones: "",
     });
 
+    const [errors, setErrors] = useState({
+        nombrePedido: "",
+        nombreCompleto: "",
+        identificacion: "",
+        correo: "",
+        telefono: "",
+        imagen: "",
+        direccion: "",
+        referencia: ""
+    })
+
     const [metodoPago, setMetodoPago] = useState("");
     const [imagen, setImagen] = useState(null);
     const [preview, setPreview] = useState(null);
@@ -25,6 +36,8 @@ export default function usePedidoForm() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }))
 
         if (name === "nombreCompleto") {
         if (!/^[\p{L}\s]*$/u.test(value)) return;
@@ -49,98 +62,65 @@ export default function usePedidoForm() {
     };
 
     const handleImagenChange = (e) => {
-        const file = e.target.files[0];
-
-        if (!file) return;
-
-        const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg"];
-
+        const file = e.target.files[0]
+        if (!file) return
+        const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg"]
         if (!tiposPermitidos.includes(file.type)) {
-        toast.error("Solo se permiten imágenes PNG o JPG");
+            setErrors(prev => ({ ...prev, imagen: "Solo se permiten imágenes PNG o JPG" }))
+            return
+        }
+        setErrors(prev => ({ ...prev, imagen: "" })) // limpiar al subir bien
+        setImagen(file)
+        const reader = new FileReader()
+        reader.onloadend = () => setPreview(reader.result)
+        reader.readAsDataURL(file)
+    }
 
-        return;
-        }
+const validarFormulario = () => {
+    const newErrors = {}
 
-        setImagen(file);
+    if (!form.nombrePedido.trim())
+        newErrors.nombrePedido = "Ingrese el nombre del pedido"
+    else if (form.nombrePedido.trim().length < 5)
+        newErrors.nombrePedido = "El nombre del pedido debe tener mínimo 5 caracteres"
 
-        const reader = new FileReader();
+    if (!form.nombreCompleto.trim())
+        newErrors.nombreCompleto = "Ingrese el nombre completo"
+    else if (form.nombreCompleto.trim().length < 3)
+        newErrors.nombreCompleto = "El nombre completo debe tener mínimo 3 caracteres"
 
-        reader.onloadend = () => {
-        setPreview(reader.result);
-        };
+    if (!form.identificacion.trim())
+        newErrors.identificacion = "Ingrese la cédula o RUC"
+    else if (form.identificacion.length !== 10 && form.identificacion.length !== 13)
+        newErrors.identificacion = "Debe tener 10 (cédula) o 13 (RUC) dígitos"
 
-        reader.readAsDataURL(file);
-    };
+    if (!form.correo.trim())
+        newErrors.correo = "Ingrese el correo"
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo))
+        newErrors.correo = "Ingrese un correo válido"
 
-    const validarFormulario = () => {
-        if (!form.nombrePedido.trim()) {
-        toast.error("Ingrese el nombre del pedido");
-        return false;
-        }
-        if (form.nombrePedido.trim().length < 5) {
-        toast.error("El nombre del pedido debe tener mínimo 5 caracteres");
-        return false;
-        }
+    if (!form.telefono.trim())
+        newErrors.telefono = "Ingrese el teléfono"
+    else if (!/^09\d{8}$/.test(form.telefono))
+        newErrors.telefono = "Ingrese un celular ecuatoriano válido (09XXXXXXXX)"
 
-        if (!form.nombreCompleto.trim()) {
-        toast.error("Ingrese el nombre completo");
-        return false;
-        }
-        if (form.nombreCompleto.trim().length < 3) {
-        toast.error("El nombre completo debe tener mínimo 3 caracteres");
-        return false;
-        }
+    if (!imagen)
+        newErrors.imagen = "Debe subir una imagen de la lista"
 
-        if (!form.identificacion.trim()) {
-        toast.error("Ingrese la cédula o RUC");
-        return false;
-        }
-        if (
-        form.identificacion.length !== 10 &&
-        form.identificacion.length !== 13
-        ) {
-        toast.error(
-            "La identificación debe tener 10 (cédula) o 13 (RUC) dígitos",
-        );
-        return false;
-        }
+    if (form.tipoEntrega === "ENVIO_DOMICILIO") {
+        if (!form.direccion.trim())
+            newErrors.direccion = "Ingrese una dirección para el envío"
+        if (!form.referencia.trim())
+            newErrors.referencia = "Ingrese una referencia para el envío"
+    }
 
-        if (!form.correo.trim()) {
-        toast.error("Ingrese el correo");
-        return false;
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo)) {
-        toast.error("Ingrese un correo válido");
-        return false;
-        }
+    if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors)
+        return false
+    }
 
-        if (!form.telefono.trim()) {
-        toast.error("Ingrese el teléfono");
-        return false;
-        }
-        if (!/^09\d{8}$/.test(form.telefono)) {
-        toast.error("Ingrese un celular ecuatoriano válido (09XXXXXXXX)");
-        return false;
-        }
-
-        if (!imagen) {
-        toast.error("Debe subir una imagen de la lista");
-        return false;
-        }
-
-        if (form.tipoEntrega === "ENVIO_DOMICILIO") {
-        if (!form.direccion.trim()) {
-            toast.error("Ingrese una dirección para el envío");
-            return false;
-        }
-        if (!form.referencia.trim()) {
-            toast.error("Ingrese una referencia para el envío");
-            return false;
-        }
-        }
-
-        return true;
-    };
+    return true
+}
 
     const resetForm = () => {
         setForm({
@@ -157,6 +137,8 @@ export default function usePedidoForm() {
         setMetodoPago("");
         setImagen(null);
         setPreview(null);
+        setErrors({ nombrePedido: "", nombreCompleto: "", identificacion: "", correo: "", telefono: "", imagen: "", direccion: "", referencia: "" })
+
     };
 
     const handleSubmit = async () => {
@@ -205,5 +187,6 @@ export default function usePedidoForm() {
         handleChange,
         handleImagenChange,
         handleSubmit,
+        errors
     };
 }

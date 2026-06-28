@@ -14,6 +14,7 @@ export default function NuevoPedidoPage() {
     const pedidoForm = usePedidoForm()
     const navigate = useNavigate()
 
+
     const {
         form,
         loading,
@@ -21,7 +22,8 @@ export default function NuevoPedidoPage() {
         fileInputRef,
         handleChange,
         handleImagenChange,
-        handleSubmit
+        handleSubmit,
+        errors
     } = pedidoForm
 
     const handleEnviarFormulario = async () => {
@@ -46,6 +48,7 @@ export default function NuevoPedidoPage() {
                 <PedidoInfoForm
                     form={form}
                     handleChange={handleChange}
+                    errors={errors}
                 />
 
                 <div
@@ -64,7 +67,7 @@ export default function NuevoPedidoPage() {
                             grid grid-cols-1
                             xl:grid-cols-[1fr_340px]
                             gap-6
-                            items-start
+                            items-stretch
                         "
                     >
 
@@ -72,6 +75,7 @@ export default function NuevoPedidoPage() {
                             preview={preview}
                             fileInputRef={fileInputRef}
                             handleImagenChange={handleImagenChange}
+                            errors={errors}
                         />
 
                         <div className="space-y-6">
@@ -79,6 +83,7 @@ export default function NuevoPedidoPage() {
                             <PedidoDatosForm
                                 form={form}
                                 handleChange={handleChange}
+                                errors={errors}
                             />
 
                             <PedidoObservacionesForm
@@ -117,6 +122,7 @@ export default function NuevoPedidoPage() {
                             <PedidoDireccionForm
                                 form={form}
                                 handleChange={handleChange}
+                                errors={errors}
                             />
                         )}
 
