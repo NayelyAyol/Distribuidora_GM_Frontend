@@ -14,7 +14,7 @@ export default function PedidoObservacionesForm({ form, handleChange }) {
                 maxLength={300}
                 className="w-full rounded-2xl border border-gray-200 p-4 resize-none outline-none focus:ring-2 h-[150px] focus:ring-emerald-200"
             />
-            <p className="text-xs text-gray-400 text-right mt-1">{form.observaciones.length}/300</p>
+            {/*<p className="text-xs text-gray-400 text-right mt-1">{form.observaciones.length}/300</p>*/}
         </div>
     )
 }
