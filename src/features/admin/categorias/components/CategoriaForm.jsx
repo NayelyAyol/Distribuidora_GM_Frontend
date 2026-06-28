@@ -1,26 +1,17 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { MdFileUpload } from "react-icons/md"
-import { buttonOutlineClass } from "@/utils/styles"
-
-import {
-    inputClass,
-    labelClass,
-    buttonPrimaryClass
-} from "@/utils/styles"
-
+import { buttonOutlineClass, inputClass, labelClass, buttonPrimaryClass } from "@/utils/styles"
 import { crearCategoria, actualizarCategoria } from "../services/categoriaService"
-
 import { toast } from "react-toastify"
-
-import { useRef } from "react";
 
 export default function CategoriaForm({ selectedCategory, setSelectedCategory, onSuccess, categorias = [] }) {
 
     const [preview, setPreview] = useState(null)
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState({ nombre: "", imagen: "" })
 
     const [form, setForm] = useState({
         nombre: "",
@@ -28,175 +19,140 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
         imagen: null
     })
 
-    const fileInputRef = useRef(null);
+    const fileInputRef = useRef(null)
 
     useEffect(() => {
         if (selectedCategory) {
-
-            const img =
-                selectedCategory.imagen?.url ||
-                selectedCategory.imagen ||
-                "";
-
+            const img = selectedCategory.imagen?.url || selectedCategory.imagen || ""
             setForm({
                 nombre: selectedCategory.nombre,
                 descripcion: selectedCategory.descripcion,
                 imagen: img
-            });
-
-            setPreview(img);
+            })
+            setPreview(img)
         } else {
-            setForm({
-                nombre: "",
-                descripcion: "",
-                imagen: null
-            });
-
-            setPreview(null);
+            setForm({ nombre: "", descripcion: "", imagen: null })
+            setPreview(null)
         }
-    }, [selectedCategory]);
+        setErrors({ nombre: "", imagen: "" }) // limpiar al cambiar modo
+    }, [selectedCategory])
 
     const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        })
+        const { name, value } = e.target
+        setForm(prev => ({ ...prev, [name]: value }))
+        // limpiar error del campo al escribir
+        if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }))
     }
 
     const handleSubmit = async (e) => {
-        if (e) e.preventDefault();
+        if (e) e.preventDefault()
+
+        const newErrors = {}
 
         if (!form.nombre.trim()) {
-            toast.error("El nombre es obligatorio");
-            return;
-        }
-
-        if (form.nombre.trim().length < 3) {
-            toast.error("El nombre debe tener mínimo 3 caracteres");
-            return;
+            newErrors.nombre = "El nombre es obligatorio"
+        } else if (form.nombre.trim().length < 3) {
+            newErrors.nombre = "El nombre debe tener mínimo 3 caracteres"
+        } else {
+            const existe = categorias.some((cat) => {
+                const mismoNombre = cat.nombre.trim().toLowerCase() === form.nombre.trim().toLowerCase()
+                return selectedCategory
+                    ? mismoNombre && cat._id !== selectedCategory._id
+                    : mismoNombre
+            })
+            if (existe) newErrors.nombre = "La categoría ya existe"
         }
 
         if (!selectedCategory && !form.imagen) {
-            toast.error("La imagen es obligatoria");
-            return;
+            newErrors.imagen = "La imagen es obligatoria"
         }
 
-        const existe = categorias.some((cat) => {
-            const mismoNombre = cat.nombre.trim().toLowerCase() === form.nombre.trim().toLowerCase();
-            return selectedCategory ? (mismoNombre && cat._id !== selectedCategory._id) : mismoNombre;
-        });
-
-        if (existe) {
-            toast.error("La categoría ya existe");
-            return;
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors)
+            return
         }
 
         try {
-            setLoading(true);
+            setLoading(true)
 
-            const formData = new FormData();
-            formData.append("nombre", form.nombre.trim());
-            formData.append("descripcion", form.descripcion.trim());
-
-            if (form.imagen instanceof File) {
-                formData.append("imagen", form.imagen);
-            }
+            const formData = new FormData()
+            formData.append("nombre", form.nombre.trim())
+            formData.append("descripcion", form.descripcion.trim())
+            if (form.imagen instanceof File) formData.append("imagen", form.imagen)
 
             if (selectedCategory) {
-                await actualizarCategoria(selectedCategory._id, formData);
-                toast.success("Categoría actualizada correctamente");
+                await actualizarCategoria(selectedCategory._id, formData)
+                toast.success("Categoría actualizada correctamente")
             } else {
-                await crearCategoria(formData);
-                toast.success("Categoría creada correctamente");
+                await crearCategoria(formData)
+                toast.success("Categoría creada correctamente")
             }
 
-            if (onSuccess) await onSuccess();
-
-            setSelectedCategory(null);
-            setForm({ nombre: "", descripcion: "", imagen: null });
-            setPreview(null);
-            if (fileInputRef.current) fileInputRef.current.value = "";
+            if (onSuccess) await onSuccess()
+            setSelectedCategory(null)
+            setForm({ nombre: "", descripcion: "", imagen: null })
+            setPreview(null)
+            setErrors({ nombre: "", imagen: "" })
+            if (fileInputRef.current) fileInputRef.current.value = ""
 
         } catch (error) {
-            toast.error(error.message || "Error al procesar la categoría");
+            toast.error(error.message || "Error al procesar la categoría")
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const handleImagen = (e) => {
-
-        const file = e.target.files[0];
-
-        if (!file) return;
+        const file = e.target.files[0]
+        if (!file) return
 
         if (!file.type.startsWith("image/")) {
-            toast.error("Solo se permiten imágenes");
-            return;
+            setErrors(prev => ({ ...prev, imagen: "Solo se permiten imágenes" }))
+            return
         }
-
         if (file.size > 2 * 1024 * 1024) {
-            toast.error("La imagen no debe superar los 2MB");
-            return;
+            setErrors(prev => ({ ...prev, imagen: "La imagen no debe superar los 2MB" }))
+            return
         }
 
-        setForm((prev) => ({
-            ...prev,
-            imagen: file
-        }));
+        setErrors(prev => ({ ...prev, imagen: "" }))
+        setForm(prev => ({ ...prev, imagen: file }))
 
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setPreview(reader.result);
-        };
-
-        reader.readAsDataURL(file);
-    };
+        const reader = new FileReader()
+        reader.onloadend = () => setPreview(reader.result)
+        reader.readAsDataURL(file)
+    }
 
     return (
         <div className="bg-white/80 backdrop-blur-xl border border-gray-200 shadow-lg rounded-2xl p-4">
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-                <div className="min-h-[255px] h-full w-full rounded-xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
-
-                    <label className="flex min-h-[255px] w-full cursor-pointer items-center justify-center p-8">
-
-                        {preview ? (
-                            <img
-                                src={preview}
-                                alt="preview"
-                                className="max-h-[310px] w-full object-contain bg-emerald-50"
-                            />
-                        ) : (
-                            <div className="flex flex-col items-center justify-center">
-                                <MdFileUpload className="text-[60px] text-emerald-500" />
-
-                                <p className="mt-2 text-sm text-gray-600">
-                                    Subir imagen
-                                </p>
-                            </div>
-                        )}
-
-                        <input
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={handleImagen}
-                            ref={fileInputRef}
-                        />
-                    </label>
-
+                <div className="flex flex-col gap-1">
+                    <div className={`min-h-[255px] h-full w-full rounded-xl overflow-hidden border-2 border-dashed bg-emerald-50 transition-colors
+                        ${errors.imagen ? "border-red-400 bg-red-50" : "border-gray-300"}`}>
+                        <label className="flex min-h-[255px] w-full cursor-pointer items-center justify-center p-8">
+                            {preview ? (
+                                <img src={preview} alt="preview" className="max-h-[310px] w-full object-contain" />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center">
+                                    <MdFileUpload className={`text-[60px] ${errors.imagen ? "text-red-400" : "text-emerald-500"}`} />
+                                    <p className="mt-2 text-sm text-gray-600">Subir imagen</p>
+                                    {errors.imagen && (
+                                        <p className="mt-2 text-sm text-red-500 font-medium">{errors.imagen}</p>
+                                    )}
+                                </div>
+                            )}
+                            <input type="file" className="hidden" accept="image/*" onChange={handleImagen} ref={fileInputRef} />
+                        </label>
+                    </div>
                 </div>
 
                 <div className="flex flex-col justify-center gap-4">
-
                     <h2 className="text-lg font-bold text-gray-800">
                         {selectedCategory ? "Editar categoría" : "Crear categoría"}
                     </h2>
 
-                    <div>
+                    <div className="space-y-1">
                         <Label className={`${labelClass} pb-2`}>Nombre</Label>
                         <Input
                             name="nombre"
@@ -206,16 +162,19 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                             maxLength={30}
                             placeholder="Mínimo 3 caracteres"
                         />
+                        {errors.nombre && (
+                            <p className="text-red-500 text-sm font-medium">{errors.nombre}</p>
+                        )}
                     </div>
 
-                    <div>
+                    <div className="space-y-1">
                         <Label className={`${labelClass} pb-2`}>Descripción</Label>
                         <textarea
                             name="descripcion"
                             value={form.descripcion}
                             onChange={handleChange}
                             className={inputClass}
-                            maxlength={70}
+                            maxLength={70}
                             placeholder="Opcional (máx. 70 caracteres)"
                         />
                     </div>
@@ -224,11 +183,9 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                         type="button"
                         onClick={handleSubmit}
                         className={buttonPrimaryClass}
-                        disabled={loading}>
-                        {loading 
-                            ? "Procesando..." 
-                            : (selectedCategory ? "Actualizar" : "Aceptar")
-                        }
+                        disabled={loading}
+                    >
+                        {loading ? "Procesando..." : selectedCategory ? "Actualizar" : "Aceptar"}
                     </Button>
 
                     {selectedCategory && (
@@ -240,9 +197,7 @@ export default function CategoriaForm({ selectedCategory, setSelectedCategory, o
                             Cancelar
                         </Button>
                     )}
-
                 </div>
-
             </div>
         </div>
     )
