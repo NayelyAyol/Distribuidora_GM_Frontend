@@ -19,7 +19,7 @@ export default function RecomendacionList({
 
     const [filter, setFilter] = useState("SIN_RESPUESTA")
     const [search, setSearch] = useState("")
-    const [tipoFilter, setTipoFilter] = useState("")
+    const [tipoFilter, setTipoFilter] = useState("QUEJA")
 
     const user = useAuthStore((state) => state.user)
     const rol = user?.rol?.toUpperCase()
