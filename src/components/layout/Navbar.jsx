@@ -1,29 +1,14 @@
-import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FiAlignJustify } from "react-icons/fi"
-import { RiMoonFill, RiSunFill } from "react-icons/ri"
-import { IoMdNotificationsOutline } from "react-icons/io"
-import { FiBox } from "react-icons/fi"
 import Dropdown from "@/components/ui/Dropdown"
 import useAuthStore from "@/context/useAuthStore"
-import { useEffect } from "react"
 
 export default function Navbar({ onOpenSidenav }) {
-    const [darkmode, setDarkmode] = useState(false)
     const location = useLocation()
     const navigate = useNavigate()
     const user = useAuthStore((state) => state.user)
     const logout = useAuthStore((state) => state.logout)
 
-
-    const toggleDarkMode = () => {
-        document.documentElement.classList.toggle("dark")
-
-        const isDark = document.documentElement.classList.contains("dark")
-        localStorage.setItem("theme", isDark ? "dark" : "light")
-
-        setDarkmode(isDark)
-    }
 
     const getTitle = () => {
 
@@ -71,17 +56,6 @@ export default function Navbar({ onOpenSidenav }) {
 
     const title = getTitle()
 
-    useEffect(() => {
-        const theme = localStorage.getItem("theme")
-
-        if (theme === "dark") {
-            document.documentElement.classList.add("dark")
-            setDarkmode(true)
-        } else {
-            document.documentElement.classList.remove("dark")
-            setDarkmode(false)
-        }
-    }, [])
 
     return (
         <nav className="w-full pt-4">
