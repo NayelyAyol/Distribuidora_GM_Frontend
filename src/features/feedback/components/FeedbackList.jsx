@@ -20,20 +20,31 @@ export default function FeedbackList() {
     const [selected, setSelected] = useState(null)
     const [respuesta, setRespuesta] = useState("")
     const [filter, setFilter] = useState("Pendiente")
-    const [tipoFilter, setTipoFilter] = useState("QUEJA") 
+    const [tipoFilter, setTipoFilter] = useState("QUEJA")
+    const [cargando, setCargando] = useState(false)
+    const [page, setPage] = useState(1)
+    const [totalPaginas, setTotalPaginas] = useState(1)
 
     const cargarQuejas = async () => {
+        setCargando(true)
         try {
             const estado = filter === "Pendiente" ? "PENDIENTE" : "FINALIZADA"
-            const response = await obtenerQuejasSugerenciasAdmin(estado, tipoFilter)
+            const response = await obtenerQuejasSugerenciasAdmin(estado, tipoFilter, page)
             setData(response.quejasSugerencias || [])
+            setTotalPaginas(response.totalPaginas || 1)
         } catch (error) {
             toast.error(error.message)
+        } finally {
+            setCargando(false)
         }
     }
 
     useEffect(() => {
         cargarQuejas()
+    }, [filter, tipoFilter, page])
+
+    useEffect(() => {
+        setPage(1)
     }, [filter, tipoFilter])
 
     const handleResponder = async () => {
@@ -87,20 +98,50 @@ export default function FeedbackList() {
 
             </div>
 
-            {data.map(item => (
-                <FeedbackCard
-                    key={item._id}
-                    item={item}
-                    onOpen={() => setSelected(item)}
-                />
-            ))}
-
-            {data.length === 0 && (
-                <div className="text-center py-10 text-gray-500 border border-dashed rounded-2xl">
-                    {filter === "Pendiente"
-                        ? "No hay quejas o sugerencias pendientes por responder."
-                        : "No hay quejas o sugerencias finalizadas."}
+            {cargando ? (
+                <div className="text-center py-10 text-gray-500">
+                    Cargando...
                 </div>
+            ) : (
+                <>
+                    {data.map(item => (
+                        <FeedbackCard
+                            key={item._id}
+                            item={item}
+                            onOpen={() => setSelected(item)}
+                        />
+                    ))}
+
+                    {data.length === 0 && (
+                        <div className="text-center py-10 text-gray-500 border border-dashed rounded-2xl">
+                            {filter === "Pendiente"
+                                ? "No hay quejas o sugerencias pendientes por responder."
+                                : "No hay quejas o sugerencias finalizadas."}
+                        </div>
+                    )}
+
+                    {data.length > 0 && (
+                        <div className="flex justify-center items-center gap-2 pt-2 flex-wrap">
+                            {Array.from({ length: totalPaginas }, (_, index) => {
+                                const numero = index + 1
+                                const activa = numero === page
+                                return (
+                                    <button
+                                        key={numero}
+                                        onClick={() => setPage(numero)}
+                                        className={`min-w-[40px] h-[40px] px-3 rounded-xl border transition font-medium
+                                            ${activa
+                                                ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+                                                : "text-gray-600 hover:bg-gray-100 border-gray-200"
+                                            }`}
+                                    >
+                                        {numero}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    )}
+                </>
             )}
 
             {selected && (

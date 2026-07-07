@@ -23,12 +23,13 @@ export const crearQuejaSugerencia = async (data) => {
 };
 
 // Obtener mis quejas o sugerencias
-export const obtenerMisQuejasSugerencias = async (estado = "", tipo = "") => {
+export const obtenerMisQuejasSugerencias = async (estado = "", tipo = "", pagina = 1) => {
     try {
         const params = []
         if (estado) params.push(`estado=${estado}`)
         if (tipo) params.push(`tipo=${tipo}`)
-        const query = params.length > 0 ? `?${params.join("&")}` : ""
+        params.push(`pagina=${pagina}`)
+        const query = `?${params.join("&")}`
         const response = await api.get(`/quejas-sugerencias/mis${query}`)
         return response.data
     } catch (error) {
@@ -37,14 +38,14 @@ export const obtenerMisQuejasSugerencias = async (estado = "", tipo = "") => {
 }
 
 // Obtener todas las quejas y sugerencias (ADMIN)
-export const obtenerQuejasSugerenciasAdmin = async (estado = "", tipo = "") => {
+export const obtenerQuejasSugerenciasAdmin = async (estado = "", tipo = "", pagina = 1) => {
     try {
         const params = new URLSearchParams()
         if (estado) params.append("estado", estado)
         if (tipo) params.append("tipo", tipo)
+        params.append("pagina", pagina)
 
-        const query = params.toString() ? `?${params.toString()}` : ""
-        const response = await api.get(`/quejas-sugerencias/admin${query}`)
+        const response = await api.get(`/quejas-sugerencias/admin?${params.toString()}`)
         return response.data
     } catch (error) {
         console.error("Error obteniendo quejas y sugerencias:", error)

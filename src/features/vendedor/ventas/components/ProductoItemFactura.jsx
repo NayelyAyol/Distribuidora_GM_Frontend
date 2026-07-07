@@ -40,7 +40,6 @@ export default function ProductoItemFactura({
     const nombreMostrado = producto.nombre || producto.nombreProducto || "Sin nombre";
     const precioMostrado = producto.precio ?? producto.precioUnitario ?? 0;
 
-    console.log("PRODUCTO FACTURA:", producto);
     return (
 
         <div

@@ -234,7 +234,6 @@ export default function ConfirmacionVentaPage() {
                         ">
                             Productos facturados
                         </h3>
-                        {console.log("Estructura de factura:", factura)}
                         {factura.map((producto, index) => (
                             <div
                                 key={producto.id || index}

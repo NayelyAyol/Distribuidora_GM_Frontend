@@ -6,16 +6,16 @@ export default function Navbar() {
 
     const navigate = useNavigate()
     const [open, setOpen] = useState(false)
-    const mobileLinkClass ="w-full px-6 py-4 rounded-xl text-emerald-900 font-medium text-center hover:bg-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+    const mobileLinkClass = "w-full px-6 py-4 rounded-xl text-emerald-900 font-medium text-center hover:bg-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
 
     return (
-        <header className="flex justify-between items-center px-6 md:px-10 py-6 bg-white border-b relative z-50">
+        <header className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-4 md:py-6 bg-white border-b relative z-50">
 
-            <h1 className="text-2xl font-black text-emerald-900">
+            <h1 className="text-xl md:text-2xl font-black text-emerald-900 shrink-0">
                 Distribuidora<span className="text-black">GM</span>
             </h1>
 
-            <nav className="hidden md:flex gap-8 font-medium text-emerald-900">
+            <nav className="hidden lg:flex items-center gap-5 xl:gap-8 font-medium text-emerald-900 text-sm xl:text-base whitespace-nowrap">
                 <a href="/#features">Servicios</a>
                 <a href="/#about">Nosotros</a>
                 <a href="/#testimonials">Clientes</a>
@@ -29,14 +29,14 @@ export default function Navbar() {
 
             <button
                 onClick={() => navigate("/login")}
-                className="hidden md:block bg-emerald-900 text-white px-6 py-2 rounded-xl hover:bg-black transition"
+                className="hidden lg:block bg-emerald-900 text-white px-6 py-2 rounded-xl hover:bg-black transition shrink-0"
             >
                 Inicia sesión
             </button>
 
             <button
                 aria-label="Abrir menú"
-                className="md:hidden fixed top-5 right-5 z-50 bg-white shadow-xl border rounded-full p-3 text-emerald-900 hover:scale-105 transition"
+                className="lg:hidden fixed top-5 right-5 z-50 bg-white shadow-xl border rounded-full p-3 text-emerald-900 hover:scale-105 transition"
                 onClick={() => setOpen(!open)}
             >
                 {open ? <FiX /> : <FiMenu />}
@@ -60,51 +60,22 @@ export default function Navbar() {
                 `}
             >
 
-                <a
-                    href="/#features"
-                    className={mobileLinkClass}
-                    onClick={() => setOpen(false)}
-                >
+                <a href="/#features" className={mobileLinkClass} onClick={() => setOpen(false)}>
                     Servicios
                 </a>
-
-                <a
-                    href="/#about"
-                    className={mobileLinkClass}
-                    onClick={() => setOpen(false)}
-                >
+                <a href="/#about" className={mobileLinkClass} onClick={() => setOpen(false)}>
                     Nosotros
                 </a>
-
-                <a
-                    href="/#testimonials"
-                    className={mobileLinkClass}
-                    onClick={() => setOpen(false)}
-                >
+                <a href="/#testimonials" className={mobileLinkClass} onClick={() => setOpen(false)}>
                     Clientes
                 </a>
-
-                <a
-                    href="/#destacados"
-                    className={mobileLinkClass}
-                    onClick={() => setOpen(false)}
-                >
+                <a href="/#destacados" className={mobileLinkClass} onClick={() => setOpen(false)}>
                     Productos destacados
                 </a>
-
-                <a
-                    href="/#faq"
-                    className={mobileLinkClass}
-                    onClick={() => setOpen(false)}
-                >
+                <a href="/#faq" className={mobileLinkClass} onClick={() => setOpen(false)}>
                     Preguntas Frecuentes
                 </a>
-
-                <Link
-                    to="/catalogo"
-                    className={mobileLinkClass}
-                    onClick={() => setOpen(false)}
-                >
+                <Link to="/catalogo" className={mobileLinkClass} onClick={() => setOpen(false)}>
                     Ver productos
                 </Link>
 

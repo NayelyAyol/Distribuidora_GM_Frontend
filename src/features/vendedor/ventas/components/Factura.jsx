@@ -24,7 +24,6 @@ export default function FacturaPanel({
     const metodoPago = useVentaStore(state => state.metodoPago ?? null);
     const datosFacturacion = useVentaStore(state => state.datosFacturacion ?? {});
 
-    console.log("Estado de la factura para calcular:", factura);
     const subtotal = factura.reduce((acc, p) => {
         const precio = Number(p.precioUnitario ?? p.precio ?? 0);
         const cantidad = Number(p.cantidad || 0);

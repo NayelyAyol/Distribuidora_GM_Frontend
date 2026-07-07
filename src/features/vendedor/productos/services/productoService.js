@@ -2,13 +2,9 @@ import api from "@/utils/api"
 
 export const crearProducto = async (formData) => {
     try {
-        console.log("Enviando petición...");
         const res = await api.post("/productos/crear", formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
-        });
-        
-        console.log("Estructura completa de respuesta:", res); 
-    
+        });    
         return res.data; 
     } catch (error) {
         console.error("Error en la petición:", error.response?.data || error.message);

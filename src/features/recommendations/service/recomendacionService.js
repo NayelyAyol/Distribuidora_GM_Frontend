@@ -6,18 +6,15 @@ export const crearRecomendacion = async (data) => {
         const response = await api.post("/recomendacion/crear", data);
         return response.data;
     } catch (error) {
-        console.error("Error completo:", error.response?.data);  // ← agrega esto
-        console.error("Status:", error.response?.status);
-        console.error("Data enviada:", data);
         console.error("Error creando recomendación:", error);
         throw new Error(error.response?.data?.msg || "Error al enviar la recomendación");
     }
 };
 
 // Obtener mis recomendaciones (Vendedor)
-export const obtenerMisRecomendaciones = async (estado = "") => {
+export const obtenerMisRecomendaciones = async (estado = "", pagina = 1) => {
     try {
-        const response = await api.get(`/recomendacion/mis?estado=${estado}`);
+        const response = await api.get(`/recomendacion/mis?estado=${estado}&pagina=${pagina}`);
         return response.data;
     } catch (error) {
         console.error("Error obteniendo mis recomendaciones:", error);
