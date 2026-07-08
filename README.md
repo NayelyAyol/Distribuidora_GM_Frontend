@@ -31,14 +31,6 @@ El sistema permite al negocio automatizar visualmente sus procesos internos, red
 https://distribuidoragm.netlify.app/
 ```
 
-### Credenciales de acceso
-
-| Rol | Usuario | Contraseña |
-|---|---|---|
-| Administrador | grupomoreno593@gmail.com | Admin1*. |
-| Vendedor | alessiaperezpalacios@gmail.com | Patito123/H |
-| Cliente | nayelyayol9@gmail.com | Admin1.. |
-
 ---
 
 ## Pantallas del sistema
