@@ -76,7 +76,7 @@ export default function Navbar({ onOpenSidenav }) {
                         </h1>
                     </div>
 
-                    <div className="md:hidden">
+                    <div className="xl:hidden">
                         <div className="flex items-center gap-3">
 
                             <div className="flex items-center gap-2 sm:gap-3 bg-white dark:bg-navy-800 border border-gray-100 dark:border-white/10

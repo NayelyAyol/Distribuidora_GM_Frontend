@@ -39,9 +39,14 @@ export default function usePedidoForm() {
 
         if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }))
 
+        if (name === "nombrePedido") {
+            if (!/^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s,.;]*$/.test(value)) return;
+            if (value.length > 60) return;
+        }
+
         if (name === "nombreCompleto") {
-        if (!/^[\p{L}\s]*$/u.test(value)) return;
-        if (value.length > 80) return;
+            if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/.test(value)) return;
+            if (value.length > 80) return;
         }
 
         if (name === "telefono") {
@@ -54,7 +59,6 @@ export default function usePedidoForm() {
         if (value.length > 13) return;
         }
 
-        if (name === "nombrePedido" && value.length > 60) return;
         if (name === "direccion" && value.length > 80) return;
         if (name === "referencia" && value.length > 80) return;
 
@@ -64,17 +68,47 @@ export default function usePedidoForm() {
     const handleImagenChange = (e) => {
         const file = e.target.files[0]
         if (!file) return
-        const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg"]
+        const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg", "image/webp"]
         if (!tiposPermitidos.includes(file.type)) {
-            setErrors(prev => ({ ...prev, imagen: "Solo se permiten imágenes PNG o JPG" }))
+            setErrors(prev => ({ ...prev, imagen: "Solo se permiten imágenes PNG, JPG, JPEG o WEBP" }))
             return
         }
-        setErrors(prev => ({ ...prev, imagen: "" })) // limpiar al subir bien
+        const pesoMaximo = 5 * 1024 * 1024
+        if (file.size > pesoMaximo) {
+            setErrors(prev => ({ ...prev, imagen: "La imagen supera el tamaño máximo permitido de 5MB" }))
+            return
+        }
+        setErrors(prev => ({ ...prev, imagen: "" }))
         setImagen(file)
         const reader = new FileReader()
         reader.onloadend = () => setPreview(reader.result)
         reader.readAsDataURL(file)
     }
+
+    const validarIdentificacion = (numero = '') => {
+        numero = String(numero).trim();
+        if (!/^\d{10}$/.test(numero) && !/^\d{13}$/.test(numero)) return false;
+        if (/^(\d)\1+$/.test(numero)) return false;
+        const provincia = parseInt(numero.substring(0, 2), 10);
+        if ((provincia < 1 || provincia > 24) && provincia !== 30) return false;
+        const digitos = numero.substring(0, 9).split('').map(Number);
+        const verificador = parseInt(numero.charAt(9), 10);
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        let suma = 0;
+        for (let i = 0; i < coeficientes.length; i++) {
+            let valor = digitos[i] * coeficientes[i];
+            suma += valor > 9 ? valor - 9 : valor;
+        }
+        const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
+        if (numero.length === 10) {
+            return resultado === verificador;
+        }
+        if (numero.length === 13) {
+            const establecimiento = numero.substring(10, 13);
+            return establecimiento !== '000' && resultado === verificador;
+        }
+        return false;
+    };
 
 const validarFormulario = () => {
     const newErrors = {}
@@ -83,16 +117,22 @@ const validarFormulario = () => {
         newErrors.nombrePedido = "Ingrese el nombre del pedido"
     else if (form.nombrePedido.trim().length < 5)
         newErrors.nombrePedido = "El nombre del pedido debe tener mínimo 5 caracteres"
+    else if (!/^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s,.;]+$/.test(form.nombrePedido.trim()))
+        newErrors.nombrePedido = "Solo se permiten letras, números, espacios, comas, puntos y punto y coma";
 
     if (!form.nombreCompleto.trim())
         newErrors.nombreCompleto = "Ingrese el nombre completo"
     else if (form.nombreCompleto.trim().length < 3)
         newErrors.nombreCompleto = "El nombre completo debe tener mínimo 3 caracteres"
+    else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.nombreCompleto.trim()))
+        newErrors.nombreCompleto = "El nombre solo puede contener letras"
 
     if (!form.identificacion.trim())
         newErrors.identificacion = "Ingrese la cédula o RUC"
     else if (form.identificacion.length !== 10 && form.identificacion.length !== 13)
         newErrors.identificacion = "Debe tener 10 (cédula) o 13 (RUC) dígitos"
+    else if (!validarIdentificacion(form.identificacion))
+        newErrors.identificacion = "Ingrese una cédula o RUC válido"
 
     if (!form.correo.trim())
         newErrors.correo = "Ingrese el correo"

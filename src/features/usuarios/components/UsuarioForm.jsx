@@ -30,6 +30,7 @@ export default function UsuarioForm({ onSuccess }) {
                     onChange={handleChange}
                     className={inputClass}
                     placeholder="Ej: Juan"
+                    maxLength={15}
                 />
                 {errors.nombre && <p className="text-red-500 text-sm font-medium mt-1">{errors.nombre}</p>}
             </div>
@@ -42,6 +43,7 @@ export default function UsuarioForm({ onSuccess }) {
                     onChange={handleChange}
                     className={inputClass}
                     placeholder="Ej: Pérez"
+                    maxLength={20}
                 />
                 {errors.apellido && <p className="text-red-500 text-sm font-medium mt-1">{errors.apellido}</p>}
             </div>
@@ -92,7 +94,7 @@ export default function UsuarioForm({ onSuccess }) {
                     onChange={handleChange}
                     className={inputClass}
                     placeholder="Ej: Av. Amazonas 123"
-                    maxLength={50}
+                    maxLength={30}
                 />
                 {errors.direccion && <p className="text-red-500 text-sm font-medium mt-1">{errors.direccion}</p>}
             </div>
@@ -106,6 +108,8 @@ export default function UsuarioForm({ onSuccess }) {
                     onChange={handleChange}
                     className={inputClass}
                     placeholder="correo@ejemplo.com"
+                    onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
+                    maxLength={100}
                 />
                 {errors.email && <p className="text-red-500 text-sm font-medium mt-1">{errors.email}</p>}
             </div>
@@ -119,6 +123,7 @@ export default function UsuarioForm({ onSuccess }) {
                     onChange={handleChange}
                     className={inputClass + " pr-10"}
                     placeholder="8-16 caracteres"
+                    maxLength={16}
                 />
                 <button
                     type="button"
@@ -139,6 +144,7 @@ export default function UsuarioForm({ onSuccess }) {
                     onChange={handleChange}
                     className={inputClass + " pr-10"}
                     placeholder="Repite tu contraseña"
+                    maxLength={16}
                 />
                 <button
                     type="button"

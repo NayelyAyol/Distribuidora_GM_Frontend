@@ -142,7 +142,7 @@ export default function VentaExitosaPage() {
 
                         <Button
                             onClick={handlePrint}
-                            className={`${buttonPrimaryClass} p-[22px]`}
+                            className={`${buttonPrimaryClass} p-[24px]`}
                         >
                             <FiPrinter size={20} />
                             Imprimir factura

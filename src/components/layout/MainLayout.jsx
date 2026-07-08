@@ -9,13 +9,6 @@ export default function MainLayout() {
     return (
         <div className="min-h-screen bg-emerald-50/60 flex overflow-x-hidden">
 
-            {sidebarOpen && (
-                <div
-                    className="fixed inset-0 bg-black/40 z-40 xl:hidden"
-                    onClick={() => setSidebarOpen(false)}
-                />
-            )}
-
             <Sidebar
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}

@@ -88,7 +88,10 @@ return (
                     type="email"
                     placeholder="ejemplo@email.com"
                     className={inputClass}
-                    maxLength={200}
+                    maxLength={100}
+                    onKeyDown={(e) => {
+                        if (e.key === " ") e.preventDefault()
+                    }}
                     {...register("email", {
                         required: "El correo es obligatorio",
                         pattern: {

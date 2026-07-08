@@ -2,21 +2,22 @@ import { useNavigate } from "react-router-dom";
 
 export default function CTA() {
     const navigate = useNavigate()
-    
-    return (
-        <section className="bg-emerald-50 text-center py-20">
 
-            <h2 className="text-4xl font-black text-emerald-950">
+    return (
+        <section className="bg-emerald-50 text-center px-6 sm:px-8 py-14 sm:py-16 md:py-20">
+
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-950 mx-auto leading-tight">
                 ¿Listo para optimizar tu abastecimiento de oficina?
             </h2>
 
-            <p className="mt-4 text-emerald-900">
+            <p className="mt-4 text-base sm:text-lg text-emerald-900 max-w-md mx-auto">
                 Mejora la gestión de suministros de tu empresa hoy mismo.
             </p>
 
-            <button 
-            onClick={() => navigate("/login")}
-            className="mt-8 bg-emerald-900 text-white px-10 py-3 rounded-2xl hover:bg-black">
+            <button
+                onClick={() => navigate("/login")}
+                className="mt-8 w-full sm:w-auto bg-emerald-900 text-white px-10 py-3 rounded-2xl hover:bg-black transition-colors"
+            >
                 Contacta ventas
             </button>
 

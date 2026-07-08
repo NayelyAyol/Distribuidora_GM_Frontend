@@ -36,11 +36,11 @@ export default function ProfileCard({ user, fotoUrl, setFotoUrl }) {
     }
 
     return (
-        <div className="bg-white/80 backdrop-blur-xl border border-gray-200 shadow-lg rounded-2xl p-6 flex flex-col gap-6">
+        <div className="bg-white/80 backdrop-blur-xl border border-gray-200 shadow-lg rounded-2xl p-4 sm:p-6 flex flex-col gap-6">
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 text-center sm:text-left">
 
-                <div className="relative">
+                <div className="relative shrink-0">
                     <img
                         src={fotoUrl || "https://cdn-icons-png.flaticon.com/512/4715/4715329.png"}
                         alt="avatar"
@@ -58,8 +58,8 @@ export default function ProfileCard({ user, fotoUrl, setFotoUrl }) {
                     </label>
                 </div>
 
-                <div>
-                    <h2 className="text-xl font-bold text-gray-800">
+                <div className="min-w-0 w-full">
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-800 break-words">
                         {user?.nombre} {user?.apellido}
                     </h2>
 

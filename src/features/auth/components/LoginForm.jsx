@@ -30,7 +30,7 @@ export default function LoginForm({ onSubmit }) {
     }
 
     const isStrongPassword = (password) => {
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,16}$/.test(password)
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=~`[\]/\\;']).{8,16}$/.test(password)
     }
 
     const handleSubmit = async (e) => {
@@ -42,6 +42,7 @@ export default function LoginForm({ onSubmit }) {
         })
 
         const newErrors = {}
+        const passwordLimpia = password.trim()
 
         if (!email) {
             newErrors.email = "El correo es obligatorio"
@@ -51,9 +52,9 @@ export default function LoginForm({ onSubmit }) {
             newErrors.email = "El correo es demasiado largo"
         }
 
-        if (!password) {
+        if (!passwordLimpia) {
             newErrors.password = "La contraseña es obligatoria"
-        } else if (!isStrongPassword(password)) {
+        } else if (!isStrongPassword(passwordLimpia)) {
             newErrors.password =
                 "Debe tener entre 8 y 16 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales"
         }
@@ -66,7 +67,7 @@ export default function LoginForm({ onSubmit }) {
         try {
             await onSubmit({
                 email,
-                password
+                password: passwordLimpia
             })
         } catch (err) {
             const msg =
@@ -90,6 +91,9 @@ export default function LoginForm({ onSubmit }) {
                     type="email"
                     placeholder="m@gmail.com"
                     value={email}
+                    onKeyDown={(e) => {
+                        if (e.key === " ") e.preventDefault()
+                    }}
                     onChange={(e) => {
                         setEmail(e.target.value)
 

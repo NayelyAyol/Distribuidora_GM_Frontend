@@ -87,6 +87,31 @@ export default function SeleccionMetodoPagoPage() {
         ? "/dashboard/mis-pedidos/pago/confirmar-pago"
         : "/dashboard/mi-carrito/pago/confirmar-pago";
 
+    const validarIdentificacion = (numero = '') => {
+        numero = String(numero).trim();
+        if (!/^\d{10}$/.test(numero) && !/^\d{13}$/.test(numero)) return false;
+        if (/^(\d)\1+$/.test(numero)) return false;
+        const provincia = parseInt(numero.substring(0, 2), 10);
+        if ((provincia < 1 || provincia > 24) && provincia !== 30) return false;
+        const digitos = numero.substring(0, 9).split('').map(Number);
+        const verificador = parseInt(numero.charAt(9), 10);
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        let suma = 0;
+        for (let i = 0; i < coeficientes.length; i++) {
+            let valor = digitos[i] * coeficientes[i];
+            suma += valor > 9 ? valor - 9 : valor;
+        }
+        const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
+        if (numero.length === 10) {
+            return resultado === verificador;
+        }
+        if (numero.length === 13) {
+            const establecimiento = numero.substring(10, 13);
+            return establecimiento !== '000' && resultado === verificador;
+        }
+        return false;
+    };
+
     const validarFormulario = () => {
         const newErrors = {}
 
@@ -94,9 +119,15 @@ export default function SeleccionMetodoPagoPage() {
             newErrors.nombrePedido = "Ingrese el nombre del pedido"
         else if (form.nombrePedido.trim().length < 5)
             newErrors.nombrePedido = "El nombre del pedido debe tener mínimo 5 caracteres"
+        else if (!/^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s,.;]+$/.test(form.nombrePedido.trim()))            
+            newErrors.nombrePedido = "Solo se permiten letras, números, espacios, comas, puntos y punto y coma";
 
         if (!form.nombreCompleto.trim())
             newErrors.nombreCompleto = "Ingrese el nombre completo"
+        else if (form.nombreCompleto.trim().length < 3)
+            newErrors.nombreCompleto = "El nombre completo debe tener mínimo 3 caracteres"
+        else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.nombreCompleto.trim()))
+            newErrors.nombreCompleto = "El nombre solo puede contener letras"
 
         if (!form.identificacion.trim())
             newErrors.identificacion = "Ingrese la identificación"
@@ -104,6 +135,8 @@ export default function SeleccionMetodoPagoPage() {
             newErrors.identificacion = "Solo debe contener números"
         else if (form.identificacion.length !== 10 && form.identificacion.length !== 13)
             newErrors.identificacion = "Debe tener 10 (cédula) o 13 (RUC) dígitos"
+        else if (!validarIdentificacion(form.identificacion))
+            newErrors.identificacion = "Ingrese una cédula o RUC válido"
 
         if (!form.correo.trim())
             newErrors.correo = "Ingrese el correo"
@@ -114,6 +147,8 @@ export default function SeleccionMetodoPagoPage() {
             newErrors.telefono = "Ingrese el teléfono"
         else if (!/^\d{10}$/.test(form.telefono))
             newErrors.telefono = "El teléfono debe tener 10 dígitos"
+        else if (!/^09\d{8}$/.test(form.telefono))
+            newErrors.telefono = "Ingrese un celular ecuatoriano válido (09XXXXXXXX)"
 
         if (tipoEntrega === "domicilio") {
             if (!form.direccion.trim())

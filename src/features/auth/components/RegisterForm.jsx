@@ -52,12 +52,36 @@ const RegisterForm = () => {
     const isValidEmail = (email) =>
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+    const validarIdentificacion = (numero = '') => {
+        numero = String(numero).trim();
+        if (!/^\d{10}$/.test(numero) && !/^\d{13}$/.test(numero)) return false;
+        if (/^(\d)\1+$/.test(numero)) return false;
+        const provincia = parseInt(numero.substring(0, 2), 10);
+        if ((provincia < 1 || provincia > 24) && provincia !== 30) return false;
+        const digitos = numero.substring(0, 9).split('').map(Number);
+        const verificador = parseInt(numero.charAt(9), 10);
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        let suma = 0;
+        for (let i = 0; i < coeficientes.length; i++) {
+            let valor = digitos[i] * coeficientes[i];
+            suma += valor > 9 ? valor - 9 : valor;
+        }
+        const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
+        if (numero.length === 10) {
+            return resultado === verificador;
+        }
+        if (numero.length === 13) {
+            const establecimiento = numero.substring(10, 13);
+            return establecimiento !== '000' && resultado === verificador;
+        }
+        return false;
+    };
     const validatePassword = (password) => {
         return (
             /[a-z]/.test(password) &&
             /[A-Z]/.test(password) &&
             /\d/.test(password) &&
-            /[^A-Za-z0-9]/.test(password) &&
+            /[!@#$%^&*(),.?":{}|<>_\-+=~`[\]/\\;']/.test(password) &&
             password.length >= 8 &&
             password.length <= 16
         );
@@ -77,18 +101,17 @@ const RegisterForm = () => {
         return age;
     };
 
-// handleChange — reemplaza los bloques de nombre, apellido y dirección
 const handleChange = (e) => {
     const { name, value } = e.target;
 
     if (name === "nombre") {
         if (!onlyLetters(value)) return;
-        if (value.length > 15) return;       // era 50
+        if (value.length > 15) return;       
     }
 
     if (name === "apellido") {
         if (!onlyLetters(value)) return;
-        if (value.length > 20) return;       // era 50
+        if (value.length > 20) return;     
     }
 
     if (name === "ciudad") {
@@ -105,7 +128,7 @@ const handleChange = (e) => {
     }
 
     if (name === "telefono" && value.length > 10) return;
-    if (name === "cedula" && value.length > 10) return;
+    if (name === "cedula" && value.length > 13) return;
 
     setForm(prev => ({ ...prev, [name]: value }));
     setErrors(prev => ({ ...prev, [name]: "" }));
@@ -130,7 +153,10 @@ const handleChange = (e) => {
 
         const newErrors = {};
 
-// handleSubmit — reemplaza las validaciones de nombre, apellido y dirección
+        const passwordLimpia = form.password.trim();
+        const confirmLimpia = form.confirmPassword.trim();
+
+
 if (!form.nombre) {
     newErrors.nombre = "El nombre es obligatorio";
 } else if (!onlyLetters(form.nombre)) {
@@ -154,15 +180,18 @@ if (!form.direccion) {
 }
 
         if (!form.cedula) {
-            newErrors.cedula = "La cédula es obligatoria";
-        } else if (!/^\d{10}$/.test(form.cedula)) {
-            newErrors.cedula = "La cédula debe tener 10 dígitos";
+            newErrors.cedula = "La cédula o RUC es obligatoria";
+        } else if (!validarIdentificacion(form.cedula)) {
+            newErrors.cedula = "Ingrese una cédula o RUC válido";
         }
 
         if (!form.fecha_nacimiento) {
             newErrors.fecha_nacimiento = "La fecha de nacimiento es obligatoria";
-        } else if (calculateAge(form.fecha_nacimiento) < 18) {
-            newErrors.fecha_nacimiento = "Debes ser mayor de edad";
+        } else {
+            const edad = calculateAge(form.fecha_nacimiento);
+            if (edad < 15 || edad > 100) {
+                newErrors.fecha_nacimiento = "La edad debe estar entre 15 y 100 años";
+            }
         }
 
         if (!form.telefono) {
@@ -175,26 +204,28 @@ if (!form.direccion) {
             newErrors.ciudad = "La ciudad es obligatoria";
         } else if (!onlyLetters(form.ciudad)) {
             newErrors.ciudad = "La ciudad solo debe contener letras";
+        } else if (form.ciudad.trim().length < 2) {
+            newErrors.ciudad = "La ciudad debe tener mínimo 2 caracteres";
         }
 
         if (!form.email) {
             newErrors.email = "El correo es obligatorio";
         } else if (!isValidEmail(form.email)) {
             newErrors.email = "Ingresa un correo válido";
-        } else if (form.email.length > 200) {
-            newErrors.email = "El correo es demasiado largo";
+        } else if (form.email.length > 100) {
+            newErrors.email = "El correo no puede exceder los 100 caracteres";
         }
 
-        if (!form.password) {
+        if (!passwordLimpia) {
             newErrors.password = "La contraseña es obligatoria";
-        } else if (!validatePassword(form.password)) {
+        } else if (!validatePassword(passwordLimpia)) {
             newErrors.password =
                 "Debe tener entre 8 y 16 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales";
         }
 
-        if (!form.confirmPassword) {
+        if (!confirmLimpia) {
             newErrors.confirmPassword = "Confirma tu contraseña";
-        } else if (form.password !== form.confirmPassword) {
+        } else if (passwordLimpia !== confirmLimpia) {
             newErrors.confirmPassword = "Las contraseñas no coinciden";
         }
 
@@ -211,7 +242,10 @@ if (!form.direccion) {
         try {
             const { confirmPassword, ...data } = form;
 
-            await registro(data);
+            await registro({
+                ...data,
+                password: passwordLimpia
+            });
             toast.success("Registro exitoso");
 
             setForm({
@@ -301,7 +335,7 @@ if (!form.direccion) {
                     onChange={handleChange}
                     placeholder="1725841230"
                     className={inputClass}
-                    maxLength={10}
+                    maxLength={13}
                 />
                 {errors.cedula && (
                     <p className="text-red-500 text-sm font-medium">
@@ -400,9 +434,10 @@ if (!form.direccion) {
                     name="email"
                     value={form.email}
                     onChange={handleChange}
+                    onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                     placeholder="correo@gmail.com"
                     className={inputClass}
-                    maxLength={200}
+                    maxLength={100}
                 />
                 {errors.email && (
                     <p className="text-red-500 text-sm font-medium">

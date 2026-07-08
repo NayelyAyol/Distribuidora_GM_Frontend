@@ -176,7 +176,7 @@ export default function ProfileForm({ user, onRefresh }) {
                         onChange={handleChange}
                         className={inputClass}
                         placeholder="Ej: Av. Amazonas 123"
-                        maxLength={50}
+                        maxLength={30}
                     />
                     {errors.direccion && <p className="text-red-500 text-sm font-medium">{errors.direccion}</p>}
                 </div>

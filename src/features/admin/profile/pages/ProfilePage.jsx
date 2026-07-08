@@ -58,7 +58,7 @@ export default function ProfilePage() {
     }, [])
 
     return (
-        <div className="p-6 bg-emerald-50/60 min-h-screen">
+        <div className="p-6 min-h-screen">
 
             <div>
                 <p className="text-gray-500 mb-6">

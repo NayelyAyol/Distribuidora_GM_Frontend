@@ -62,7 +62,7 @@ export default function useUsuarioForm(onSuccess) {
         if (name === "cedula" && value.length > 10) return
         if (name === "nombre" && value.length > 15) return
         if (name === "apellido" && value.length > 20) return
-        if (name === "direccion" && value.length > 50) return
+        if (name === "direccion" && value.length > 30) return
 
         clearError(name)
 
@@ -112,8 +112,8 @@ export default function useUsuarioForm(onSuccess) {
             newErrors.fecha_nacimiento = "La fecha de nacimiento es obligatoria"
         } else {
             const age = calculateAge(form.fecha_nacimiento)
-            if (age < 15) {
-                newErrors.fecha_nacimiento = "Debe tener al menos 15 años de edad"
+            if (age < 18) {
+                newErrors.fecha_nacimiento = "Debe tener al menos 18 años de edad"
             } else if (age > 100) {
                 newErrors.fecha_nacimiento = "La edad no puede ser mayor a 100 años"
             }
@@ -131,6 +131,8 @@ export default function useUsuarioForm(onSuccess) {
             newErrors.direccion = "La dirección es obligatoria"
         } else if (form.direccion.trim().length < 5) {
             newErrors.direccion = "La dirección debe tener mínimo 5 caracteres"
+        } else if (form.direccion.trim().length > 30) {        
+            newErrors.direccion = "La dirección debe tener máximo 30 caracteres"
         }
 
         // Email

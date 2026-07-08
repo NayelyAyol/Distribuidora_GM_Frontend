@@ -128,28 +128,30 @@ export default function PasswordCard() {
 
             <form className="space-y-4" onSubmit={handleSubmit} noValidate>
 
-                <div className="relative">
+                <div>
                     <Label htmlFor="passwordActual" className={`${labelClass} mb-3`}>
                         Contraseña actual
                     </Label>
 
-                    <Input
-                        id="passwordActual"
-                        name="passwordActual"
-                        type={showCurrent ? "text" : "password"}
-                        value={form.passwordActual}
-                        onChange={handleChange}
-                        className={inputClass}
-                        maxLength={16}
-                    />
+                    <div className="relative">
+                        <Input
+                            id="passwordActual"
+                            name="passwordActual"
+                            type={showCurrent ? "text" : "password"}
+                            value={form.passwordActual}
+                            onChange={handleChange}
+                            className={inputClass}
+                            maxLength={16}
+                        />
 
-                    <button
-                        type="button"
-                        onClick={() => setShowCurrent(!showCurrent)}
-                        className="absolute right-3 top-3/4 -translate-y-1/2 text-emerald-900"
-                    >
-                        {showCurrent ? <MdVisibilityOff /> : <MdVisibility />}
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowCurrent(!showCurrent)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-900"
+                        >
+                            {showCurrent ? <MdVisibilityOff /> : <MdVisibility />}
+                        </button>
+                    </div>
 
                     {errors.passwordActual && (
                         <p className="text-red-500 text-sm font-medium">
@@ -158,27 +160,30 @@ export default function PasswordCard() {
                     )}
                 </div>
 
-                <div className="relative">
+                <div>
                     <Label htmlFor="passwordNueva" className={`${labelClass} mb-3`}>
                         Nueva contraseña
                     </Label>
 
-                    <Input
-                        id="passwordNueva"
-                        name="passwordNueva"
-                        type={showNew ? "text" : "password"}
-                        value={form.passwordNueva}
-                        onChange={handleChange}
-                        className={inputClass}
-                    />
+                    <div className="relative">
+                        <Input
+                            id="passwordNueva"
+                            name="passwordNueva"
+                            type={showNew ? "text" : "password"}
+                            value={form.passwordNueva}
+                            onChange={handleChange}
+                            className={inputClass}
+                            maxLength={16}
+                        />
 
-                    <button
-                        type="button"
-                        onClick={() => setShowNew(!showNew)}
-                        className="absolute right-3 top-3/4 -translate-y-1/2 text-emerald-900"
-                    >
-                        {showNew ? <MdVisibilityOff /> : <MdVisibility />}
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowNew(!showNew)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-900"
+                        >
+                            {showNew ? <MdVisibilityOff /> : <MdVisibility />}
+                        </button>
+                    </div>
 
                     {errors.passwordNueva && (
                         <p className="text-red-500 text-sm font-medium">
@@ -187,27 +192,30 @@ export default function PasswordCard() {
                     )}
                 </div>
 
-                <div className="relative">
+                <div>
                     <Label htmlFor="confirmPassword" className={`${labelClass} mb-3`}>
                         Confirmar contraseña
                     </Label>
 
-                    <Input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type={showConfirm ? "text" : "password"}
-                        value={form.confirmPassword}
-                        onChange={handleChange}
-                        className={inputClass}
-                    />
+                    <div className="relative">
+                        <Input
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type={showConfirm ? "text" : "password"}
+                            value={form.confirmPassword}
+                            onChange={handleChange}
+                            className={inputClass}
+                            maxLength={16}
+                        />
 
-                    <button
-                        type="button"
-                        onClick={() => setShowConfirm(!showConfirm)}
-                        className="absolute right-3 top-3/4 -translate-y-1/2 text-emerald-900"
-                    >
-                        {showConfirm ? <MdVisibilityOff /> : <MdVisibility />}
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirm(!showConfirm)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-900"
+                        >
+                            {showConfirm ? <MdVisibilityOff /> : <MdVisibility />}
+                        </button>
+                    </div>
 
                     {errors.confirmPassword && (
                         <p className="text-red-500 text-sm font-medium">
