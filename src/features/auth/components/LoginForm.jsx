@@ -30,7 +30,7 @@ export default function LoginForm({ onSubmit }) {
     }
 
     const isStrongPassword = (password) => {
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=~`[\]/\\;']).{8,16}$/.test(password)
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=~`[\]/\\;'])(?!.*\s).{8,16}$/.test(password)
     }
 
     const handleSubmit = async (e) => {
@@ -136,7 +136,9 @@ export default function LoginForm({ onSubmit }) {
                         type={showPassword ? "text" : "password"}
                         placeholder="********"
                         value={password}
+                        onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }} 
                         onChange={(e) => {
+                            if (/\s/.test(e.target.value)) return;
                             setPassword(e.target.value)
 
                             setErrors(prev => ({

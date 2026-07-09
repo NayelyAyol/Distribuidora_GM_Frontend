@@ -34,7 +34,8 @@ export default function PasswordCard() {
             /[a-z]/.test(password) &&
             /[A-Z]/.test(password) &&
             /\d/.test(password) &&
-            /[^A-Za-z0-9]/.test(password) &&
+            /[^A-Za-z0-9\s]/.test(password) &&   
+            !/\s/.test(password) &&              
             password.length >= 8 &&
             password.length <= 16
         )
@@ -42,6 +43,8 @@ export default function PasswordCard() {
 
     const handleChange = (e) => {
         const { name, value } = e.target
+
+        if (/\s/.test(value)) return
 
         setForm(prev => ({
             ...prev,
@@ -140,6 +143,7 @@ export default function PasswordCard() {
                             type={showCurrent ? "text" : "password"}
                             value={form.passwordActual}
                             onChange={handleChange}
+                            onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                             className={inputClass}
                             maxLength={16}
                         />
@@ -172,6 +176,7 @@ export default function PasswordCard() {
                             type={showNew ? "text" : "password"}
                             value={form.passwordNueva}
                             onChange={handleChange}
+                            onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                             className={inputClass}
                             maxLength={16}
                         />
@@ -204,6 +209,7 @@ export default function PasswordCard() {
                             type={showConfirm ? "text" : "password"}
                             value={form.confirmPassword}
                             onChange={handleChange}
+                            onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                             className={inputClass}
                             maxLength={16}
                         />

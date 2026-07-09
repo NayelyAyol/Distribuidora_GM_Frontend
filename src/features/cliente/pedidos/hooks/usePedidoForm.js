@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { crearPedido } from "../services/pedidoService";
+import validarIdentificacion from "@/utils/validarIdentificacion";
 
 export default function usePedidoForm() {
     const [loading, setLoading] = useState(false);
@@ -84,31 +85,6 @@ export default function usePedidoForm() {
         reader.onloadend = () => setPreview(reader.result)
         reader.readAsDataURL(file)
     }
-
-    const validarIdentificacion = (numero = '') => {
-        numero = String(numero).trim();
-        if (!/^\d{10}$/.test(numero) && !/^\d{13}$/.test(numero)) return false;
-        if (/^(\d)\1+$/.test(numero)) return false;
-        const provincia = parseInt(numero.substring(0, 2), 10);
-        if ((provincia < 1 || provincia > 24) && provincia !== 30) return false;
-        const digitos = numero.substring(0, 9).split('').map(Number);
-        const verificador = parseInt(numero.charAt(9), 10);
-        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
-        let suma = 0;
-        for (let i = 0; i < coeficientes.length; i++) {
-            let valor = digitos[i] * coeficientes[i];
-            suma += valor > 9 ? valor - 9 : valor;
-        }
-        const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
-        if (numero.length === 10) {
-            return resultado === verificador;
-        }
-        if (numero.length === 13) {
-            const establecimiento = numero.substring(10, 13);
-            return establecimiento !== '000' && resultado === verificador;
-        }
-        return false;
-    };
 
 const validarFormulario = () => {
     const newErrors = {}

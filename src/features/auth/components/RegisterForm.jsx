@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { registro } from "../services/authService";
 import { toast } from "react-toastify";
+import validarIdentificacion from "@/utils/validarIdentificacion";
 
 const RegisterForm = () => {
     const [form, setForm] = useState({
@@ -51,37 +52,14 @@ const RegisterForm = () => {
 
     const isValidEmail = (email) =>
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-    const validarIdentificacion = (numero = '') => {
-        numero = String(numero).trim();
-        if (!/^\d{10}$/.test(numero) && !/^\d{13}$/.test(numero)) return false;
-        if (/^(\d)\1+$/.test(numero)) return false;
-        const provincia = parseInt(numero.substring(0, 2), 10);
-        if ((provincia < 1 || provincia > 24) && provincia !== 30) return false;
-        const digitos = numero.substring(0, 9).split('').map(Number);
-        const verificador = parseInt(numero.charAt(9), 10);
-        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
-        let suma = 0;
-        for (let i = 0; i < coeficientes.length; i++) {
-            let valor = digitos[i] * coeficientes[i];
-            suma += valor > 9 ? valor - 9 : valor;
-        }
-        const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
-        if (numero.length === 10) {
-            return resultado === verificador;
-        }
-        if (numero.length === 13) {
-            const establecimiento = numero.substring(10, 13);
-            return establecimiento !== '000' && resultado === verificador;
-        }
-        return false;
-    };
+    
     const validatePassword = (password) => {
         return (
             /[a-z]/.test(password) &&
             /[A-Z]/.test(password) &&
             /\d/.test(password) &&
             /[!@#$%^&*(),.?":{}|<>_\-+=~`[\]/\\;']/.test(password) &&
+            !/\s/.test(password) &&
             password.length >= 8 &&
             password.length <= 16
         );
@@ -130,6 +108,10 @@ const handleChange = (e) => {
     if (name === "telefono" && value.length > 10) return;
     if (name === "cedula" && value.length > 13) return;
 
+    if (name === "password" || name === "confirmPassword") { 
+        if (/\s/.test(value)) return;                          
+    }  
+
     setForm(prev => ({ ...prev, [name]: value }));
     setErrors(prev => ({ ...prev, [name]: "" }));
 };
@@ -170,13 +152,13 @@ if (!form.apellido) {
 } else if (!onlyLetters(form.apellido)) {
     newErrors.apellido = "El apellido solo debe contener letras";
 } else if (form.apellido.trim().length < 3) {
-    newErrors.apellido = "El apellido debe tener mínimo 3 caracteres"; // nuevo
+    newErrors.apellido = "El apellido debe tener mínimo 3 caracteres"; 
 }
 
 if (!form.direccion) {
     newErrors.direccion = "La dirección es obligatoria";
 } else if (form.direccion.trim().length < 5) {
-    newErrors.direccion = "La dirección debe tener mínimo 5 caracteres"; // nuevo
+    newErrors.direccion = "La dirección debe tener mínimo 5 caracteres"; 
 }
 
         if (!form.cedula) {
@@ -395,7 +377,7 @@ if (!form.direccion) {
                     onChange={handleChange}
                     placeholder="Quito"
                     className={inputClass}
-                    maxLength={50}
+                    maxLength={25}
                 />
                 {errors.ciudad && (
                     <p className="text-red-500 text-sm font-medium">
@@ -415,7 +397,7 @@ if (!form.direccion) {
                     onChange={handleChange}
                     placeholder="Av. de los Granados"
                     className={inputClass}
-                    maxLength={50}
+                    maxLength={30}
                 />
                 {errors.direccion && (
                     <p className="text-red-500 text-sm font-medium">
@@ -456,6 +438,7 @@ if (!form.direccion) {
                     name="password"
                     value={form.password}
                     onChange={handleChange}
+                    onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                     className={`${inputClass} pr-12`}
                     maxLength={16}
                 />
@@ -483,6 +466,7 @@ if (!form.direccion) {
                     name="confirmPassword"
                     value={form.confirmPassword}
                     onChange={handleChange}
+                    onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                     className={`${inputClass} pr-12`}
                     maxLength={16}
                 />

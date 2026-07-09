@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { registrarVendedor } from "../services/vendedorService"
+import validarIdentificacion from "@/utils/validarIdentificacion";
 
 export default function useUsuarioForm(onSuccess) {
 
@@ -58,6 +59,10 @@ export default function useUsuarioForm(onSuccess) {
             if (!validCharsAddress(value)) return
         }
 
+        if (name === "password" || name === "confirmPassword") {  
+            if (/\s/.test(value)) return                            
+        }  
+
         if (name === "telefono" && value.length > 10) return
         if (name === "cedula" && value.length > 10) return
         if (name === "nombre" && value.length > 15) return
@@ -78,8 +83,10 @@ export default function useUsuarioForm(onSuccess) {
             return "Debe incluir al menos una letra minúscula"
         if (!/\d/.test(password))
             return "Debe incluir al menos un número"
-        if (!/[^A-Za-z0-9]/.test(password))
+        if (!/[^A-Za-z0-9\s]/.test(password))          
             return "Debe incluir al menos un carácter especial"
+        if (/\s/.test(password))                        
+            return "La contraseña no puede contener espacios"  
         return null
     }
 
@@ -103,8 +110,8 @@ export default function useUsuarioForm(onSuccess) {
         // Cédula
         if (!form.cedula) {
             newErrors.cedula = "La cédula es obligatoria"
-        } else if (!/^\d{10}$/.test(form.cedula)) {
-            newErrors.cedula = "La cédula debe tener exactamente 10 dígitos"
+        } else if (!validarIdentificacion(form.cedula, true)) {   
+            newErrors.cedula = "Ingrese una cédula válida de 10 dígitos"
         }
 
         // Fecha de nacimiento

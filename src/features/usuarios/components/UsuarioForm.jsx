@@ -121,6 +121,7 @@ export default function UsuarioForm({ onSuccess }) {
                     type={showPassword ? "text" : "password"}
                     value={form.password}
                     onChange={handleChange}
+                    onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                     className={inputClass + " pr-10"}
                     placeholder="8-16 caracteres"
                     maxLength={16}
@@ -142,6 +143,7 @@ export default function UsuarioForm({ onSuccess }) {
                     type={showConfirmPassword ? "text" : "password"}
                     value={form.confirmPassword}
                     onChange={handleChange}
+                    onKeyDown={(e) => { if (e.key === " ") e.preventDefault() }}
                     className={inputClass + " pr-10"}
                     placeholder="Repite tu contraseña"
                     maxLength={16}
