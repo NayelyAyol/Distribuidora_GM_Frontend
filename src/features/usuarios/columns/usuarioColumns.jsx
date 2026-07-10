@@ -8,19 +8,40 @@ export const usuarioColumns = (onRefresh, onToggleEstado) => [
     columnHelper.display({
         id: "nombre",
         header: "Nombre",
-        cell: ({ row }) => row.original.perfilId?.nombre || "-"
+        cell: ({ row }) => {
+            const nombre = row.original.perfilId?.nombre || "-"
+            return (
+                <span className="truncate max-w-[150px] inline-block align-middle" title={nombre}>
+                    {nombre}
+                </span>
+            )
+        }
     }),
 
     columnHelper.display({
         id: "apellido",
         header: "Apellido",
-        cell: ({ row }) => row.original.perfilId?.apellido || "-"
+        cell: ({ row }) => {
+            const apellido = row.original.perfilId?.apellido || "-"
+            return (
+                <span className="truncate max-w-[150px] inline-block align-middle" title={apellido}>
+                    {apellido}
+                </span>
+            )
+        }
     }),
 
     columnHelper.display({
         id: "email",
         header: "Email",
-        cell: ({ row }) => row.original.email || "-"
+        cell: ({ row }) => {
+            const email = row.original.email || "-"
+            return (
+                <span className="truncate max-w-[210px] inline-block align-middle" title={email}>
+                    {email}
+                </span>
+            )
+        }
     }),
 
     columnHelper.display({

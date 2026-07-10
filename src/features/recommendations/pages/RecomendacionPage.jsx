@@ -167,7 +167,7 @@ export default function RecomendacionesPage() {
 
             {selectedRec && createPortal(
                 <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:p-4">
-                    <Card className="w-full sm:max-w-md p-5 sm:p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl max-h-[90vh] overflow-y-auto">
+                    <Card className="w-full sm:max-w-md p-5 sm:p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl max-h-[90vh] overflow-y-auto custom-scroll">
                         
                         <h2 className="text-lg font-bold text-gray-800 mb-2">
                             {selectedRec.estado === "FINALIZADA" ? "Detalle de recomendación" : "Responder"}

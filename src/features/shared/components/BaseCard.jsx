@@ -69,13 +69,18 @@ export default function BaseCard({
                 )}
             </div>
 
-            <div className="mt-3 flex-1 flex flex-col">
-                <h3 className="font-bold text-gray-800 text-sm line-clamp-2 break-words"
-                title={title}>
+            <div className="mt-3 flex-1 flex flex-col min-w-0">
+                <h3
+                    className="font-bold text-gray-800 text-sm line-clamp-2 [overflow-wrap:anywhere]"
+                    title={title}
+                >
                     {title}
                 </h3>
 
-                <p className="text-sm text-gray-500">
+                <p 
+                    className="text-sm text-gray-500 line-clamp-2 [overflow-wrap:anywhere]"
+                    title={description}
+                >
                     {description}
                 </p>
             </div>

@@ -116,7 +116,22 @@ export default function PasswordCard() {
             })
 
         } catch (error) {
-            toast.error(error?.message || "Error al actualizar contraseña")
+            const message = error?.message || "Error al actualizar contraseña"
+
+            const mapaErroresPorCampo = {
+                "La contraseña actual es incorrecta": "passwordActual",
+                "La nueva contraseña no puede ser igual a la actual": "passwordNueva",
+                "La contraseña debe tener entre 8 y 16 caracteres, incluir mayúscula, minúscula, número y símbolo": "passwordNueva",
+                "La nueva contraseña y la confirmación no coinciden": "confirmPassword"
+            }
+
+            const campo = mapaErroresPorCampo[message]
+
+            if (campo) {
+                setErrors(prev => ({ ...prev, [campo]: message }))
+            } else {
+                toast.error(message)
+            }
         } finally {
             setLoading(false)
         }
