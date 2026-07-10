@@ -1,4 +1,3 @@
-import { buttonOutlineClass } from "@/utils/styles"
 import { FiAlertCircle, FiMessageSquare } from "react-icons/fi"
 
 export default function FeedbackCard({ item, onOpen }) {
@@ -69,7 +68,7 @@ export default function FeedbackCard({ item, onOpen }) {
                     {item.estado === "PENDIENTE" && (
                         <button
                             onClick={onOpen}
-                            className={`${buttonOutlineClass} text-[11px] px-2 shrink-0`}
+                            className="border-2 border-emerald-900 text-emerald-900 bg-transparent rounded-full font-bold hover:bg-emerald-900 hover:text-white transition-all text-xs px-3 py-0.5 shrink-0"
                         >
                             Responder
                         </button>

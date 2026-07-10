@@ -255,7 +255,7 @@ export default function PedidoDetallePage() {
                     datosFacturacion: pedido.datosFacturacion,
                     resumenPago: pedido.resumenPago,
                     esPedidoFoto: pedido.tipoPedido === "FOTO_LISTA",
-                    metodoPago: pedido.metodoPago               // null en este caso, el usuario lo elegirá
+                    metodoPago: pedido.metodoPago               
                 }
             }
         });
@@ -263,18 +263,18 @@ export default function PedidoDetallePage() {
 
 
     const getBotonConfig = () => {
-        if (!pedido) return null;
+        if (!pedido) return null
 
         if (pedido?.metodoPago === 'TARJETA') {
-            return { text: "Cerrar Pedido", action: handleIniciarVenta, color: "bg-blue-600" };
+            return { text: "Cerrar Pedido", action: handleIniciarVenta }
         }
 
         if (pedido?.metodoPago === 'EFECTIVO' || pedido?.metodoPago === 'TRANSFERENCIA') {
-            return { text: "Iniciar Venta", action: handleIniciarVenta, color: "bg-emerald-600" };
+            return { text: "Iniciar Venta", action: handleIniciarVenta }
         }
 
-        return null;
-    };
+        return null
+    }
 
     const botonConfig = getBotonConfig();
 
@@ -684,7 +684,7 @@ export default function PedidoDetallePage() {
                         <Button
                             onClick={handleArmarPedido}
                             disabled={loading}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="bg-emerald-800 hover:bg-emerald-900 text-white"
                         >
                             {/* Si ya tiene artículos, es una actualización, si no, es la primera vez */}
                             {pedido?.articulos?.length > 0 ? "Actualizar Cotización" : "Armar Pedido"}
@@ -701,7 +701,7 @@ export default function PedidoDetallePage() {
                         <Button
                             onClick={handleIrAPago}
                             disabled={loading}
-                            className="bg-emerald-700 hover:bg-emerald-900 text-white"
+                            className="bg-emerald-800 hover:bg-emerald-900 text-white"
                         >
                             Continuar a pago
                         </Button>
@@ -715,7 +715,7 @@ export default function PedidoDetallePage() {
                         <Button
                             onClick={botonConfig.action}
                             disabled={loading}
-                            className={`${botonConfig.color} hover:opacity-90 text-white`}
+                            className="bg-emerald-800 hover:bg-emerald-900 text-white"
                         >
                             {botonConfig.text}
                         </Button>

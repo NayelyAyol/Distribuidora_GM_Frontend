@@ -160,36 +160,36 @@ export default function FeedbackList() {
             )}
 
             {selected && (
-                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
-                    <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
+                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:p-4">
+                    <Card className="w-full sm:max-w-md p-5 sm:p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl max-h-[90vh] overflow-y-auto">
                         <h2 className="text-lg font-bold text-gray-800 mb-2">Responder</h2>
-                        <p className="text-[15px] text-gray-500 mb-3">{selected.mensaje}</p>
-                        <div className="space-y-1">                                              
+                        <p className="text-[15px] text-gray-500 mb-3 break-words">{selected.mensaje}</p>
+                        <div className="space-y-1">
                             <textarea
                                 value={respuesta}
                                 onChange={(e) => {
                                     setRespuesta(e.target.value)
-                                    if (errors.respuesta) setErrors({ respuesta: "" })    
+                                    if (errors.respuesta) setErrors({ respuesta: "" })
                                 }}
                                 placeholder="Escribe tu respuesta..."
-                                className={`${inputClass} h-[120px] resize-none`}
+                                className={`${inputClass} h-[120px] resize-none w-full`}
                                 maxLength={500}
                             />
-                            {errors.respuesta && (                                                
+                            {errors.respuesta && (
                                 <p className="text-red-500 text-sm font-medium">{errors.respuesta}</p>
                             )}
                         </div>
                         <div className="flex justify-end gap-3 mt-4">
                             <Button
                                 variant="ghost"
-                                className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
+                                className={`flex-1 sm:flex-none sm:max-w-[100px] py-[22px] ${buttonOutlineClass}`}
                                 onClick={cerrarModal}
                             >
                                 Cancelar
                             </Button>
                             <Button
                                 onClick={handleResponder}
-                                className={`max-w-[100px] ${buttonPrimaryClass}`}
+                                className={`flex-1 sm:flex-none sm:max-w-[100px] ${buttonPrimaryClass}`}
                             >
                                 Aceptar
                             </Button>

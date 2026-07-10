@@ -52,7 +52,7 @@ export default function CarritoItem({
     };
 
     return (
-        <div className="flex items-center justify-between bg-white p-3 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition flex-wrap gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center bg-white p-3 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition gap-3">
 
             <div className="flex items-center gap-3 min-w-0 flex-1">
                 <img
@@ -61,7 +61,7 @@ export default function CarritoItem({
                     className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover shrink-0"
                 />
                 <div className="min-w-0">
-                    <h3 className="font-semibold text-gray-800 text-sm sm:text-base truncate">
+                    <h3 className="font-semibold text-gray-800 text-sm sm:text-base break-words">
                         {producto.nombreProducto}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-500">
@@ -79,7 +79,8 @@ export default function CarritoItem({
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+            <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+
                 {editable && (
                     <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                         <button
@@ -104,7 +105,7 @@ export default function CarritoItem({
                     </div>
                 )}
 
-                <div className="w-16 sm:w-20 text-right font-bold text-gray-800 text-sm sm:text-base">
+                <div className="w-16 sm:w-20 text-right font-bold text-gray-800 text-sm sm:text-base shrink-0">
                     ${(producto.precioUnitario * cantidadLocal).toFixed(2)}
                 </div>
 
@@ -112,12 +113,12 @@ export default function CarritoItem({
                     <button
                         aria-label="Eliminar"
                         onClick={() => onRemove(producto.producto)}
-                        className="text-red-500 hover:text-red-700 p-1.5 sm:p-2"
+                        className="text-red-500 hover:text-red-700 p-1.5 sm:p-2 shrink-0"
                     >
                         <FiTrash2 size={16} />
                     </button>
                 )}
             </div>
         </div>
-    );
+    )
 }
