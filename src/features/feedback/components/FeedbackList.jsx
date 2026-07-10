@@ -19,6 +19,7 @@ export default function FeedbackList() {
     const [data, setData] = useState([])
     const [selected, setSelected] = useState(null)
     const [respuesta, setRespuesta] = useState("")
+    const [errors, setErrors] = useState({ respuesta: "" })   
     const [filter, setFilter] = useState("Pendiente")
     const [tipoFilter, setTipoFilter] = useState("QUEJA")
     const [cargando, setCargando] = useState(false)
@@ -47,29 +48,43 @@ export default function FeedbackList() {
         setPage(1)
     }, [filter, tipoFilter])
 
+    const validarRespuesta = () => {
+        const texto = respuesta.trim()
+        if (!texto) return "La respuesta es obligatoria"
+        if (texto.length > 500) return "La respuesta no puede exceder los 500 caracteres"
+        return ""
+    }
+
     const handleResponder = async () => {
-        if (!respuesta.trim()) {
-            toast.error("Escribe una respuesta")
+        const error = validarRespuesta()
+        if (error) {
+            setErrors({ respuesta: error })
             return
         }
         try {
-            await responderQuejaSugerencia(selected._id, respuesta)
+            await responderQuejaSugerencia(selected._id, respuesta.trim())
             toast.success("Respuesta enviada correctamente")
             setSelected(null)
             setRespuesta("")
+            setErrors({ respuesta: "" })      
             cargarQuejas()
         } catch (error) {
             toast.error(error.message)
         }
     }
 
+    const cerrarModal = () => {               
+        setSelected(null)
+        setRespuesta("")
+        setErrors({ respuesta: "" })
+    }
+
     return (
         <div className="grid gap-4">
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
-                {/* Filtro estado */}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     <Button
                         onClick={() => setFilter("Pendiente")}
                         className={filter === "Pendiente" ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
@@ -84,7 +99,7 @@ export default function FeedbackList() {
                     </Button>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 sm:justify-end">
                     {[["QUEJA", "Quejas"], ["SUGERENCIA", "Sugerencias"]].map(([val, label]) => (
                         <Button
                             key={val}
@@ -149,19 +164,26 @@ export default function FeedbackList() {
                     <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
                         <h2 className="text-lg font-bold text-gray-800 mb-2">Responder</h2>
                         <p className="text-[15px] text-gray-500 mb-3">{selected.mensaje}</p>
-                        <textarea
-                            value={respuesta}
-                            onChange={(e) => setRespuesta(e.target.value)}
-                            placeholder="Escribe tu respuesta..."
-                            className={`${inputClass} h-[120px] resize-none`}
-                            minLength={5}
-                            maxLength={500}
-                        />
+                        <div className="space-y-1">                                              
+                            <textarea
+                                value={respuesta}
+                                onChange={(e) => {
+                                    setRespuesta(e.target.value)
+                                    if (errors.respuesta) setErrors({ respuesta: "" })    
+                                }}
+                                placeholder="Escribe tu respuesta..."
+                                className={`${inputClass} h-[120px] resize-none`}
+                                maxLength={500}
+                            />
+                            {errors.respuesta && (                                                
+                                <p className="text-red-500 text-sm font-medium">{errors.respuesta}</p>
+                            )}
+                        </div>
                         <div className="flex justify-end gap-3 mt-4">
                             <Button
                                 variant="ghost"
                                 className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
-                                onClick={() => { setSelected(null); setRespuesta("") }}
+                                onClick={cerrarModal}
                             >
                                 Cancelar
                             </Button>

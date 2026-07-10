@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FiTrash2, FiPlus, FiMinus } from "react-icons/fi";
 
 export default function CarritoItem({
@@ -10,25 +10,45 @@ export default function CarritoItem({
     const [cantidadLocal, setCantidadLocal] = useState(producto.cantidad);
     const [stockLocal, setStockLocal] = useState(producto.stockDisponible ?? 0);
 
+    const debounceRef = useRef(null);
+    const requestIdRef = useRef(0);
+    const stockRef = useRef(stockLocal);
+
+    const sinStock = stockLocal <= 0;
     const enLimiteStock = cantidadLocal >= stockLocal;
 
     useEffect(() => {
-        setCantidadLocal(producto.cantidad);
-        setStockLocal(producto.stockDisponible ?? 0);
-    }, [producto.cantidad, producto.stockDisponible]);
-
-    const actualizarCantidad = async (nuevaCantidad) => {
-        let valor = nuevaCantidad;
-        if (valor < 1) valor = 1;
-        if (nuevaCantidad > cantidadLocal && valor > stockLocal) return;
-        if (valor === cantidadLocal) return;
-
-        setCantidadLocal(valor);
-        try {
-            await onCantidadChange(producto.producto, valor);
-        } catch {
+        if (!debounceRef.current) {
             setCantidadLocal(producto.cantidad);
         }
+        setStockLocal(producto.stockDisponible ?? 0);
+        stockRef.current = producto.stockDisponible ?? 0;
+    }, [producto.cantidad, producto.stockDisponible]);
+
+    const enviarCambio = (valor) => {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+
+        debounceRef.current = setTimeout(async () => {
+            debounceRef.current = null;
+            const miRequestId = ++requestIdRef.current;
+            try {
+                await onCantidadChange(producto.producto, valor);
+            } catch {
+                if (miRequestId === requestIdRef.current) {
+                    setCantidadLocal(producto.cantidad);
+                }
+            }
+        }, 400);
+    };
+
+    const actualizarCantidad = (delta) => {
+        setCantidadLocal((prev) => {
+            let valor = prev + delta;
+            if (valor < 1) valor = 1;
+            if (delta > 0 && valor > stockRef.current) return prev;
+            enviarCambio(valor);
+            return valor;
+        });
     };
 
     return (
@@ -47,7 +67,11 @@ export default function CarritoItem({
                     <p className="text-xs sm:text-sm text-gray-500">
                         ${producto.precioUnitario.toFixed(2)} c/u
                     </p>
-                    {enLimiteStock && (
+                    {sinStock ? (
+                        <p className="text-xs text-red-500 mt-0.5 font-medium">
+                            Sin stock disponible — elimínalo para continuar
+                        </p>
+                    ) : enLimiteStock && (
                         <p className="text-xs text-amber-500 mt-0.5">
                             Solo hay {stockLocal} disponibles
                         </p>
@@ -60,7 +84,7 @@ export default function CarritoItem({
                     <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                         <button
                             aria-label="Disminuir"
-                            onClick={() => actualizarCantidad(cantidadLocal - 1)}
+                            onClick={() => actualizarCantidad(-1)}
                             disabled={cantidadLocal <= 1}
                             className="p-1.5 sm:p-2 hover:bg-gray-100 text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
                         >
@@ -71,7 +95,7 @@ export default function CarritoItem({
                         </span>
                         <button
                             aria-label="Aumentar"
-                            onClick={() => actualizarCantidad(cantidadLocal + 1)}
+                            onClick={() => actualizarCantidad(1)}
                             disabled={enLimiteStock}
                             className="p-1.5 sm:p-2 hover:bg-gray-100 text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
                         >

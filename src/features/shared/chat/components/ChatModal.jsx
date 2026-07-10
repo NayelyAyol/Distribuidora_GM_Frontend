@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiX } from "react-icons/fi";
+import { BsCheck, BsCheckAll } from "react-icons/bs";
 import { obtenerChatPedido, enviarMensajePedido, marcarChatLeido } from "../services/chatService";
 import { toast } from "react-toastify";
 import useAuthStore from "@/context/useAuthStore";
@@ -8,60 +9,74 @@ import { io } from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_BACKEND_URL.replace("/api", ""));
 
-export default function ChatModal({ isOpen, onClose, pedidoId, otherUserName, pedidoNombre }) {
+export default function ChatModal({ isOpen, onClose, pedidoId, otherUserId, otherUserName, pedidoNombre }) {
     const [inputMensaje, setInputMensaje] = useState("");
     const [mensajes, setMensajes] = useState([]);
     const user = useAuthStore((state) => state.user);
 
-
-useEffect(() => {
-    return () => {
-        socket.off("connect");
-        socket.off("disconnect");
-        socket.off("connect_error");
-    };
-}, []);
+    useEffect(() => {
+        return () => {
+            socket.off("connect");
+            socket.off("disconnect");
+            socket.off("connect_error");
+        };
+    }, []);
 
     useEffect(() => {
-    if (!isOpen || !pedidoId) return;
+        if (!isOpen || !pedidoId) return;
 
-    socket.emit("unirse-chat-pedido", pedidoId);
+        socket.emit("unirse-chat-pedido", pedidoId);
 
-    const handleNuevoMensaje = (nuevoMensaje) => {
-        setMensajes((prev) => [...prev, nuevoMensaje]);
-    };
+        const getEmisorId = (msg) =>
+            typeof msg.emisor === "object" ? msg.emisor?._id : msg.emisor;
 
-    socket.on("nuevo-mensaje-pedido", handleNuevoMensaje);
+        const handleNuevoMensaje = (nuevoMensaje) => {
+            setMensajes((prev) => [...prev, nuevoMensaje]);
+            if (getEmisorId(nuevoMensaje) !== user?.id) {
+                marcarChatLeido(pedidoId).catch(() => {});
+            }
+        };
 
-    const cargarChat = async () => {
-        try {
-            const data = await obtenerChatPedido(pedidoId);
-            setMensajes(data.mensajes);
-            marcarChatLeido(pedidoId);
-        } catch (error) {
-            toast.error("Error al cargar el chat");
-        }
-    };
+        const handleChatLeido = ({ usuarioId }) => {
+            if (usuarioId === user?.id) return;
+            setMensajes((prev) =>
+                prev.map((msg) => {
+                    const yaIncluido = (msg.leidoPor || []).some(
+                        (id) => (typeof id === "object" ? id._id : id) === usuarioId
+                    );
+                    if (yaIncluido) return msg;
+                    return { ...msg, leidoPor: [...(msg.leidoPor || []), usuarioId] };
+                })
+            );
+        };
 
-    cargarChat();
+        socket.on("nuevo-mensaje-pedido", handleNuevoMensaje);
+        socket.on("chat-leido-pedido", handleChatLeido);
 
-    return () => {
-        socket.emit("salir-chat-pedido", pedidoId);
-        socket.off("nuevo-mensaje-pedido", handleNuevoMensaje);
-    };
-}, [isOpen, pedidoId]);
+        const cargarChat = async () => {
+            try {
+                const data = await obtenerChatPedido(pedidoId);
+                setMensajes(data.mensajes);
+                marcarChatLeido(pedidoId);
+            } catch (error) {
+                toast.error("Error al cargar el chat");
+            }
+        };
+
+        cargarChat();
+
+        return () => {
+            socket.emit("salir-chat-pedido", pedidoId);
+            socket.off("nuevo-mensaje-pedido", handleNuevoMensaje);
+            socket.off("chat-leido-pedido", handleChatLeido);
+        };
+    }, [isOpen, pedidoId, user?.id]);
 
     const handleEnviar = async () => {
         if (!inputMensaje.trim()) return;
-        
+
         try {
-            const res = await enviarMensajePedido(pedidoId, inputMensaje);
-            const nuevoMensaje = res.mensaje;
-
-            if (!nuevoMensaje.emisor || typeof nuevoMensaje.emisor !== 'object') {
-                nuevoMensaje.emisor = { _id: user?.id, nombre: user?.nombre };
-            }
-
+            await enviarMensajePedido(pedidoId, inputMensaje);
             setInputMensaje("");
         } catch (error) {
             toast.error(error.message || "No se pudo enviar el mensaje");
@@ -89,11 +104,33 @@ useEffect(() => {
                         const contenido = msg.mensaje || msg.texto;
                         const emisorId = typeof msg.emisor === 'object' ? msg.emisor?._id : msg.emisor;
                         const isMine = emisorId === user?.id;
+
+                        const fueLeido = (msg.leidoPor || []).some(
+                            (id) => (typeof id === "object" ? id._id : id) === otherUserId
+                        );
+
+                        const hora = msg.createdAt
+                            ? new Date(msg.createdAt).toLocaleTimeString("es-EC", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                })
+                            : "";
+
                         return (
-                            <div key={msgId} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                            <div key={msgId} className={`flex flex-col ${isMine ? "items-end" : "items-start"}`}>
                                 <div className={`max-w-[80%] px-5 py-3 rounded-2xl ${isMine ? "bg-emerald-900 text-white" : "bg-white border"}`}>
-                                    <p className="text-xs opacity-70 mb-1">{isMine ? "Tú" : otherUserName}</p>
                                     <p className="text-sm">{contenido}</p>
+
+                                    <div className={`flex items-center justify-end gap-1 mt-1 ${isMine ? "text-emerald-200/70" : "text-gray-400"}`}>
+                                        {hora && <span className="text-[10px]">{hora}</span>}
+                                        {isMine && (
+                                            fueLeido ? (
+                                                <BsCheckAll className="text-[14px] text-sky-300" />
+                                            ) : (
+                                                <BsCheck className="text-[14px]" />
+                                            )
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         );

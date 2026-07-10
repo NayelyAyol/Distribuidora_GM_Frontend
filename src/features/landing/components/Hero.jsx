@@ -6,7 +6,7 @@ export default function Hero() {
 
     return (
         <section className="min-h-[80vh] md:min-h-0">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-2 items-center gap-10 md:gap-16 px-8 sm:px-10 md:px-16 py-14 md:py-[70px]">
+            <div className="grid md:grid-cols-2 items-center gap-10 md:gap-16 px-4 sm:px-6 md:px-10 py-14 md:py-[70px]">
                 <div className="flex flex-col justify-center">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-emerald-950 leading-tight">
                         Distribución inteligente de artículos de oficina

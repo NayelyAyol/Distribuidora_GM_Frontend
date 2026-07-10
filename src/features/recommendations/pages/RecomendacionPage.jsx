@@ -16,6 +16,7 @@ export default function RecomendacionesPage() {
     const [data, setData] = useState([])
     const [selectedRec, setSelectedRec] = useState(null)
     const [respuesta, setRespuesta] = useState("")
+    const [errors, setErrors] = useState({ respuesta: "" })   
     const [cargando, setCargando] = useState(false)
     const [page, setPage] = useState(1)
     const [totalPaginas, setTotalPaginas] = useState(1)
@@ -45,17 +46,29 @@ export default function RecomendacionesPage() {
     const handleOpenModal = (rec) => {
         setSelectedRec(rec)
         setRespuesta("")
+        setErrors({ respuesta: "" })          
     }
 
     const handleCloseModal = () => {
         setSelectedRec(null)
         setRespuesta("")
+        setErrors({ respuesta: "" })          
+    }
+    const validarRespuesta = () => {
+        const texto = respuesta.trim()
+        if (!texto) return "La respuesta es obligatoria"
+        if (texto.length > 500) return "La respuesta no puede exceder los 500 caracteres"
+        return ""
     }
 
     const handleResponder = async () => {
-        if (!respuesta.trim()) return toast.error("La respuesta no puede estar vacía")
+        const error = validarRespuesta()
+        if (error) {
+            setErrors({ respuesta: error })
+            return
+        }
         try {
-            await responderRecomendacion(selectedRec._id, respuesta)
+            await responderRecomendacion(selectedRec._id, respuesta.trim())
             toast.success("Recomendación respondida")
             handleCloseModal()
             cargarRecomendaciones()
@@ -153,29 +166,44 @@ export default function RecomendacionesPage() {
             </div>
 
             {selectedRec && createPortal(
-                <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
-                    <Card className="w-full max-w-md p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
+                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:p-4">
+                    <Card className="w-full sm:max-w-md p-5 sm:p-6 bg-emerald-50 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl max-h-[90vh] overflow-y-auto">
+                        
                         <h2 className="text-lg font-bold text-gray-800 mb-2">
                             {selectedRec.estado === "FINALIZADA" ? "Detalle de recomendación" : "Responder"}
                         </h2>
-                        <p className="text-[15px] text-gray-500 mb-3">{selectedRec.mensaje}</p>
+
+                        <p className="text-[15px] text-gray-500 mb-3 break-words">
+                            {selectedRec.mensaje}
+                        </p>
+
                         {selectedRec.estado === "FINALIZADA" ? (
                             <div className="bg-white rounded-xl border border-emerald-200 p-4">
-                                <p className="text-sm text-gray-600">{selectedRec.respuestaAdmin || "Sin respuesta registrada"}</p>
+                                <p className="text-sm text-gray-600 break-words">
+                                    {selectedRec.respuestaAdmin || "Sin respuesta registrada"}
+                                </p>
                             </div>
                         ) : (
-                            <textarea
-                                value={respuesta}
-                                onChange={(e) => setRespuesta(e.target.value)}
-                                placeholder="Escribe tu respuesta..."
-                                className={`${inputClass} h-28 resize-none`}
-                                maxLength={100}
-                            />
+                            <div className="space-y-1">
+                                <textarea
+                                    value={respuesta}
+                                    onChange={(e) => {
+                                        setRespuesta(e.target.value)
+                                        if (errors.respuesta) setErrors({ respuesta: "" })
+                                    }}
+                                    placeholder="Escribe tu respuesta..."
+                                    className={`${inputClass} h-28 resize-none w-full`}
+                                    maxLength={500}
+                                />
+                                {errors.respuesta && (
+                                    <p className="text-red-500 text-sm font-medium">{errors.respuesta}</p>
+                                )}
+                            </div>
                         )}
                         <div className="flex justify-end gap-3 mt-4">
                             <Button
                                 variant="ghost"
-                                className={`max-w-[100px] py-[22px] ${buttonOutlineClass}`}
+                                className={`flex-1 sm:flex-none sm:max-w-[100px] py-[22px] ${buttonOutlineClass}`}
                                 onClick={handleCloseModal}
                             >
                                 {selectedRec.estado === "FINALIZADA" ? "Cerrar" : "Cancelar"}
@@ -183,7 +211,7 @@ export default function RecomendacionesPage() {
                             {selectedRec.estado !== "FINALIZADA" && (
                                 <Button
                                     onClick={handleResponder}
-                                    className={`max-w-[100px] ${buttonPrimaryClass}`}
+                                    className={`flex-1 sm:flex-none sm:max-w-[100px] ${buttonPrimaryClass}`}
                                 >
                                     Aceptar
                                 </Button>

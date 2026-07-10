@@ -9,7 +9,7 @@ import { listarCategoriasActivas } from "../../../admin/categorias/services/cate
 import { useEffect, useState } from "react"
 
 export default function ProductoForm({ selectedProduct, setSelectedProduct, onClose, onSave }) {
-    const { form, preview, handleChange, handleImagen, submitForm, fileInputRef } =
+    const { form, errors, preview, handleChange, handleImagen, submitForm, fileInputRef } =
         useProductoForm(selectedProduct, onSave, onClose, setSelectedProduct);
 
     const [categorias, setCategorias] = useState([])
@@ -26,23 +26,29 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto items-start">
 
             {/* Imagen */}
-            <div className="relative h-full min-h-[400px] rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 bg-emerald-50">
-                {selectedProduct && (
-                    <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/90 backdrop-blur-md shadow-lg border border-gray-200 flex items-center justify-center hover:scale-105 transition">
-                        <FiEdit2 className="text-emerald-700 text-lg" />
-                    </button>
-                )}
-                <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
-                    {preview ? (
-                        <img src={preview} alt="preview" className="w-full h-full object-cover" />
-                    ) : (
-                        <div className="flex flex-col items-center justify-center">
-                            <MdFileUpload className="text-[90px] text-emerald-500" />
-                            <p className="mt-3 text-sm text-gray-600">Subir imagen</p>
-                        </div>
+            <div className="flex flex-col gap-1 h-full">
+                <div className={`relative h-full min-h-[400px] rounded-2xl overflow-hidden border-2 border-dashed transition-colors
+                    ${errors.imagen ? "border-red-400 bg-red-50" : "border-gray-300 bg-emerald-50"}`}>
+                    {selectedProduct && (
+                        <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/90 backdrop-blur-md shadow-lg border border-gray-200 flex items-center justify-center hover:scale-105 transition">
+                            <FiEdit2 className="text-emerald-700 text-lg" />
+                        </button>
                     )}
-                    <input type="file" className="hidden" accept="image/*" onChange={handleImagen} ref={fileInputRef} />
-                </label>
+                    <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-emerald-100/40 transition">
+                        {preview ? (
+                            <img src={preview} alt="preview" className="w-full h-full object-cover" />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center px-4 text-center">
+                                <MdFileUpload className={`text-[90px] ${errors.imagen ? "text-red-400" : "text-emerald-500"}`} />
+                                <p className="mt-3 text-sm text-gray-600">Subir imagen</p>
+                                {errors.imagen && (                                          
+                                    <p className="mt-2 text-sm text-red-500 font-medium">{errors.imagen}</p>
+                                )}
+                            </div>
+                        )}
+                        <input type="file" className="hidden" accept="image/*" onChange={handleImagen} ref={fileInputRef} />
+                    </label>
+                </div>
             </div>
 
             {/* Campos */}
@@ -59,6 +65,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                         maxLength={40}
                         placeholder="Mínimo 3 caracteres"
                     />
+                    {errors.nombre && <p className="text-red-500 text-xs mt-1">{errors.nombre}</p>}
                 </div>
 
                 {/* Código interno */}
@@ -72,6 +79,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                         maxLength={10}
                         placeholder="Ej: ABC-001 (mín. 3 caracteres)"
                     />
+                    {errors.codigo && <p className="text-red-500 text-xs mt-1">{errors.codigo}</p>}
                 </div>
 
                 {/* Código de barras */}
@@ -85,6 +93,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                         maxLength={14}
                         placeholder="8 a 14 dígitos (opcional)"
                     />
+                    {errors.codigoBarras && <p className="text-red-500 text-xs mt-1">{errors.codigoBarras}</p>}
                 </div>
 
                 {/* Tipo IVA y Categoría */}
@@ -104,6 +113,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                                 <option value="Exento">Exento</option>
                             </select>
                         </div>
+                        {errors.tipoIVA && <p className="text-red-500 text-xs mt-1">{errors.tipoIVA}</p>}
                     </div>
 
                     <div>
@@ -123,6 +133,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                                 ))}
                             </select>
                         </div>
+                        {errors.categoria && <p className="text-red-500 text-xs mt-1">{errors.categoria}</p>}
                     </div>
                 </div>
 
@@ -138,6 +149,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             maxLength={40}
                             placeholder="Mínimo 2 caracteres"
                         />
+                        {errors.proveedor && <p className="text-red-500 text-xs mt-1">{errors.proveedor}</p>}
                     </div>
                     <div>
                         <Label className={`${labelClass} mb-3`}>Marca *</Label>
@@ -149,6 +161,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             maxLength={20}
                             placeholder="Mínimo 2 caracteres"
                         />
+                        {errors.marca && <p className="text-red-500 text-xs mt-1">{errors.marca}</p>}
                     </div>
                 </div>
 
@@ -170,6 +183,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             <option value="Paquete">Paquete</option>
                         </select>
                     </div>
+                    {errors.unidadMedida && <p className="text-red-500 text-xs mt-1">{errors.unidadMedida}</p>}
                 </div>
 
                 {/* Descripción */}
@@ -252,6 +266,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault() }}
                             onInput={(e) => { if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9) }}
                         />
+                        {errors.precioCompra && <p className="text-red-500 text-xs mt-1">{errors.precioCompra}</p>}
                     </div>
                     <div>
                         <Label className={`${labelClass} mb-3`}>Precio Venta *</Label>
@@ -266,6 +281,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault() }}
                             onInput={(e) => { if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9) }}
                         />
+                        {errors.precioVenta && <p className="text-red-500 text-xs mt-1">{errors.precioVenta}</p>}
                     </div>
                 </div>
 
@@ -284,6 +300,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault() }}
                             onInput={(e) => { if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9) }}
                         />
+                        {errors.precioMayorista && <p className="text-red-500 text-xs mt-1">{errors.precioMayorista}</p>}
                     </div>
                     <div>
                         <Label className={`${labelClass} mb-3`}>Cantidad Mínima Mayorista</Label>
@@ -298,6 +315,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             onKeyDown={(e) => { if (e.key === "-" || e.key === "e" || e.key === ".") e.preventDefault() }}
                             onInput={(e) => { if (e.target.value.length > 6) e.target.value = e.target.value.slice(0, 6) }}
                         />
+                        {errors.cantidadMinimaMayorista && <p className="text-red-500 text-xs mt-1">{errors.cantidadMinimaMayorista}</p>}
                     </div>
                 </div>
 
@@ -316,6 +334,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             onKeyDown={(e) => { if (e.key === "-" || e.key === "e" || e.key === ".") e.preventDefault() }}
                             onInput={(e) => { if (e.target.value.length > 6) e.target.value = e.target.value.slice(0, 6) }}
                         />
+                        {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock}</p>}
                     </div>
                     <div>
                         <Label className={`${labelClass} mb-3`}>Stock Mínimo *</Label>
@@ -330,6 +349,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             onKeyDown={(e) => { if (e.key === "-" || e.key === "e" || e.key === ".") e.preventDefault() }}
                             onInput={(e) => { if (e.target.value.length > 5) e.target.value = e.target.value.slice(0, 5) }}
                         />
+                        {errors.stockMinimo && <p className="text-red-500 text-xs mt-1">{errors.stockMinimo}</p>}
                     </div>
                 </div>
 

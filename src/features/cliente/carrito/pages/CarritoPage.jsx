@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import CarritoList from "../components/CarritoList";
 import CarritoResumen from "../components/CarritoResumen";
-import { obtenerCarrito, actualizarCantidadCarrito, eliminarDelCarrito, vaciarCarrito } from "../services/carritoService"; // Asegúrate de tener este servicio
+import { obtenerCarrito, actualizarCantidadCarrito, eliminarDelCarrito, vaciarCarrito } from "../services/carritoService";
 import { buttonOutlineClass, buttonPrimaryClass } from "@/utils/styles";
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -32,18 +32,31 @@ export default function CarritoPage() {
     const onCantidadChange = async (id, cantidad) => {
         try {
             const data = await actualizarCantidadCarrito(id, { cantidad });
-            setCarrito(data.carrito);
+            setCarrito((prev) => ({
+                ...prev,
+                articulos: data.carrito.articulos,
+                subtotalGeneral: data.carrito.subtotalGeneral,
+                ivaGeneral: data.carrito.ivaGeneral,
+                totalGeneral: data.carrito.totalGeneral,
+            }));
         } catch (error) {
             toast.error(error.message, {
                 toastId: "cantidad-error"
             });
+            await cargarCarritoSilencioso();
         }
     };
 
     const removeProducto = async (id) => {
         try {
             const data = await eliminarDelCarrito(id);
-            setCarrito(data.carrito);
+            setCarrito((prev) => ({
+                ...prev,
+                articulos: data.carrito.articulos,
+                subtotalGeneral: data.carrito.subtotalGeneral,
+                ivaGeneral: data.carrito.ivaGeneral,
+                totalGeneral: data.carrito.totalGeneral,
+            }));
             toast.success("Producto eliminado del carrito");
         } catch (error) {
             toast.error(error.message, {
@@ -63,6 +76,18 @@ export default function CarritoPage() {
         }
     };
 
+    const cargarCarritoSilencioso = async () => {
+        try {
+            const data = await obtenerCarrito();
+            setCarrito(data.carrito);
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
+
+    const hayProblemasStock = (carrito?.articulos || []).some(
+        (item) => item.cantidad > (item.stockDisponible ?? Infinity)
+    );
 
     if (loading) return <p className="p-6">Cargando carrito...</p>;
 
@@ -88,9 +113,9 @@ export default function CarritoPage() {
                     carrito={carrito}
                     tipoEntrega={tipoEntrega}
                     setTipoEntrega={setTipoEntrega}
+                    disabledPago={hayProblemasStock}
                 />
             </div>
-
 
             {isModalOpen && (
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -101,7 +126,6 @@ export default function CarritoPage() {
                         <p className="text-[15px] text-gray-500 mb-6">
                             ¿Está seguro de que desea eliminar todos los productos de su carrito? Esta acción no se puede deshacer.
                         </p>
-                        
                         <div className="flex justify-end gap-3">
                             <Button
                                 variant="ghost"

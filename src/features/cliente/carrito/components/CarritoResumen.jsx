@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { validarCompra } from "../services/carritoService"
 import { toast } from "react-toastify"
 
-export default function CarritoResumen({ carrito, tipoEntrega, setTipoEntrega }) {
+export default function CarritoResumen({ carrito, tipoEntrega, setTipoEntrega, disabledPago = false }) {
     const navigate = useNavigate()
     const [cargando, setCargando] = useState(false);
 
@@ -12,10 +12,12 @@ export default function CarritoResumen({ carrito, tipoEntrega, setTipoEntrega })
     const iva = carrito.ivaGeneral || 0;
     const subtotal = carrito.subtotalGeneral || 0;
     const totalBase = carrito.totalGeneral || 0;
+    const carritoVacio = !carrito.articulos || carrito.articulos.length === 0;
 
-    // Costo de envío según tipo de entrega
     const costoEnvio = tipoEntrega === "domicilio" ? 3.50 : 0;
     const totalFinal = totalBase + costoEnvio;
+
+    const botonBloqueado = cargando || carritoVacio || disabledPago;
 
     const continuarPago = async () => {
         setCargando(true);
@@ -101,11 +103,17 @@ export default function CarritoResumen({ carrito, tipoEntrega, setTipoEntrega })
                 <span className="font-bold text-emerald-800">${totalFinal.toFixed(2)}</span>
             </div>
 
+            {disabledPago && !carritoVacio && (
+                <p className="text-xs text-red-500 text-center -mt-1">
+                    Hay productos sin stock suficiente. Ajusta las cantidades para continuar.
+                </p>
+            )}
+
             <button
-                disabled={cargando}
+                disabled={botonBloqueado}
                 onClick={continuarPago}
                 className={`w-full py-3 rounded-lg font-medium transition ${
-                    cargando ? "bg-gray-300 cursor-not-allowed" : "bg-emerald-600 text-white hover:bg-emerald-700"
+                    botonBloqueado ? "bg-gray-300 cursor-not-allowed" : "bg-emerald-600 text-white hover:bg-emerald-700"
                 }`}
             >
                 {cargando ? "Validando..." : "Pagar"}

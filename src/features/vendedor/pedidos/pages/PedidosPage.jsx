@@ -292,8 +292,11 @@ return (
                 isOpen={isChatOpen}
                 onClose={() => setIsChatOpen(false)}
                 pedidoId={pedidoSeleccionado?._id}
-                role={esCliente ? "cliente" : "vendedor"}
-                userName={esCliente ? user?.nombre || "Cliente" : "Vendedor"}
+                otherUserId={                                             
+                    esCliente
+                        ? pedidoSeleccionado?.vendedor?._id
+                        : pedidoSeleccionado?.cliente?._id
+                }
                 otherUserName={
                     esCliente 
                         ? (pedidoSeleccionado?.vendedor?.perfilId 

@@ -55,13 +55,7 @@ export default function RecomendacionList({
     return (
         <div className="grid gap-4">
 
-            <div className="
-                flex flex-col
-                md:flex-row
-                md:items-center
-                md:justify-between
-                gap-3
-            ">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
                 <div className="flex flex-wrap gap-2">
                     <Button
@@ -78,18 +72,18 @@ export default function RecomendacionList({
                     </Button>
                 </div>
 
-            {!esVendedor && (
-                <div className="flex flex-wrap gap-2">
-                    {[["QUEJA", "Quejas"], ["SUGERENCIA", "Sugerencias"]].map(([val, label]) => (
-                        <Button
-                            key={val}
-                            onClick={() => setTipoFilter(val)}
-                            className={tipoFilter === val ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
-                        >
-                            {label}
-                        </Button>
-                    ))}
-                </div>
+                {!esVendedor && (
+                    <div className="flex flex-wrap gap-2 sm:justify-end">
+                        {[["QUEJA", "Quejas"], ["SUGERENCIA", "Sugerencias"]].map(([val, label]) => (
+                            <Button
+                                key={val}
+                                onClick={() => setTipoFilter(val)}
+                                className={tipoFilter === val ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"}
+                            >
+                                {label}
+                            </Button>
+                        ))}
+                    </div>
                 )}
 
             </div>

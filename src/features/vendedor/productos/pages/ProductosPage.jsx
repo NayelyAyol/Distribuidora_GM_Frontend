@@ -238,9 +238,9 @@ export default function ProductosPage() {
 
                 <div className="bg-white/60 rounded-2xl p-5 shadow-inner">
 
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                    <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
 
                             <Button
                                 variant="ghost"
@@ -260,7 +260,7 @@ export default function ProductosPage() {
 
                             </Button>
 
-                            <h2 className="text-2xl font-bold text-gray-800">
+                            <h2 className="text-2xl font-bold text-gray-800 truncate">
 
                                 Categoría{" "}
 
@@ -276,7 +276,7 @@ export default function ProductosPage() {
 
                         {esVendedor && (
 
-                            <div className="flex flex-wrap items-center justify-start lg:justify-end gap-3">
+                            <div className="flex flex-wrap items-center gap-3">
 
                                 <Button
                                     onClick={() =>

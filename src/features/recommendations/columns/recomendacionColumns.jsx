@@ -7,13 +7,22 @@ const columnHelper = createColumnHelper()
 export const recomendacionColumns = (onResponder) => [
 
     columnHelper.accessor("asunto", {
-        header: "Asunto"
+        header: "Asunto",
+        cell: (info) => (
+            <span className="truncate max-w-[150px] inline-block align-middle" title={info.getValue()}>
+                {info.getValue() || "Sin asunto"}
+            </span>
+        )
     }),
-
 
     columnHelper.accessor(row => row.vendedor?.email, {
         id: "vendedor",
-        header: "Vendedor"
+        header: "Vendedor",
+        cell: (info) => (
+            <span className="truncate max-w-[150px] inline-block align-middle" title={info.getValue()}>
+                {info.getValue() || "N/A"}
+            </span>
+        )
     }),
 
     columnHelper.accessor("createdAt", {
