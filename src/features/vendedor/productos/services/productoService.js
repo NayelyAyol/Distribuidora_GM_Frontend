@@ -14,7 +14,9 @@ export const crearProducto = async (formData) => {
 
 export const actualizarProducto = async(productoId, formData) => {
     try{
-    const res = await api.put(`productos/actualizar/${productoId}`, formData)
+    const res = await api.put(`/productos/actualizar/${productoId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
     return res.data;
     }catch (error) {
         console.error("Error al actualizar producto", error)

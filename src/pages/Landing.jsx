@@ -19,6 +19,7 @@ export default function Home() {
     const navigate = useNavigate()
 
     const [productosDestacados, setProductosDestacados] = useState([])
+    const [cargandoDestacados, setCargandoDestacados] = useState(true) // 👈 nuevo estado
 
     useEffect(() => {
 
@@ -41,6 +42,8 @@ export default function Home() {
 
         const cargarProductos = async () => {
 
+            setCargandoDestacados(true) // 👈 inicia carga
+
             try {
                 const data = await Explorar()
                 
@@ -52,6 +55,8 @@ export default function Home() {
 
             } catch (error) {
                 console.error("Error al cargar los productos destacados en Home:", error)
+            } finally {
+                setCargandoDestacados(false) 
             }
         }
 
@@ -67,16 +72,27 @@ export default function Home() {
             <About />
             <Testimonials />
 
-            <MejoresProductos
-                productos={productosDestacados}
-                onSelectProducto={(p) =>
-                    navigate(`/producto/${p._id}`, {
-                        state: {
-                            from: "/#destacados"
-                        }
-                    })                
-                }
-            />
+            {cargandoDestacados ? (
+                <div className="text-center py-10 text-gray-500">
+                    Cargando...
+                </div>
+            ) : productosDestacados.length === 0 ? (
+                <div className="text-center py-10 text-gray-500">
+                    No hay productos favoritos
+                </div>
+            ) : (
+                <MejoresProductos
+                    productos={productosDestacados}
+                    onSelectProducto={(p) =>
+                        navigate(`/producto/${p._id}`, {
+                            state: {
+                                from: "/#destacados"
+                            }
+                        })                
+                    }
+                />
+            )}
+
             <FAQ />
             <CTA />
             <Footer />

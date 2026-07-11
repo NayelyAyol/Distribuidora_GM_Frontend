@@ -71,6 +71,7 @@ export default function UsuariosPage() {
 
     useEffect(() => {
         const loadData = async () => {
+            if (search.trim()) return
             setLoading(true)
             try {
                 if (esVendedor) {
@@ -102,7 +103,6 @@ export default function UsuariosPage() {
 
     const handleFiltroChange = async (nuevoFiltro) => {
         setFiltro(nuevoFiltro)
-        setSearch("")
         setPage(1)
     }
 
@@ -113,23 +113,41 @@ export default function UsuariosPage() {
             return
         }
 
-        if (search.length !== 10) {
-            toast.warning("La cédula debe tener 10 dígitos")
+        const esVendedorTab = tab === "vendedores"
+        const longitudValida = esVendedorTab
+            ? search.length === 10
+            : (search.length === 10 || search.length === 13)
+
+        if (!longitudValida) {
+            toast.warning(
+                esVendedorTab
+                    ? "La cédula debe tener 10 dígitos"
+                    : "Ingrese una cédula de 10 dígitos o un RUC de 13 dígitos"
+            )
             return
         }
+        const estadoEsperado = filtro === "activos"
 
         try {
             setLoading(true)
             if (tab === "vendedores") {
                 const data = await buscarVendedor(search)
-                const resultados = data.usuarios || (data ? [data] : [])
-                if (resultados.length === 0) toast.info("No se encontró el vendedor")
+                const resultados = (data.usuarios || (data ? [data] : []))
+                    .filter(u => u.estado === estadoEsperado)
+
+                if (resultados.length === 0) {
+                    toast.info(`No se encontró el vendedor en ${filtro}`)
+                }
                 setVendedores(resultados)
-                setTotalPaginas(1) 
+                setTotalPaginas(1)
             } else {
                 const data = await buscarCliente(search)
-                const resultados = data.usuarios || (data ? [data] : [])
-                if (resultados.length === 0) toast.info("No se encontró el cliente")
+                const resultados = (data.usuarios || (data ? [data] : []))
+                    .filter(u => u.estado === estadoEsperado)
+
+                if (resultados.length === 0) {
+                    toast.info(`No se encontró el cliente en ${filtro}`)
+                }
                 setClientes(resultados)
                 setTotalPaginas(1)
             }
@@ -223,7 +241,7 @@ export default function UsuariosPage() {
                             <Input
                                 type="text"
                                 placeholder="Buscar por cédula..."
-                                maxLength={10}
+                                maxLength={tab === "clientes" ? 13 : 10}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value.replace(/\D/g, ""))}
                                 onKeyDown={(e) => { if (e.key === "Enter") handleBuscar() }}

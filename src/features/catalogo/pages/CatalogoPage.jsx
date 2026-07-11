@@ -27,6 +27,7 @@ export default function CatalogoPage() {
 
     const [page, setPage] = useState(1)
     const [totalPaginas, setTotalPaginas] = useState(1)
+    const [cargando, setCargando] = useState(true) 
 
     useEffect(() => {
         setPage(1)
@@ -37,6 +38,8 @@ export default function CatalogoPage() {
             try {
                 const texto = search.trim()
                 if (texto.length > 0 && texto.length < 2) return
+
+                setCargando(true) 
 
                 const data = await Explorar({
                     categoria: categoriaActiva || "", 
@@ -61,6 +64,8 @@ export default function CatalogoPage() {
 
             } catch (error) {
                 toast.error(error.message || "Error al explorar productos")
+            } finally {
+                setCargando(false) 
             }
         }
 
@@ -132,12 +137,22 @@ export default function CatalogoPage() {
                     </div>
 
                     {!search.trim() && !categoriaActiva && !marca && (
-                        <MejoresProductos
-                            productos={destacados}
-                            showHeader={false}
-                            onAddCart={handleAddCart}
-                            onSelectProducto={(p) => navigate(`${basePath}/${p._id}`)}
-                        />
+                        cargando ? (
+                            <div className="text-center py-10 text-gray-500">
+                                Cargando...
+                            </div>
+                        ) : destacados.length === 0 ? (
+                            <div className="text-center py-10 text-gray-500">
+                                No hay productos favoritos
+                            </div>
+                        ) : (
+                            <MejoresProductos
+                                productos={destacados}
+                                showHeader={false}
+                                onAddCart={handleAddCart}
+                                onSelectProducto={(p) => navigate(`${basePath}/${p._id}`)}
+                            />
+                        )
                     )}
 
                     <div className="p-4">
@@ -146,7 +161,11 @@ export default function CatalogoPage() {
                         </h2>
 
                         <div className="max-h-[400px] overflow-y-auto custom-scroll pr-2">
-                            {productos.length === 0 ? (
+                            {cargando ? (
+                                <div className="text-center text-gray-500 py-10">
+                                    Cargando...
+                                </div>
+                            ) : productos.length === 0 ? (
                                 <div className="text-center text-gray-500 py-10">
                                     No se encontraron productos con los filtros seleccionados
                                 </div>

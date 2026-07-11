@@ -22,6 +22,31 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
         cargarCategorias();
     }, []);
 
+    const permitirSoloNumerosDecimal = (e) => {
+        const teclasPermitidas = [
+            "Backspace", "Delete", "Tab", "Escape", "Enter",
+            "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
+        ]
+        if (teclasPermitidas.includes(e.key)) return
+        if (e.ctrlKey || e.metaKey) return // permite Ctrl+C/V/A, Cmd+C/V/A
+        if (!/^[0-9.,]$/.test(e.key)) e.preventDefault()
+    }
+
+    const permitirSoloNumerosEnteros = (e) => {
+        const teclasPermitidas = [
+            "Backspace", "Delete", "Tab", "Escape", "Enter",
+            "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
+        ]
+        if (teclasPermitidas.includes(e.key)) return
+        if (e.ctrlKey || e.metaKey) return
+        if (!/^[0-9]$/.test(e.key)) e.preventDefault()
+    }
+
+    const bloquearPegadoInvalido = (regex) => (e) => {
+        const texto = e.clipboardData.getData("text")
+        if (!regex.test(texto)) e.preventDefault()
+    }
+
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto items-start">
 
@@ -263,7 +288,8 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             className={inputClass}
                             min="0.01"
                             placeholder="Mayor a 0"
-                            onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault() }}
+                            onKeyDown={permitirSoloNumerosDecimal}
+                            onPaste={bloquearPegadoInvalido(/^[0-9.,]+$/)}
                             onInput={(e) => { if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9) }}
                         />
                         {errors.precioCompra && <p className="text-red-500 text-xs mt-1">{errors.precioCompra}</p>}
@@ -278,7 +304,8 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             className={`${inputClass} placeholder:text-sm`}
                             min="0.01"
                             placeholder="Mayor al precio de compra"
-                            onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault() }}
+                            onKeyDown={permitirSoloNumerosDecimal}
+                            onPaste={bloquearPegadoInvalido(/^[0-9.,]+$/)}
                             onInput={(e) => { if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9) }}
                         />
                         {errors.precioVenta && <p className="text-red-500 text-xs mt-1">{errors.precioVenta}</p>}
@@ -297,7 +324,8 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             className={`${inputClass} placeholder:text-sm`}
                             min="0.01"
                             placeholder="Entre compra y venta"
-                            onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault() }}
+                            onKeyDown={permitirSoloNumerosDecimal}
+                            onPaste={bloquearPegadoInvalido(/^[0-9.,]+$/)}
                             onInput={(e) => { if (e.target.value.length > 9) e.target.value = e.target.value.slice(0, 9) }}
                         />
                         {errors.precioMayorista && <p className="text-red-500 text-xs mt-1">{errors.precioMayorista}</p>}
@@ -312,7 +340,8 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             className={`${inputClass} placeholder:text-sm`}
                             min="1"
                             placeholder="Entero mayor a 0 (opcional)"
-                            onKeyDown={(e) => { if (e.key === "-" || e.key === "e" || e.key === ".") e.preventDefault() }}
+                            onKeyDown={permitirSoloNumerosEnteros}
+                            onPaste={bloquearPegadoInvalido(/^[0-9.,]+$/)}
                             onInput={(e) => { if (e.target.value.length > 6) e.target.value = e.target.value.slice(0, 6) }}
                         />
                         {errors.cantidadMinimaMayorista && <p className="text-red-500 text-xs mt-1">{errors.cantidadMinimaMayorista}</p>}
@@ -331,7 +360,8 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             className={inputClass}
                             min="0"
                             placeholder="Entero no negativo"
-                            onKeyDown={(e) => { if (e.key === "-" || e.key === "e" || e.key === ".") e.preventDefault() }}
+                            onKeyDown={permitirSoloNumerosEnteros}
+                            onPaste={bloquearPegadoInvalido(/^[0-9]+$/)}
                             onInput={(e) => { if (e.target.value.length > 6) e.target.value = e.target.value.slice(0, 6) }}
                         />
                         {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock}</p>}
@@ -346,7 +376,8 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                             className={inputClass}
                             min="0"
                             placeholder="Entero no negativo"
-                            onKeyDown={(e) => { if (e.key === "-" || e.key === "e" || e.key === ".") e.preventDefault() }}
+                            onKeyDown={permitirSoloNumerosEnteros}
+                            onPaste={bloquearPegadoInvalido(/^[0-9]+$/)}
                             onInput={(e) => { if (e.target.value.length > 5) e.target.value = e.target.value.slice(0, 5) }}
                         />
                         {errors.stockMinimo && <p className="text-red-500 text-xs mt-1">{errors.stockMinimo}</p>}

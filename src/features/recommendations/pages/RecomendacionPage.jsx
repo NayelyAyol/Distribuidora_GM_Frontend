@@ -57,6 +57,7 @@ export default function RecomendacionesPage() {
     const validarRespuesta = () => {
         const texto = respuesta.trim()
         if (!texto) return "La respuesta es obligatoria"
+        if (texto.length < 5) return "La respuesta debe tener mínimo 5 caracteres"
         if (texto.length > 500) return "La respuesta no puede exceder los 500 caracteres"
         return ""
     }

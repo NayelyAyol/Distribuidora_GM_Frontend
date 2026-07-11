@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useLocation } from "react-router-dom" // 👈 Añadir useLocation
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FiArrowLeft } from "react-icons/fi"
@@ -14,11 +14,10 @@ export default function ActualizarProductoPage() {
 
     const handleSave = async (formData) => {
         try {
-            await actualizarProducto(id, formData)
-            toast.success("Producto actualizado correctamente")
-            navigate(-1)
+            return await actualizarProducto(id, formData)
         } catch (error) {
             toast.error(error.message)
+            throw error 
         }
     }
 
@@ -40,7 +39,7 @@ export default function ActualizarProductoPage() {
 
                 {productoInicial ? (
                     <ProductoForm
-                        selectedProduct={productoInicial} 
+                        selectedProduct={productoInicial}
                         onSave={handleSave}
                         onClose={() => navigate(-1)}
                     />
