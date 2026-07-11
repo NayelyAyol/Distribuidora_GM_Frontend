@@ -242,26 +242,35 @@ export default function ConfirmacionVentaPage() {
                                     justify-between
                                     border-b
                                     pb-3
+                                    gap-3
                                 "
                             >
-                                <div>
-                                    <p className="
-                                        font-semibold
-                                        text-gray-800
-                                    ">
-                                        {producto.nombreProducto || producto.nombre}
-                                    </p>
-                                    <p className="
-                                        text-sm
-                                        text-gray-500
-                                    ">
-                                        Cantidad:
-                                        {" "}
-                                        {producto.cantidad}
-                                    </p>
+                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                    <img
+                                        src={producto.imagen?.url || "/images/categories/default.webp"}
+                                        alt={producto.nombreProducto || producto.nombre}
+                                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover shrink-0"
+                                    />
+                                    <div className="min-w-0">
+                                        <p className="
+                                            font-semibold
+                                            text-gray-800
+                                            break-words
+                                        ">
+                                            {producto.nombreProducto || producto.nombre}
+                                        </p>
+                                        <p className="
+                                            text-sm
+                                            text-gray-500
+                                        ">
+                                            Cantidad:
+                                            {" "}
+                                            {producto.cantidad}
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <p className="font-bold text-emerald-700">
+                                <p className="font-bold text-emerald-700 shrink-0">
                                     $ {(
                                         Number(producto.precioUnitario ?? producto.precio ?? 0) * Number(producto.cantidad || 0)
                                     ).toFixed(2)}
@@ -291,23 +300,6 @@ export default function ConfirmacionVentaPage() {
                         ">
                             Total cobrado
                         </h3>
-
-                        {/*{metodoPago === 'TRANSFERENCIA' && (
-                            <div className="bg-white p-4 rounded-xl border border-gray-200 mt-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Referencia de transferencia (opcional)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={referencia}
-                                    onChange={(e) => setReferencia(e.target.value)}
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
-                                    placeholder="Ej: 12345678"
-                                />
-                            </div>
-                        )}*/}
-
-                        
 
                         <div className="pt-3 flex flex-col gap-2">
                             <div className="flex justify-between text-gray-600">

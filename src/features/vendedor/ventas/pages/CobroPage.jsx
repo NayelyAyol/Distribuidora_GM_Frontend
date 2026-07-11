@@ -35,6 +35,7 @@ export default function CobroPage() {
     }, []);
 
     const [metodoSeleccionado, setMetodoSeleccionado] = useState(metodoPago || "");
+    const [errors, setErrors] = useState({}); 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,47 +48,50 @@ export default function CobroPage() {
             ...datosFacturacion,
             [name]: value
         });
+
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: "" }));
+        }
     };
 
     const validarDatos = () => {
+        const newErrors = {};
         if (!datosFacturacion.nombreCompleto.trim()) {
-            toast.error("Ingrese nombre completo");
-            return false;
-        }
-
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(datosFacturacion.nombreCompleto.trim())) {
-            toast.error("El nombre solo puede contener letras");
-            return false;
+            newErrors.nombreCompleto = "Ingrese nombre completo";
+        } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(datosFacturacion.nombreCompleto.trim())) {
+            newErrors.nombreCompleto = "El nombre solo puede contener letras";
         }
 
         const id = datosFacturacion.identificacion.trim();
-        if (id.length !== 10 && id.length !== 13) {
-            toast.error("La identificación debe tener 10 o 13 dígitos");
-            return false;
-        }
-        if (!validarIdentificacion(id)) {
-            toast.error("Ingrese una cédula o RUC válido");
-            return false;
+        if (!id) {
+            newErrors.identificacion = "Ingrese la identificación";
+        } else if (id.length !== 10 && id.length !== 13) {
+            newErrors.identificacion = "La identificación debe tener 10 o 13 dígitos";
+        } else if (!validarIdentificacion(id)) {
+            newErrors.identificacion = "Ingrese una cédula o RUC válido";
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(datosFacturacion.correo)) {
-            toast.error("Correo inválido");
-            return false;
+        if (!datosFacturacion.correo?.trim()) {
+            newErrors.correo = "Ingrese el correo";
+        } else if (!emailRegex.test(datosFacturacion.correo)) {
+            newErrors.correo = "Correo inválido";
         }
 
-        if (datosFacturacion.telefono.length !== 10) {
-            toast.error("El teléfono debe tener 10 dígitos");
-            return false;
-        }
-
-        if (!/^09\d{8}$/.test(datosFacturacion.telefono)) {
-            toast.error("Ingrese un celular ecuatoriano válido (09XXXXXXXX)");
-            return false;
+        if (!datosFacturacion.telefono?.trim()) {
+            newErrors.telefono = "Ingrese el teléfono";
+        } else if (datosFacturacion.telefono.length !== 10) {
+            newErrors.telefono = "El teléfono debe tener 10 dígitos";
+        } else if (!/^09\d{8}$/.test(datosFacturacion.telefono)) {
+            newErrors.telefono = "Ingrese un celular ecuatoriano válido (09XXXXXXXX)";
         }
 
         if (!metodoSeleccionado) {
             toast.error("Seleccione un método de pago");
+        }
+
+        if (Object.keys(newErrors).length > 0 || !metodoSeleccionado) {
+            setErrors(newErrors);
             return false;
         }
 
@@ -108,8 +112,6 @@ export default function CobroPage() {
 
     const esVentaDirecta = !pedidoSeleccionado;
 
-useEffect(() => {
-}, []);
     return (
         <div className="p-6 flex flex-col gap-6">
 
@@ -133,6 +135,7 @@ useEffect(() => {
                         <PedidoDatosForm
                             form={datosFacturacion}
                             handleChange={handleChange}
+                            errors={errors}
                         />
                     </div>
 

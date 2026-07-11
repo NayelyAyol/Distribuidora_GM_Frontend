@@ -28,7 +28,7 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
             "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
         ]
         if (teclasPermitidas.includes(e.key)) return
-        if (e.ctrlKey || e.metaKey) return // permite Ctrl+C/V/A, Cmd+C/V/A
+        if (e.ctrlKey || e.metaKey) return 
         if (!/^[0-9.,]$/.test(e.key)) e.preventDefault()
     }
 
@@ -135,7 +135,6 @@ export default function ProductoForm({ selectedProduct, setSelectedProduct, onCl
                                 <option value="">Seleccione IVA</option>
                                 <option value="0%">0%</option>
                                 <option value="15%">15%</option>
-                                <option value="Exento">Exento</option>
                             </select>
                         </div>
                         {errors.tipoIVA && <p className="text-red-500 text-xs mt-1">{errors.tipoIVA}</p>}

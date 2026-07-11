@@ -54,7 +54,6 @@ export default function CatalogoPage() {
                 setProductos(listaProductos)
                 setTotalPaginas(data?.totalPaginas || 1)
 
-                // Guardamos la ráfaga original limpia para mapear las listas desplegables completas
                 if (!texto && !categoriaActiva && !marca && productosOriginales.length === 0) {
                     setProductosOriginales(listaProductos)
                 }
@@ -106,6 +105,7 @@ export default function CatalogoPage() {
             toast.error(error.message || "Error al agregar al carrito");
         }
     };
+    console.log("user actual:", user)
 
     return (
         <div className="p-6 flex flex-col gap-6">

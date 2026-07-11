@@ -78,7 +78,8 @@ export default function RecomendacionForm({
                         value={asunto}
                         className="bg-white rounded-xl placeholder:text-sm h-11 px-4 flex-1 border-gray-200 shadow-sm"
                         onChange={(e) => {
-                            setAsunto(e.target.value)
+                            const valor = e.target.value.slice(0, 60)
+                            setAsunto(valor)
                             if (errors.asunto) setErrors(prev => ({ ...prev, asunto: "" }))
                         }}
                         placeholder={placeholderAsunto}
@@ -94,11 +95,12 @@ export default function RecomendacionForm({
                 <textarea
                     value={mensaje}
                     onChange={(e) => {
-                        setMensaje(e.target.value)
+                        const valor = e.target.value.slice(0, 500)
+                        setMensaje(valor)
                         if (errors.mensaje) setErrors(prev => ({ ...prev, mensaje: "" }))
                     }}
                     placeholder={placeholderMensaje}
-                    className="w-full p-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm shadow-sm"
+                    className="w-full p-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm shadow-sm overflow-auto custom-scroll"
                     rows={4}
                     maxLength={500}
                 />
