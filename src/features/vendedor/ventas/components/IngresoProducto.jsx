@@ -43,7 +43,8 @@ export default function IngresoProducto({ onAdd }) {
                         stock: productoEncontrado.stock,
                         tieneIva: productoEncontrado.tipoIVA === "15%",
                         precioMayorista: productoEncontrado.precioMayorista ?? 0,
-                        cantidadMinimaMayorista: productoEncontrado.cantidadMinimaMayorista ?? 0
+                        cantidadMinimaMayorista: productoEncontrado.cantidadMinimaMayorista ?? 0,
+                        imagen: productoEncontrado.imagen ?? null 
                     })
                 }
 
@@ -114,7 +115,8 @@ export default function IngresoProducto({ onAdd }) {
             stock: producto.stock,
             tieneIva: producto.tipoIVA === "15%",
             precioMayorista: producto.precioMayorista ?? 0,
-            cantidadMinimaMayorista: producto.cantidadMinimaMayorista ?? 0
+            cantidadMinimaMayorista: producto.cantidadMinimaMayorista ?? 0,
+            imagen: producto.imagen ?? null
         })
 
         setCodigo("")

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FiTrash2, FiPlus, FiMinus } from "react-icons/fi";
+import { obtenerPrecioUnitario } from "@/utils/calcularFactura";
 
 export default function CarritoItem({
     producto,
@@ -16,6 +17,7 @@ export default function CarritoItem({
 
     const sinStock = stockLocal <= 0;
     const enLimiteStock = cantidadLocal >= stockLocal;
+    const precioUnitario = obtenerPrecioUnitario({ ...producto, cantidad: cantidadLocal });
 
     useEffect(() => {
         if (!debounceRef.current) {
@@ -65,7 +67,7 @@ export default function CarritoItem({
                         {producto.nombreProducto}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-500">
-                        ${producto.precioUnitario.toFixed(2)} c/u
+                        ${precioUnitario.toFixed(2)} c/u
                     </p>
                     {sinStock ? (
                         <p className="text-xs text-red-500 mt-0.5 font-medium">
@@ -106,7 +108,7 @@ export default function CarritoItem({
                 )}
 
                 <div className="w-16 sm:w-20 text-right font-bold text-gray-800 text-sm sm:text-base shrink-0">
-                    ${(producto.precioUnitario * cantidadLocal).toFixed(2)}
+                    ${(precioUnitario * cantidadLocal).toFixed(2)}
                 </div>
 
                 {editable && (

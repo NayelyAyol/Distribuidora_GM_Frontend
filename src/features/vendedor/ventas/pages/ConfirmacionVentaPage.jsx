@@ -12,7 +12,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { toast } from "react-toastify"
-import { calcularFactura } from "@/utils/calcularFactura"
+import { calcularFactura, obtenerPrecioUnitario } from "@/utils/calcularFactura"
 import useVentaStore from "../context/useVentaStore"
 import { ventaDirecta, ventaDesdePedido, pagarCarritoConTarjeta, confirmarTransferencia } from "../services/ventaService";
 import { useState } from "react"
@@ -279,7 +279,7 @@ export default function ConfirmacionVentaPage() {
 
                                 <p className="font-bold text-emerald-700 shrink-0">
                                     $ {(
-                                        Number(producto.precioUnitario ?? producto.precio ?? 0) * Number(producto.cantidad || 0)
+                                        obtenerPrecioUnitario(producto) * Number(producto.cantidad || 0)
                                     ).toFixed(2)}
                                 </p>
                             </div>
@@ -303,7 +303,6 @@ export default function ConfirmacionVentaPage() {
                             text-lg
                             font-bold
                             text-gray-800
-                            text-center
                         ">
                             Total cobrado
                         </h3>
@@ -328,7 +327,7 @@ export default function ConfirmacionVentaPage() {
 
                             <div className="flex justify-between items-center border-t pt-3 mt-1">
                                 <span className="text-lg font-bold text-gray-800">Total</span>
-                                <span className="text-3xl font-black text-emerald-700">
+                                <span className="text-lg font-black text-emerald-700">
                                     ${total.toFixed(2)}
                                 </span>
                             </div>
