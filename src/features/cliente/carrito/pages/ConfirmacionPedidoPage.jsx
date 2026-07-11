@@ -102,9 +102,19 @@ const handleConfirmar = async () => {
                 <div>
 
                     <p className="text-gray-500">
-                        Este módulo te permite revisar
-                        la información antes de
-                        confirmar tu pedido
+                        {esPedidoFoto ? (
+                            <>
+                                Este módulo te permite revisar
+                                la información antes de
+                                confirmar tu pago
+                            </>
+                        ) : (
+                            <>
+                                Este módulo te permite revisar
+                                la información antes de
+                                confirmar tu pedido
+                            </>
+                        )}
                     </p>
 
                 </div>
@@ -178,7 +188,7 @@ const handleConfirmar = async () => {
                                     text-gray-800
                                 "
                             >
-                                Confirmación del pedido
+                                {esPedidoFoto ? "Confirmación del pago" : "Confirmación del pedido"}
                             </h2>
 
                         </div>
@@ -245,31 +255,16 @@ const handleConfirmar = async () => {
 
                     </div>
 
-                    {!esPedidoFoto && carrito && (
-
-                        <div
-                            className="
-                                flex flex-col gap-4
-                            "
-                        >
-
-                            <h3
-                                className="
-                                    text-lg
-                                    font-bold
-                                    text-gray-800
-                                "
-                            >
-                                Productos del pedido
+                    {carrito && (
+                        <div className="flex flex-col gap-4">
+                            <h3 className="text-lg font-bold text-gray-800">
+                                Productos {esPedidoFoto ? "cotizados" : "del pedido"}
                             </h3>
-
                             <CarritoList
                                 carrito={carrito?.articulos || carrito || []}
                                 editable={false}
                             />
-
                         </div>
-
                     )}
 
                 </div>

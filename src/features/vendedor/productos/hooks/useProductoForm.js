@@ -169,7 +169,7 @@ export const useProductoForm = (selectedProduct, onSave, onClose, setSelectedPro
 
         if (Object.keys(nuevosErrores).length > 0) {
             setErrors(nuevosErrores);
-            toast.error("Revisa los campos marcados en rojo");
+            toast.error("Revisa los campos en rojo, falta completar o corregir información");
             return;
         }
 

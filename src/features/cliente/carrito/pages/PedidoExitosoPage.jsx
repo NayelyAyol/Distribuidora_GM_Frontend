@@ -71,10 +71,19 @@ export default function PedidoExitosoPage() {
     ">
 
             <div>
-                <p className="text-gray-500">
-                    Este módulo te permite visualizar
-                    la confirmación de tu pedido
-                </p>
+                                    <p className="text-gray-500">
+                        {esPedidoFoto ? (
+                            <>
+                                Este módulo te permite visualizar
+                                la confirmación de tu pago
+                            </>
+                        ) : (
+                            <>
+                                Este módulo te permite visualizar
+                                la confirmación de tu pedido
+                            </>
+                        )}
+                    </p>
             </div>
 
             <div className="

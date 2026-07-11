@@ -126,8 +126,13 @@ const validarFormulario = () => {
     if (form.tipoEntrega === "ENVIO_DOMICILIO") {
         if (!form.direccion.trim())
             newErrors.direccion = "Ingrese una dirección para el envío"
+        else if (form.direccion.trim().length < 3)
+            newErrors.direccion = "La dirección debe tener mínimo 3 caracteres"
+
         if (!form.referencia.trim())
             newErrors.referencia = "Ingrese una referencia para el envío"
+        else if (form.referencia.trim().length < 3)
+            newErrors.referencia = "La referencia debe tener mínimo 3 caracteres"
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -158,7 +163,12 @@ const validarFormulario = () => {
     };
 
     const handleSubmit = async () => {
-        if (!validarFormulario()) return;
+        if (!validarFormulario()) {
+            toast.error("Revisa los campos en rojo, falta completar o corregir información");
+            return false; 
+        }
+
+        setLoading(true);
 
         setLoading(true);
         const formData = new FormData();

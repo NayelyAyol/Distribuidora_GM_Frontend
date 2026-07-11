@@ -15,8 +15,8 @@ export default function CarritoItem({
     const requestIdRef = useRef(0);
     const stockRef = useRef(stockLocal);
 
-    const sinStock = stockLocal <= 0;
-    const enLimiteStock = cantidadLocal >= stockLocal;
+    const sinStock = editable && stockLocal <= 0;
+    const enLimiteStock = editable && cantidadLocal >= stockLocal;
     const precioUnitario = obtenerPrecioUnitario({ ...producto, cantidad: cantidadLocal });
 
     useEffect(() => {

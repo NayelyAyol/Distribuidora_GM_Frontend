@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { toast } from "react-toastify";
 
 const DATOS_FACTURACION_INICIAL = {
@@ -164,6 +164,7 @@ const useVentaStore = create(
         }),
         {
             name: "venta-storage",
+            storage: createJSONStorage(() => sessionStorage), 
         }
     )
 );

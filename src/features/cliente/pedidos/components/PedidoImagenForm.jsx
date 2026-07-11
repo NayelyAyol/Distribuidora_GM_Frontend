@@ -8,7 +8,7 @@ export default function PedidoImagenForm({ preview, fileInputRef, handleImagenCh
                 <h2 className="text-lg font-semibold text-gray-800">Foto de la lista</h2>
                 <p className="text-sm text-gray-500">Sube una imagen de la lista</p>
             </div>
-            <div className={`relative flex-1 min-h-[260px] rounded-3xl overflow-hidden border-2 border-dashed transition-colors
+            <div className={`relative flex-1 min-h-[260px] max-h-[550px] rounded-3xl overflow-hidden border-2 border-dashed transition-colors
                 ${errors.imagen ? "border-red-400 bg-red-50" : "border-emerald-200 bg-emerald-50"}`}>
                 {preview && (
                     <button type="button" onClick={() => fileInputRef.current?.click()}
