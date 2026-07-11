@@ -78,7 +78,7 @@ export default function SeleccionMetodoPagoPage() {
             direccion: de.direccion || "",
             referencia: de.referencia || "",
             observaciones: checkout?.pedido?.observaciones || "",
-            nombrePedido: checkout?.pedido?.nombrePedido || "Pedido"
+            nombrePedido: checkout?.pedido?.nombrePedido || ""
         }));
     }, []);
 
@@ -128,12 +128,17 @@ export default function SeleccionMetodoPagoPage() {
         if (tipoEntrega === "domicilio") {
             if (!form.direccion.trim())
                 newErrors.direccion = "Ingrese la dirección"
+            else if (form.direccion.trim().length < 3)
+                newErrors.direccion = "La dirección debe tener mínimo 3 caracteres"
+
             if (!form.referencia.trim())
                 newErrors.referencia = "Ingrese una referencia"
+            else if (form.referencia.trim().length < 3)
+                newErrors.referencia = "La referencia debe tener mínimo 3 caracteres"
         }
 
         if (!metodoPago) {
-            toast.error("Seleccione un método de pago") // este sí va como toast, no tiene campo asociado
+            toast.error("Seleccione un método de pago") 
         }
 
         if (Object.keys(newErrors).length > 0 || !metodoPago) {
@@ -224,12 +229,13 @@ export default function SeleccionMetodoPagoPage() {
             navigate(rutaConfirmacion, {
                 state: {
                     checkout: {
-                        ...checkout,          
-                        metodoPago,           
+                        ...checkout,
+                        metodoPago,
                         paymentMethodId,
-                        form                  
+                        form
                     }
-                }
+                },
+                replace: true
             });
         } catch (err) {
             toast.error(err.message || "Error al procesar el pago");

@@ -5,12 +5,7 @@ export default function ResumenPagoVenta({
     tipoEntrega
 }) {
 
-    const {
-        subtotal,
-        iva,
-        envio,
-        total
-    } = calcularFactura(factura, tipoEntrega)
+    const { subtotal, iva, envio, total } = calcularFactura(factura, tipoEntrega)
 
     return (
         <div className="bg-white/70 backdrop-blur-xl rounded-2xl border p-6 flex flex-col gap-3">

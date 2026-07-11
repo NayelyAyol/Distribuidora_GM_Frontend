@@ -76,14 +76,14 @@ const handleConfirmar = async () => {
         // En ConfirmacionPedidoPage — dentro del navigate al final de handleConfirmar
         navigate(rutaExito, {
             state: {
-                // Mezcla: datos actualizados del backend + artículos del pedido original
                 pedido: {
-                    ...pedido,                                              // pedido original (tiene artículos)
-                    ...(respuesta?.data?.pedido || respuesta?.pedido || {}) // sobrescribe con datos frescos
+                    ...pedido,
+                    ...(respuesta?.data?.pedido || respuesta?.pedido || {})
                 },
                 esPedidoFoto,
                 metodoPago
-            }
+            },
+            replace: true
         });
 
     } catch (err) {

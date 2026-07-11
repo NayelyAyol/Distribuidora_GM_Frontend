@@ -103,11 +103,7 @@ export default function CobroPage() {
 
         setMetodoPago(metodoSeleccionado);
 
-        if (!pedidoSeleccionado) {
-            navigate("/dashboard/ventas/cobro/confirmacion-venta");
-        } else {
-            navigate("/dashboard/ventas/cobro/confirmacion-venta");
-        }
+        navigate("/dashboard/ventas/cobro/confirmacion-venta", { replace: true });
     };
 
     const esVentaDirecta = !pedidoSeleccionado;

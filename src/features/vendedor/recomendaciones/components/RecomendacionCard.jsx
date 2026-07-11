@@ -16,7 +16,7 @@ export default function RecomendacionCard({ item }) {
 
             </div>
 
-            <p className="mt-2 text-gray-600 text-sm sm:text-base break-words">
+            <p className="mt-2 text-gray-600 text-sm sm:text-base [overflow-wrap:anywhere]">
                 {item.mensaje}
             </p>
 
@@ -26,7 +26,7 @@ export default function RecomendacionCard({ item }) {
                 </p>
 
                 {item.respuestaAdmin ? (
-                    <p className="text-emerald-700 font-medium break-words text-sm">
+                    <p className="text-emerald-700 font-medium text-sm [overflow-wrap:anywhere]">
                         {item.respuestaAdmin}
                     </p>
                 ) : (

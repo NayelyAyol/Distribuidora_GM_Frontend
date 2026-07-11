@@ -65,14 +65,20 @@ export default function ConfirmacionVentaPage() {
 
             if (metodoPago === 'EFECTIVO') {
                 resetVentaCompleta();
-                navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", { state: { venta } });
+                navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", {
+                    state: { venta },
+                    replace: true
+                });
             }
             else if (metodoPago === 'TRANSFERENCIA') {
                 if (pedidoSeleccionado?._id) {
                     await confirmarTransferencia(ventaId, referencia);
                 }
                 resetVentaCompleta();
-                navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", { state: { venta } });
+                navigate("/dashboard/ventas/cobro/confirmacion-venta/venta-exitosa", {
+                    state: { venta },
+                    replace: true
+                });
             }
             else if (metodoPago === 'TARJETA') {
                 const pagoData = await pagarCarritoConTarjeta({
@@ -96,7 +102,8 @@ export default function ConfirmacionVentaPage() {
 
     const { subtotal, iva, envio, total } = calcularFactura(
         factura,
-        pedidoSeleccionado?.tipoEntrega
+        pedidoSeleccionado?.tipoEntrega,
+        pedidoSeleccionado?.resumenPago?.costoEnvio ?? null
     )
 
     return (

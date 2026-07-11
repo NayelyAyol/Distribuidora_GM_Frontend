@@ -36,14 +36,15 @@ export default function IngresoProducto({ onAdd }) {
                 const productoEncontrado = data?.productos?.[0]
 
                 if (productoEncontrado) {
-
-                onAdd({
-                    id: productoEncontrado._id,
-                    nombre: productoEncontrado.nombre,
-                    precio: productoEncontrado.precioVenta,
-                    stock: productoEncontrado.stock,
-                    tieneIva: productoEncontrado.tipoIVA === "15%"
-                })
+                    onAdd({
+                        id: productoEncontrado._id,
+                        nombre: productoEncontrado.nombre,
+                        precio: productoEncontrado.precioVenta,
+                        stock: productoEncontrado.stock,
+                        tieneIva: productoEncontrado.tipoIVA === "15%",
+                        precioMayorista: productoEncontrado.precioMayorista ?? 0,
+                        cantidadMinimaMayorista: productoEncontrado.cantidadMinimaMayorista ?? 0
+                    })
                 }
 
             } catch (error) {
@@ -106,13 +107,15 @@ export default function IngresoProducto({ onAdd }) {
 
     const seleccionarProducto = (producto) => {
 
-    onAdd({
-        id: producto._id,
-        nombre: producto.nombre,
-        precio: producto.precioVenta,
-        stock: producto.stock,
-        tieneIva: producto.tipoIVA === "15%"
-    })
+        onAdd({
+            id: producto._id,
+            nombre: producto.nombre,
+            precio: producto.precioVenta,
+            stock: producto.stock,
+            tieneIva: producto.tipoIVA === "15%",
+            precioMayorista: producto.precioMayorista ?? 0,
+            cantidadMinimaMayorista: producto.cantidadMinimaMayorista ?? 0
+        })
 
         setCodigo("")
         setProductos([])

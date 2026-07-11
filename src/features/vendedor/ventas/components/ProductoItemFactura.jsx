@@ -1,5 +1,6 @@
 import { FiTrash2, FiPlus, FiMinus } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { obtenerPrecioUnitario } from "@/utils/calcularFactura";
 
 export default function ProductoItemFactura({
     producto,
@@ -7,6 +8,8 @@ export default function ProductoItemFactura({
     onCantidadChange,
     esEditable=true
 }) {
+
+    const precioMostrado = obtenerPrecioUnitario(producto);
 
     const aumentarCantidad = () => {
 
@@ -38,7 +41,6 @@ export default function ProductoItemFactura({
         );
     };
     const nombreMostrado = producto.nombre || producto.nombreProducto || "Sin nombre";
-    const precioMostrado = producto.precio ?? producto.precioUnitario ?? 0;
 
     return (
 
