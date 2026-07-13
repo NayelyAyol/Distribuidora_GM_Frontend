@@ -171,7 +171,7 @@ El proyecto se desarrolló bajo el marco ágil **Scrum**, organizado en 6 sprint
 
 ## Autora
 
-**Nayely del Rocío Ayol Guanoluisa**  
+**Nayely del Rocio Ayol Guanoluisa**  
 - nayely.ayol@epn.edu.ec  
 - nayelyayol9@gmail.com
 

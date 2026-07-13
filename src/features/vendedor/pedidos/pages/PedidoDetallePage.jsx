@@ -160,7 +160,8 @@ export default function PedidoDetallePage() {
                 tieneIva: item.porcentajeIva === 0.15,
                 precioMayorista: item.precioMayorista ?? 0,              
                 cantidadMinimaMayorista: item.cantidadMinimaMayorista ?? 0, 
-                stock: item.stock ?? 999  
+                imagen: item.imagen ?? null,
+                stock: item.stock ?? 0  
             }));
             setArticulosSeleccionados(articulosParaEdicion);
         }
@@ -200,6 +201,7 @@ export default function PedidoDetallePage() {
                     nombre: item.nombreProducto,
                     precioUnitario: item.precioUnitario,
                     cantidad: item.cantidad,
+                    imagen: item.imagen ?? null,
                     stock: item.stockDisponible ?? 0,
                     tieneIva: item.porcentajeIva === 0.15 || item.tieneIva === true,
                     precioMayorista: item.precioMayorista ?? 0,               
