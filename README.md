@@ -72,6 +72,7 @@ https://distribuidoragm.netlify.app/
 
 ### Administrador
 - Inicio de sesión y gestión de perfil
+- Restablecimiento de contraseña
 - Gestión de vendedores y clientes
 - Gestión de categorías
 - Visualización de estadísticas y reporte de ventas
@@ -80,6 +81,7 @@ https://distribuidoragm.netlify.app/
 
 ### Vendedor
 - Inicio de sesión y gestión de perfil
+- Restablecimiento de contraseña
 - Gestión de productos e inventario
 - Visualización de ventas realizadas
 - Gestión de pedidos pendientes
@@ -87,6 +89,7 @@ https://distribuidoragm.netlify.app/
 
 ### Cliente
 - Registro e inicio de sesión
+- Restablecimiento de contraseña
 - Gestión de perfil
 - Visualización del catálogo de productos y categorías
 - Gestión del carrito de compras

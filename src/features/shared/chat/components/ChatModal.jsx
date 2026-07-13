@@ -94,7 +94,7 @@ export default function ChatModal({ isOpen, onClose, pedidoId, otherUserId, othe
                     <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100"><FiX /></button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5 bg-gradient-to-b from-white to-emerald-50/40">
+                <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5 bg-gradient-to-b from-white to-emerald-50/40 custom-scroll">
                     {mensajes.map((msg, index) => {
                         const msgId = msg._id || msg.id || `msg-${index}`;
                         const contenido = msg.mensaje || msg.texto;

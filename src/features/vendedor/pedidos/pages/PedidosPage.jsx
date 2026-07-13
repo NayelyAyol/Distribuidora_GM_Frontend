@@ -17,6 +17,8 @@ import useAuthStore from "@/context/useAuthStore"
 import { obtenerMisPedidos, cambiarEstadoPedido } from "../../../cliente/pedidos/services/pedidoService"
 import { createPortal } from "react-dom"
 
+const INTERVALO_POLLING = 10000
+
 export default function PedidosPage() {
     const [filtro, setFiltro] = useState("pendientes")
     const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null)
@@ -38,44 +40,33 @@ export default function PedidosPage() {
             ? "Buscar por nombre del pedido..." 
             : "Buscar por nombre del cliente...";
 
+    const construirParams = () => {
+        const estadoMap = {
+            pendientes: "PENDIENTE",
+            enProceso: "EN_PROCESO",
+            finalizados: "FINALIZADO",
+            cancelados: "CANCELADO"
+        };
+
+        const params = { page };
+
+        if (filtro === "pagosPendientes") {
+            params.estado = "EN_PROCESO";
+            params.estadoPago = "PENDIENTE";
+        } else {
+            params.estado = estadoMap[filtro] || "PENDIENTE";
+        }
+
+        if (tipoPedido && tipoPedido !== "") params.tipoPedido = tipoPedido;
+        if (busqueda && busqueda.trim() !== "") params.buscar = busqueda.trim();
+
+        return params;
+    };
+
     const cargarPedidos = async () => {
         setLoading(true);
         try {
-            const estadoMap = {
-                pendientes: "PENDIENTE",
-                enProceso: "EN_PROCESO",
-                finalizados: "FINALIZADO",
-                cancelados: "CANCELADO"
-            };
-
-            const params = {page};
-            
-            params.estado = estadoMap[filtro] || "PENDIENTE";
-            
-            if (tipoPedido && tipoPedido !== "") {
-                params.tipoPedido = tipoPedido;
-            }
-            
-            if (busqueda && busqueda.trim() !== "") {
-                params.buscar = busqueda.trim();
-            }
-
-            if (filtro === "pagosPendientes") {
-                params.estado = "EN_PROCESO";
-                params.estadoPago = "PENDIENTE";
-            } else {
-                const estadoMap = {
-                    pendientes: "PENDIENTE",
-                    enProceso: "EN_PROCESO",
-                    finalizados: "FINALIZADO",
-                    cancelados: "CANCELADO"
-                };
-                params.estado = estadoMap[filtro] || "PENDIENTE";
-            }
-
-            if (tipoPedido && tipoPedido !== "") params.tipoPedido = tipoPedido;
-            if (busqueda && busqueda.trim() !== "") params.buscar = busqueda.trim();
-
+            const params = construirParams();
             const query = new URLSearchParams(params).toString();
             const data = await obtenerMisPedidos(query);
             setPedidos(data.pedidos || []);
@@ -88,13 +79,24 @@ export default function PedidosPage() {
         }
     };
 
+    const cargarPedidosSilencioso = async () => {
+        try {
+            const params = construirParams();
+            const query = new URLSearchParams(params).toString();
+            const data = await obtenerMisPedidos(query);
+            setPedidos(data.pedidos || []);
+            setTotalPaginas(data.totalPaginas || 1);
+        } catch (error) {
+            console.error("Error en refresco automático:", error);
+        }
+    };
+
     useEffect(() => {
         if (!esCliente && filtro === "pendientes") {
             setFiltro("enProceso");
         }
     }, [esCliente, filtro]);
 
-    // Reinicia la página cuando cambian los filtros (igual que MisVentasPage)
     useEffect(() => {
         setPage(1)
     }, [filtro, tipoPedido, busqueda]);
@@ -109,7 +111,21 @@ export default function PedidosPage() {
         }, 500); 
 
         return () => clearTimeout(delayDebounceFn);
-    }, [filtro, esCliente, tipoPedido, busqueda,page]);
+    }, [filtro, esCliente, tipoPedido, busqueda, page]);
+
+    useEffect(() => {
+        const intervalo = setInterval(() => {
+            if (
+                document.visibilityState === "visible" &&
+                !isChatOpen &&
+                !pedidoACancelar
+            ) {
+                cargarPedidosSilencioso();
+            }
+        }, INTERVALO_POLLING);
+
+        return () => clearInterval(intervalo);
+    }, [filtro, esCliente, tipoPedido, busqueda, page, isChatOpen, pedidoACancelar]);
 
     const handleAbrirChat = (pedido) => {
         setPedidoSeleccionado(pedido)

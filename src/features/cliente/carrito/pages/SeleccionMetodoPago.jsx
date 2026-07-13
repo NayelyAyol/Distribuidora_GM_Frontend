@@ -141,6 +141,10 @@ export default function SeleccionMetodoPagoPage() {
             toast.error("Seleccione un método de pago") 
         }
 
+        if (Object.keys(newErrors).length > 0) {
+            toast.error("Revisa los campos en rojo, falta completar o corregir información")
+        }
+
         if (Object.keys(newErrors).length > 0 || !metodoPago) {
             setErrors(newErrors)
             return false
