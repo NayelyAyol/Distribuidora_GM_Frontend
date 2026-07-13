@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { inputClass, buttonPrimaryClass, buttonOutlineClass } from "@/utils/styles"
 import { obtenerRecomendacionesAdmin, responderRecomendacion, } from "../../recommendations/service/recomendacionService"
 import { createPortal } from "react-dom";
+import socket from "@/utils/socket"; 
 
 export default function RecomendacionesPage() {
 
@@ -37,6 +38,19 @@ export default function RecomendacionesPage() {
     useEffect(() => {
         if (tab === "vendedor") cargarRecomendaciones()
     }, [tab, cargarRecomendaciones])
+
+    useEffect(() => {
+        socket.emit('unirse-recomendaciones-admin');
+
+        socket.on('nueva-recommendacion', () => {
+            cargarRecomendaciones();
+        });
+
+        return () => {
+            socket.emit('salir-recomendaciones-admin');
+            socket.off('nueva-recommendacion');
+        };
+    }, [cargarRecomendaciones]);
 
     // Reinicia la página cuando cambia el filtro
     useEffect(() => {

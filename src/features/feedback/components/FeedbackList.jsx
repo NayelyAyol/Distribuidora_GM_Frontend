@@ -13,6 +13,7 @@ import {
     obtenerQuejasSugerenciasAdmin,
     responderQuejaSugerencia
 } from "@/features/cliente/quejasysugerencias/services/quejasSugerenciasService"
+import socket from "@/utils/socket"
 
 export default function FeedbackList() {
 
@@ -41,8 +42,20 @@ export default function FeedbackList() {
     }
 
     useEffect(() => {
-        cargarQuejas()
-    }, [filter, tipoFilter, page])
+        const unirse = () => socket.emit('unirse-quejas-admin');
+        unirse();
+        socket.on('connect', unirse);
+
+        socket.on('nueva-queja-sugerencia', () => {
+            cargarQuejas();
+        });
+
+        return () => {
+            socket.emit('salir-quejas-admin');
+            socket.off('connect', unirse);
+            socket.off('nueva-queja-sugerencia');
+        };
+    }, [filter, tipoFilter, page]);
 
     useEffect(() => {
         setPage(1)

@@ -5,9 +5,7 @@ import { BsCheck, BsCheckAll } from "react-icons/bs";
 import { obtenerChatPedido, enviarMensajePedido, marcarChatLeido } from "../services/chatService";
 import { toast } from "react-toastify";
 import useAuthStore from "@/context/useAuthStore";
-import { io } from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACKEND_URL.replace("/api", ""));
+import socket from "@/utils/socket"; 
 
 export default function ChatModal({ isOpen, onClose, pedidoId, otherUserId, otherUserName, pedidoNombre }) {
     const [inputMensaje, setInputMensaje] = useState("");
@@ -15,17 +13,14 @@ export default function ChatModal({ isOpen, onClose, pedidoId, otherUserId, othe
     const user = useAuthStore((state) => state.user);
 
     useEffect(() => {
-        return () => {
-            socket.off("connect");
-            socket.off("disconnect");
-            socket.off("connect_error");
-        };
-    }, []);
-
-    useEffect(() => {
         if (!isOpen || !pedidoId) return;
 
-        socket.emit("unirse-chat-pedido", pedidoId);
+        const unirseAlChat = () => {
+            socket.emit("unirse-chat-pedido", pedidoId);
+        };
+
+        unirseAlChat();
+        socket.on("connect", unirseAlChat); 
 
         const getEmisorId = (msg) =>
             typeof msg.emisor === "object" ? msg.emisor?._id : msg.emisor;
@@ -67,6 +62,7 @@ export default function ChatModal({ isOpen, onClose, pedidoId, otherUserId, othe
 
         return () => {
             socket.emit("salir-chat-pedido", pedidoId);
+            socket.off("connect", unirseAlChat);
             socket.off("nuevo-mensaje-pedido", handleNuevoMensaje);
             socket.off("chat-leido-pedido", handleChatLeido);
         };

@@ -1,10 +1,10 @@
 export default function RecomendacionCard({ item }) {
     return (
-        <div className="p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-sm bg-white hover:shadow-md transition">
+        <div className="w-full max-w-full overflow-hidden p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-sm bg-white hover:shadow-md transition">
 
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 min-w-0">
 
-                <h3 className="font-semibold text-gray-800 break-words min-w-0">
+                <h3 className="font-semibold text-gray-800 break-words [overflow-wrap:anywhere] min-w-0 flex-1">
                     {item.asunto}
                 </h3>
 
@@ -16,17 +16,17 @@ export default function RecomendacionCard({ item }) {
 
             </div>
 
-            <p className="mt-2 text-gray-600 text-sm sm:text-base [overflow-wrap:anywhere]">
+            <p className="mt-2 text-gray-600 text-sm sm:text-base break-words [overflow-wrap:anywhere] min-w-0">
                 {item.mensaje}
             </p>
 
-            <div className="border-t mt-4 pt-3">
+            <div className="border-t mt-4 pt-3 min-w-0">
                 <p className="text-sm text-gray-500 mb-1">
                     Respuesta del administrador:
                 </p>
 
                 {item.respuestaAdmin ? (
-                    <p className="text-emerald-700 font-medium text-sm [overflow-wrap:anywhere]">
+                    <p className="text-emerald-700 font-medium text-sm break-words [overflow-wrap:anywhere] min-w-0">
                         {item.respuestaAdmin}
                     </p>
                 ) : (

@@ -16,8 +16,8 @@ import { toast } from "react-toastify";
 import { armarPedidoFoto } from "@/features/cliente/pedidos/services/pedidoService";
 import IngresoProducto from "../../ventas/components/IngresoProducto";
 import FacturaPanel from "../../ventas/components/Factura";
-import { io } from "socket.io-client";
-const socket = io("https://grupo-moreno.onrender.com/api");
+import  socket  from "@/utils/socket";
+
 const DRAFT_KEY_PREFIX = "cotizacion_draft_";
 
 const obtenerBorrador = (pedidoId) => {
@@ -90,17 +90,56 @@ export default function PedidoDetallePage() {
     }, [id]);
 
     useEffect(() => {
-        if (!esCliente) return;
+        if (!user?.id || !id) return;
+
+        const unirse = () => {
+            if (esCliente) {
+                socket.emit('cliente:unirse', user.id);
+            } else {
+                socket.emit('vendedor:unirse', user.id);
+            }
+        };
+
+        unirse();
+        socket.on('connect', unirse); 
+
+        const refrescar = () => {
+            obtenerDetallesPedido(id).then(res => setPedido(res.pedido));
+        };
 
         socket.on('pedido:armado', (data) => {
             if (data.id === id) {
                 toast.info("¡El vendedor ha armado tu pedido, revisa los detalles!");
-                obtenerDetallesPedido(id).then(res => setPedido(res.pedido));
+                refrescar();
             }
         });
 
-        return () => socket.off('pedido:armado');
-    }, [id, esCliente]);
+        socket.on('pedido:pago-definido', (data) => {
+            if (data.id === id) {
+                toast.info("El cliente definió el método de pago");
+                refrescar();
+            }
+        });
+
+        socket.on('pedido:actualizado', (data) => {
+            if (data.id === id) refrescar();
+        });
+
+        socket.on('pedido:cancelado', (data) => {
+            if (data.id === id) {
+                toast.warning("El pedido fue cancelado");
+                refrescar();
+            }
+        });
+
+        return () => {
+            socket.off('connect', unirse);
+            socket.off('pedido:armado');
+            socket.off('pedido:pago-definido');
+            socket.off('pedido:actualizado');
+            socket.off('pedido:cancelado');
+        };
+    }, [id, esCliente, user?.id]);
 
 
     useEffect(() => {
@@ -161,7 +200,7 @@ export default function PedidoDetallePage() {
                     nombre: item.nombreProducto,
                     precioUnitario: item.precioUnitario,
                     cantidad: item.cantidad,
-                    stock: 999,
+                    stock: item.stockDisponible ?? 0,
                     tieneIva: item.porcentajeIva === 0.15 || item.tieneIva === true,
                     precioMayorista: item.precioMayorista ?? 0,               
                     cantidadMinimaMayorista: item.cantidadMinimaMayorista ?? 0 

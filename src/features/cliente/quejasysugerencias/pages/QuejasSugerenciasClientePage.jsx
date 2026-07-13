@@ -1,10 +1,31 @@
 import RecomendacionForm from "../../../vendedor/recomendaciones/components/RecomendacionForm"
 import RecomendacionList from "../../../vendedor/recomendaciones/components/RecomendacionList"
 import { crearQuejaSugerencia, obtenerMisQuejasSugerencias } from "../services/quejasSugerenciasService"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import socket from "@/utils/socket"
+import useAuthStore from "@/context/useAuthStore"
 
 export default function QuejasSugerenciasClientePage() {
-        const [recargar, setRecargar] = useState(false)
+    const [recargar, setRecargar] = useState(false)
+    const user = useAuthStore((state) => state.user)
+
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const unirse = () => socket.emit('unirse-mis-quejas', user.id);
+        unirse();
+        socket.on('connect', unirse);
+
+        socket.on('queja-sugerencia-respondida', () => {
+            setRecargar(prev => !prev);
+        });
+
+        return () => {
+            socket.emit('salir-mis-quejas', user.id);
+            socket.off('connect', unirse);
+            socket.off('queja-sugerencia-respondida');
+        };
+    }, [user?.id]);
 
 
     return (
