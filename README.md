@@ -19,8 +19,12 @@ El sistema permite al negocio automatizar visualmente sus procesos internos, red
 
 | Recurso | Enlace |
 |---|---|
-| **Formulario** | [Acceder al formulario](https://drive.google.com/drive/folders/1gfpqcx5QPoUCaq23HhrDsVcgJQUHiPZf?usp=sharing) |
-| **Documento de tesis** | [Ver documento](https://drive.google.com/drive/folders/1TQsjPepmN-22VomGDVJ9JQcu1T7EoEbz?usp=sharing) |
+| **Formulario F_AA_233** | [Acceder al formulario](https://epnecuador-my.sharepoint.com/:b:/g/personal/nayely_ayol_epn_edu_ec/IQDGGZMJBYgVSpsbU5W9fjFUAQqvHE0g_CcPMG3pCUdbQt4?e=bs8dmS) |
+| **Formulario F_AA_234** | [Acceder al formulario](https://epnecuador-my.sharepoint.com/:b:/g/personal/nayely_ayol_epn_edu_ec/IQBSqO7BBe1JQLV6NigJ3nzyASY3ArSwA2nn0fouyjV_nnA?e=E1450D) |
+| **Formulario F_AA_236** | [Acceder al formulario](https://epnecuador-my.sharepoint.com/:b:/g/personal/nayely_ayol_epn_edu_ec/IQAZ4UnZbAvWSq5Drwuxd6eCAXZRK-Uq7U413fua-VOCAK4?e=OCxalv) |
+| **Documento de tesis** | [Ver documento](https://epnecuador-my.sharepoint.com/:b:/g/personal/nayely_ayol_epn_edu_ec/IQD8diL1tSu3Sa6r9kQUdLZ2ATQYk2OWxkY_RINBpOCB-D0?e=Yt6gNL) |
+| **Certificación-IA** | [Ver certificado](https://epnecuador-my.sharepoint.com/:b:/g/personal/nayely_ayol_epn_edu_ec/IQAPA3d0BzRpTJ2LeoqOvhApAUfM0vu7_SHCzv02DWUGY7o?e=8qf6p4) |
+| **Reporte de Turnitin** | [Ver reporte](https://epnecuador-my.sharepoint.com/:b:/g/personal/nayely_ayol_epn_edu_ec/IQDrQXwYanDvTrkU9uHKGBsZAbruxh4GJKJ24qE_aa-19lQ?e=Erxvfa) |
 | **Video demostrativo** | [Ver video](https://youtu.be/k-cK8yeuxEI?si=Zun6W7I-MPhFBZKq) |
 
 ---
@@ -30,18 +34,29 @@ El sistema permite al negocio automatizar visualmente sus procesos internos, red
 ```
 https://distribuidoragm.netlify.app/
 ```
-
 ---
 
 ## Pantallas del sistema
 
-### Panel de administrador
+### Landing Page
 
+<img width="1342" height="624" alt="image" src="https://github.com/user-attachments/assets/51301f6e-363b-46f1-ace5-c8bc431ba837" />
 
+### Dashboard
+
+<img width="1322" height="634" alt="image" src="https://github.com/user-attachments/assets/1092d728-fee5-4b5a-8391-abe6481af48d" />
 
 ### Módulo de ventas (Vendedor)
 
 <img width="1361" height="641" alt="image" src="https://github.com/user-attachments/assets/48251615-d9b9-48da-aaea-30a1760bccae" />
+
+### Recomendaciones automatizadas con N8N
+
+<img width="1326" height="618" alt="image" src="https://github.com/user-attachments/assets/fa6eae8b-a486-42d7-b0bf-380a038b0b2f" />
+
+### Recomendaciones de productos
+
+<img width="1366" height="928" alt="image" src="https://github.com/user-attachments/assets/7a94161b-5e24-431c-9a84-44fcf128b4b7" />
 
 ### Catálogo de productos (Cliente)
 
@@ -78,6 +93,9 @@ https://distribuidoragm.netlify.app/
 - Proceso de pago (efectivo, transferencia o tarjeta)
 - Gestión de quejas y/o sugerencias
 
+
+<img width="1342" height="800" alt="image" src="https://github.com/user-attachments/assets/4b27373f-7b1f-4207-a318-de8b5e8c6728" />
+
 ---
 
 ## Tecnologías utilizadas
@@ -104,7 +122,7 @@ https://distribuidoragm.netlify.app/
 ### Patrón de arquitectura
 El frontend implementa una arquitectura **por capas (MVC — Modelo-Vista-Controlador)**, lo cual permite una adecuada organización del código, escalabilidad de funciones e integración de servicios externos.
 
-<img width="898" height="521" alt="image" src="https://github.com/user-attachments/assets/c974f1cf-1e3b-4d98-b249-9a5eb81560c1" />
+<img width="1342" height="754" alt="image" src="https://github.com/user-attachments/assets/c974f1cf-1e3b-4d98-b249-9a5eb81560c1" />
 
 ---
 
@@ -140,20 +158,14 @@ npm run dev
 
 El proyecto se desarrolló bajo el marco ágil **Scrum**, organizado en 6 sprints:
 
-| Sprint | Descripción | HU cubiertas |
-|---|---|---|
-| Sprint 0 | Preparación del entorno de desarrollo | — |
-| Sprint 1 | Gestión de cuenta para todos los roles | HU-001, HU-002 |
-| Sprint 2 | Módulos del administrador | HU-003, HU-004, HU-009, HU-010, HU-017, HU-019 |
-| Sprint 3 | Módulos del vendedor | HU-005, HU-006, HU-007, HU-008, HU-011, HU-015, HU-018 |
-| Sprint 4 | Módulos del cliente | HU-012, HU-013, HU-014, HU-016 |
-| Sprint 5 | Pruebas y despliegue | — |
-
----
-
-## Pruebas
-
-Se realizaron pruebas unitarias con **Vitest** para verificar el correcto funcionamiento de cada módulo antes del despliegue a producción. Las pruebas cubren los 19 casos de uso definidos en las historias de usuario (HU-001 a HU-019).
+| Sprint | Descripción |
+|---|---|
+| Sprint 0 | Preparación del entorno de desarrollo |
+| Sprint 1 | Gestión de cuenta para todos los roles |
+| Sprint 2 | Módulos del administrador |
+| Sprint 3 | Módulos del vendedor |
+| Sprint 4 | Módulos del cliente |
+| Sprint 5 | Pruebas y despliegue |
 
 ---
 
@@ -167,11 +179,5 @@ Se realizaron pruebas unitarias con **Vitest** para verificar el correcto funcio
 - byron.loarteb@epn.edu.ec
 
 **Institución:** Escuela Politécnica Nacional — Escuela de Formación de Tecnólogos  
-**Título obtenido:** Tecnólogo Superior en Desarrollo de Software  
+**Carrera:** Tecnólogo Superior en Desarrollo de Software  
 **Año:** 2026
-
----
-
-## Licencia
-
-Este proyecto es público y se encuentra a disposición de la comunidad a través del repositorio institucional de la Escuela Politécnica Nacional. Los derechos patrimoniales corresponden a la autora del presente trabajo.
