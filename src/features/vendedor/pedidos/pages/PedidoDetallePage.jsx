@@ -182,63 +182,73 @@ export default function PedidoDetallePage() {
         }
     }, [articulosSeleccionados, id, pedido?.metodoPago]);
 
-    const handleIniciarVenta = async () => {
-        if (!pedido) return;
 
-        try {
-            setLoading(true);
-            const data = await ventaDesdePedido(id, { observaciones: pedido.observaciones });
-            setVentaId(data.venta.id);
-            limpiarVenta();
-            const esPagoTarjeta = data.venta.metodoPago === 'TARJETA';
-            const urlPago = data.venta.stripe?.urlPago;
+const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
+const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
 
-            setPedidoSeleccionado(pedido);
 
-            setFactura(
-                data.venta.articulos.map(item => ({
-                    id: item.producto?._id || item.producto || item.id,
-                    nombre: item.nombreProducto,
-                    precioUnitario: item.precioUnitario,
-                    cantidad: item.cantidad,
-                    imagen: item.imagen ?? null,
-                    stock: item.stockDisponible ?? 0,
-                    tieneIva: item.porcentajeIva === 0.15 || item.tieneIva === true,
-                    precioMayorista: item.precioMayorista ?? 0,               
-                    cantidadMinimaMayorista: item.cantidadMinimaMayorista ?? 0 
-                }))
-            );
+const handleIniciarVenta = async () => {
+    if (!pedido) return;
 
-            setMetodoPago(pedido.metodoPago);
+    try {
+        setLoading(true);
+        const data = await ventaDesdePedido(id, { observaciones: pedido.observaciones });
+        resetVentaCompleta();
+        setVentaId(data.venta.id);
 
-            setDatosFacturacion({
-                nombreCompleto:
-                    pedido.datosFacturacion?.nombreCompleto ||
-                    `${pedido.cliente?.nombre || ""} ${pedido.cliente?.apellido || ""}`,
+        const pedidoConMetodo = {
+            ...pedido,
+            metodoPago: esPedidoLista
+                ? pedido.metodoPago
+                : (data.venta.metodoPago ?? pedido.metodoPago)
+        };
 
-                correo:
-                    pedido.datosFacturacion?.correo ||
-                    pedido.cliente?.email ||
-                    "",
+        setPedidoSeleccionado(pedidoConMetodo);
 
-                telefono:
-                    pedido.datosFacturacion?.telefono ||
-                    pedido.cliente?.telefono ||
-                    "",
+        setFactura(
+            data.venta.articulos.map(item => ({
+                id: item.producto?._id || item.producto || item.id,
+                nombre: item.nombreProducto,
+                precioUnitario: item.precioUnitario,
+                cantidad: item.cantidad,
+                imagen: item.imagen ?? null,
+                stock: item.stockDisponible ?? 0,
+                tieneIva: item.porcentajeIva === 0.15 || item.tieneIva === true,
+                precioMayorista: item.precioMayorista ?? 0,
+                cantidadMinimaMayorista: item.cantidadMinimaMayorista ?? 0
+            }))
+        );
 
-                identificacion:
-                    pedido.datosFacturacion?.identificacion || ""
-            });
-            setTimeout(() => {
-                navigate("/dashboard/ventas");
-            }, 100);
+        setMetodoPago(
+            esPedidoLista
+                ? pedido.metodoPago
+                : (data.venta.metodoPago ?? pedido.metodoPago)
+        );
 
-        } catch (error) {
-            toast.error(error.message || "Ocurrió un error inesperado al iniciar la venta");
-        } finally {
-            setLoading(false);
-        }
-    };
+        setDatosFacturacion({
+            nombreCompleto:
+                pedido.datosFacturacion?.nombreCompleto ||
+                `${pedido.cliente?.nombre || ""} ${pedido.cliente?.apellido || ""}`,
+            correo:
+                pedido.datosFacturacion?.correo ||
+                pedido.cliente?.email || "",
+            telefono:
+                pedido.datosFacturacion?.telefono ||
+                pedido.cliente?.telefono || "",
+            identificacion:
+                pedido.datosFacturacion?.identificacion || ""
+        });
+
+        setTimeout(() => {
+            navigate("/dashboard/ventas");
+        }, 100);
+
+    } catch (error) {
+        toast.error(error.message || "Ocurrió un error inesperado al iniciar la venta");
+    } finally {
+        setLoading(false);
+    }
+};
 
     const handleArmarPedido = async () => {
         if (articulosSeleccionados.length === 0) {
@@ -326,8 +336,6 @@ export default function PedidoDetallePage() {
 
     if (loading) return <div>Cargando...</div>;
 
-    const esPedidoLista = pedido?.tipoPedido === "FOTO_LISTA";
-    const esPedidoCarrito = pedido?.tipoPedido === "CARRITO";
 
 
     const limpiarFacturaArmado = () => {

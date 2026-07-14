@@ -25,7 +25,7 @@ export default function FacturaPanel({
     const datosFacturacionStore = useVentaStore(state => state.datosFacturacion ?? {});
 
     const metodoPago = pedidoSeleccionado
-        ? pedidoSeleccionado.metodoPago
+        ? (pedidoSeleccionado.metodoPago ?? metodoPagoStore) 
         : metodoPagoStore;
 
     const datosFacturacion = pedidoSeleccionado
@@ -190,8 +190,10 @@ export default function FacturaPanel({
             </Button>
         )}
 
-        {/* Con pedido seleccionado → ocultar Cobrar, mostrar Confirmar Transferencia si aplica */}
-        {pedidoSeleccionado && metodoPago === "TRANSFERENCIA" && !transferenciaConfirmada && (
+        {pedidoSeleccionado && 
+        metodoPago === "TRANSFERENCIA" && 
+        !transferenciaConfirmada && 
+        modo !== "ARMADO_FOTO" && ( 
             <Button
                 disabled={factura.length === 0}
                 onClick={async () => {

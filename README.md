@@ -78,6 +78,7 @@ https://distribuidoragm.netlify.app/
 - Visualización de estadísticas y reporte de ventas
 - Gestión de quejas y/o sugerencias
 - Recomendaciones automatizadas mediante N8N
+- Cerrar sesión
 
 ### Vendedor
 - Inicio de sesión y gestión de perfil
@@ -86,6 +87,7 @@ https://distribuidoragm.netlify.app/
 - Visualización de ventas realizadas
 - Gestión de pedidos pendientes
 - Recomendaciones al administrador
+- Cerrar sesión
 
 ### Cliente
 - Registro e inicio de sesión
@@ -96,6 +98,7 @@ https://distribuidoragm.netlify.app/
 - Gestión del carrito de compras
 - Proceso de pago (efectivo, transferencia o tarjeta)
 - Gestión de quejas y/o sugerencias
+- Cerrar sesión
 
 
 <img width="1342" height="800" alt="image" src="https://github.com/user-attachments/assets/4b27373f-7b1f-4207-a318-de8b5e8c6728" />
