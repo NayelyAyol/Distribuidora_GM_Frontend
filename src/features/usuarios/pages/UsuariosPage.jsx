@@ -104,15 +104,13 @@ export default function UsuariosPage() {
     const handleFiltroChange = async (nuevoFiltro) => {
         setFiltro(nuevoFiltro)
         setPage(1)
+
+        if (search.trim()) {
+            await ejecutarBusqueda(nuevoFiltro)
+        }
     }
 
-    const handleBuscar = async () => {
-        if (!search.trim()) {
-            setSearch("")
-            setPage(1)
-            return
-        }
-
+    const ejecutarBusqueda = async (filtroActual = filtro) => {
         const esVendedorTab = tab === "vendedores"
         const longitudValida = esVendedorTab
             ? search.length === 10
@@ -126,7 +124,7 @@ export default function UsuariosPage() {
             )
             return
         }
-        const estadoEsperado = filtro === "activos"
+        const estadoEsperado = filtroActual === "activos"
 
         try {
             setLoading(true)
@@ -135,9 +133,6 @@ export default function UsuariosPage() {
                 const resultados = (data.usuarios || (data ? [data] : []))
                     .filter(u => u.estado === estadoEsperado)
 
-                if (resultados.length === 0) {
-                    toast.info(`No se encontró el vendedor en ${filtro}`)
-                }
                 setVendedores(resultados)
                 setTotalPaginas(1)
             } else {
@@ -145,9 +140,6 @@ export default function UsuariosPage() {
                 const resultados = (data.usuarios || (data ? [data] : []))
                     .filter(u => u.estado === estadoEsperado)
 
-                if (resultados.length === 0) {
-                    toast.info(`No se encontró el cliente en ${filtro}`)
-                }
                 setClientes(resultados)
                 setTotalPaginas(1)
             }
@@ -156,6 +148,15 @@ export default function UsuariosPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleBuscar = async () => {
+        if (!search.trim()) {
+            setSearch("")
+            setPage(1)
+            return
+        }
+        await ejecutarBusqueda(filtro)
     }
 
     const handleCloseToggle = () => setUserToToggle(null)

@@ -739,11 +739,17 @@ export default function PedidoDetallePage() {
                 </Card>
             )}
 
-            {esCliente && pedido?.tipoPedido === 'FOTO_LISTA' && pedido?.metodoPago === null && pedido?.estado === "EN_PROCESO" && (
+            {esCliente &&
+                pedido?.tipoPedido === 'FOTO_LISTA' &&
+                pedido?.metodoPago === null &&
+                pedido?.estado === "EN_PROCESO" &&
+                pedido?.articulos?.length > 0 &&
+                pedido?.resumenPago?.totalPagar > 0 && (
                 <Card className="p-6 rounded-3xl border border-white/20 shadow-sm bg-white/60 backdrop-blur-xl mt-4">
                     <div className="flex flex-wrap gap-4 justify-between items-center">
                         <p className="text-amber-600 font-medium">
-                            Por favor, selecciona un método de pago para continuar.            </p>
+                            Por favor, selecciona un método de pago para continuar.
+                        </p>
                         <Button
                             onClick={handleIrAPago}
                             disabled={loading}

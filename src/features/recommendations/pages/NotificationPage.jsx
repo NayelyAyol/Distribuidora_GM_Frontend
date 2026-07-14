@@ -110,9 +110,7 @@ export default function NotificationPage() {
                         const esFechaFestiva = accion.tipo === "FECHA_FESTIVA"
 
                         // El label refleja el evento concreto que devuelve el backend
-                        const label = esFechaFestiva && accion.nombreEvento
-                            ? `${labels[accion.tipo]}: ${accion.nombreEvento}`
-                            : labels[accion.tipo] || accion.tipo
+                        const label = labels[accion.tipo] || accion.tipo
 
                         // Si el backend dice que no hay evento disponible, no se puede ejecutar
                         const puedeEjecutar = esFechaFestiva

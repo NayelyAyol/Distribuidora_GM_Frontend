@@ -21,8 +21,16 @@ export default function FacturaPanel({
     const ventaId = useVentaStore(state => state.ventaId);
     const esSoloLectura = modo === "CARRITO"
     const navigate = useNavigate()
-    const metodoPago = useVentaStore(state => state.metodoPago ?? null);
-    const datosFacturacion = useVentaStore(state => state.datosFacturacion ?? {});
+    const metodoPagoStore = useVentaStore(state => state.metodoPago ?? null);
+    const datosFacturacionStore = useVentaStore(state => state.datosFacturacion ?? {});
+
+    const metodoPago = pedidoSeleccionado
+        ? pedidoSeleccionado.metodoPago
+        : metodoPagoStore;
+
+    const datosFacturacion = pedidoSeleccionado
+        ? pedidoSeleccionado.datosFacturacion
+        : datosFacturacionStore;
 
     const { subtotal, iva, envio: costoEnvio, total } = calcularFactura(
         factura,
@@ -195,7 +203,7 @@ export default function FacturaPanel({
                         toast.error(error.message || "Error al confirmar transferencia");
                     }
                 }}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white w-full py-3 rounded-xl font-medium"
+                className="bg-emerald-800 hover:bg-emerald-900 text-white w-full py-5 rounded-2xl font-medium"
             >
                 Confirmar transferencia
             </Button>

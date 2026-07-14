@@ -89,9 +89,8 @@ export default function ProductoDetallePage() {
         )
     }
 
-    // Agrega esta línea junto a los otros datos del producto
-const maxPermitido = Math.max(0, producto.stock - 10)
-const sinStock = maxPermitido === 0
+const maxPermitido = producto.stock
+const sinStock = producto.stock === 0
 
     return (
         <div className="p-6 flex flex-col gap-8">

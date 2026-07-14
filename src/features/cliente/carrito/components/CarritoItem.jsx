@@ -107,7 +107,7 @@ export default function CarritoItem({
                     </div>
                 )}
 
-                <div className="w-16 sm:w-20 text-right font-bold text-gray-800 text-sm sm:text-base shrink-0">
+                <div className="text-right font-bold text-gray-800 text-sm sm:text-base shrink-0 whitespace-nowrap">
                     ${(precioUnitario * cantidadLocal).toFixed(2)}
                 </div>
 

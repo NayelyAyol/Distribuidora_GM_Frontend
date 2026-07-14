@@ -173,57 +173,37 @@ export default function ConfirmacionVentaPage() {
                             </h2>
                         </div>
 
-                        <div className="
-                            flex flex-col gap-3
-                        ">
-                            <div>
-                                <p className="
-                                    text-sm
-                                    text-gray-500
-                                ">
+                        <div className="flex flex-col gap-3">
+                            <div className="min-w-0">
+                                <p className="text-sm text-gray-500">
                                     Método de pago
                                 </p>
-                                <p className="
-                                    font-semibold
-                                    text-gray-800
-                                ">
+                                <p className="font-semibold text-gray-800 break-words [overflow-wrap:anywhere]">
                                     {metodoPago}
                                 </p>
                             </div>
 
                             {pedidoSeleccionado && (
-                                <div>
-                                    <p className="
-            text-sm
-            text-gray-500
-        ">
+                                <div className="min-w-0">
+                                    <p className="text-sm text-gray-500">
                                         Nombre del pedido
                                     </p>
-                                    <p className="
-            font-semibold
-            text-gray-800
-        ">
+                                    <p className="font-semibold text-gray-800 break-words [overflow-wrap:anywhere]">
                                         {pedidoSeleccionado?.nombrePedido}
                                     </p>
                                 </div>
                             )}
-                            <div>
-                                <p className="
-                                    text-sm
-                                    text-gray-500
-                                ">
+
+                            <div className="min-w-0">
+                                <p className="text-sm text-gray-500">
                                     Cliente
                                 </p>
-                                <p className="
-                                    font-semibold
-                                    text-gray-800
-                                ">
+                                <p className="font-semibold text-gray-800 break-words [overflow-wrap:anywhere]">
                                     {datosFacturacion?.nombreCompleto}
                                 </p>
-
                             </div>
                         </div>
-                    </div>
+                        </div>
 
                     <div className="
                         bg-white/80
