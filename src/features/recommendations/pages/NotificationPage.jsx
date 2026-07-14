@@ -25,6 +25,11 @@ export default function NotificationPage() {
     const cargarAcciones = useCallback(async () => {
         try {
             const response = await listarAccionesAdmin()
+                    console.log("RESPUESTA COMPLETA DEL BACKEND:", response)
+        console.log("ACCIONES:", response.acciones)
+                const fechaFestiva = response.acciones?.find(a => a.tipo === "FECHA_FESTIVA")
+        console.log("SOLO FECHA_FESTIVA:", fechaFestiva)
+
             setAcciones(response.acciones || [])
         } catch (error) {
             toast.error(error.message)
@@ -106,25 +111,44 @@ export default function NotificationPage() {
         <div className="space-y-4">
             <Card className="p-6 rounded-2xl">
                 <div className="divide-y">
-                    {acciones.map((accion) => (
-                        <NotificationItem
-                            key={accion.tipo}
-                            id={`switch-${accion.tipo}`}
-                            label={labels[accion.tipo] || accion.tipo}
-                            tipo={accion.tipo}
-                            estado={accion.estado}
-                            showButton={
-                                accion.tipo === "PROMOCION_SUGERIDA" || 
-                                accion.tipo === "FECHA_FESTIVA"
-                            }
-                            onFinalizar={handleFinalizar}
-                            onEjecutar={
-                                accion.tipo === "FECHA_FESTIVA"
-                                    ? handleEjecutarFechaFestiva
-                                    : handleEjecutar
-                            }
-                        />
-                    ))}
+                    {acciones.map((accion) => {
+                        const esFechaFestiva = accion.tipo === "FECHA_FESTIVA"
+
+                        // El label refleja el evento concreto que devuelve el backend
+                        const label = esFechaFestiva && accion.nombreEvento
+                            ? `${labels[accion.tipo]}: ${accion.nombreEvento}`
+                            : labels[accion.tipo] || accion.tipo
+
+                        // Si el backend dice que no hay evento disponible, no se puede ejecutar
+                        const puedeEjecutar = esFechaFestiva
+                            ? !!accion.hayEventoDisponible
+                            : true
+
+                        // Para fecha festiva: si no hay evento disponible, el switch
+                        const estadoMostrado = esFechaFestiva && !puedeEjecutar
+                            ? "SIN_EVENTO"
+                            : accion.estado
+
+                        return (
+                            <NotificationItem
+                                key={accion.tipo}
+                                id={`switch-${accion.tipo}`}
+                                label={label}
+                                tipo={accion.tipo}
+                                estado={estadoMostrado}
+                                showButton={
+                                    (accion.tipo === "PROMOCION_SUGERIDA" ||
+                                        esFechaFestiva) && puedeEjecutar
+                                }
+                                onFinalizar={handleFinalizar}
+                                onEjecutar={
+                                    esFechaFestiva
+                                        ? handleEjecutarFechaFestiva
+                                        : handleEjecutar
+                                }
+                            />
+                        )
+                    })}
                 </div>
             </Card>
         </div>

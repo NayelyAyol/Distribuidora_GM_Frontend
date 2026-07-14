@@ -92,6 +92,7 @@ https://distribuidoragm.netlify.app/
 - Restablecimiento de contraseña
 - Gestión de perfil
 - Visualización del catálogo de productos y categorías
+- Recomendaciones inteligentes
 - Gestión del carrito de compras
 - Proceso de pago (efectivo, transferencia o tarjeta)
 - Gestión de quejas y/o sugerencias

@@ -42,6 +42,10 @@ export default function FeedbackList() {
     }
 
     useEffect(() => {
+        cargarQuejas()
+    }, [filter, tipoFilter, page])
+
+    useEffect(() => {
         const unirse = () => socket.emit('unirse-quejas-admin');
         unirse();
         socket.on('connect', unirse);
