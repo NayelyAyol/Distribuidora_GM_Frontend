@@ -25,11 +25,6 @@ export default function NotificationPage() {
     const cargarAcciones = useCallback(async () => {
         try {
             const response = await listarAccionesAdmin()
-                    console.log("RESPUESTA COMPLETA DEL BACKEND:", response)
-        console.log("ACCIONES:", response.acciones)
-                const fechaFestiva = response.acciones?.find(a => a.tipo === "FECHA_FESTIVA")
-        console.log("SOLO FECHA_FESTIVA:", fechaFestiva)
-
             setAcciones(response.acciones || [])
         } catch (error) {
             toast.error(error.message)
